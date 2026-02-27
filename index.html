@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Cockpit</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brand:        #7c3aed;
+      --brand-hover:  #5b21b6;
+      --brand-light:  #ede9fe;
+      --green:        #059669;
+      --green-light:  #d1fae5;
+      --orange:       #d97706;
+      --orange-light: #fef3c7;
+      --red:          #dc2626;
+      --surface:      #ffffff;
+      --surface-2:    #f8fafc;
+      --border:       #e5e7eb;
+      --text:         #111827;
+      --text-2:       #6b7280;
+      --text-3:       #9ca3af;
+      --radius:       10px;
+      --shadow:       0 1px 4px rgba(0,0,0,.07);
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      font-size: 13px;
+      background: #f0f2f5;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* ── Header ────────────────────────────────────── */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .header-left { display: flex; align-items: center; gap: 8px; }
+    .cse-name { font-size: 15px; font-weight: 700; color: var(--text); }
+    .badge {
+      padding: 2px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--brand-light);
+      color: var(--brand);
+    }
+    .header-right { font-size: 11px; color: var(--text-3); }
+
+    /* ── Layout ────────────────────────────────────── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 12px;
+      padding: 14px;
+    }
+    .col-full { grid-column: 1 / -1; }
+
+    /* ── Card ──────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card-title {
+      padding: 7px 14px;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text-2);
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-body { padding: 12px 14px; }
+
+    /* ── Big stats ─────────────────────────────────── */
+    .stat-row {
+      display: flex;
+      gap: 0;
+      margin-bottom: 14px;
+    }
+    .stat-item {
+      flex: 1;
+      text-align: center;
+      padding: 4px 0;
+    }
+    .stat-item + .stat-item { border-left: 1px solid var(--border); }
+    .stat-value {
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--brand);
+    }
+    .stat-value.green { color: var(--green); }
+    .stat-value.orange { color: var(--orange); }
+    .stat-label { font-size: 11px; color: var(--text-2); margin-top: 1px; }
+
+    /* ── Progress ──────────────────────────────────── */
+    .progress-block { margin-bottom: 10px; }
+    .progress-block:last-child { margin-bottom: 0; }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+      font-size: 11.5px;
+    }
+    .progress-meta .label { color: var(--text-2); }
+    .progress-meta .val { font-weight: 700; color: var(--text); }
+    .track {
+      height: 6px;
+      background: #eef0f3;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--brand);
+      transition: width .6s ease;
+    }
+    .fill.green  { background: var(--green); }
+    .fill.orange { background: var(--orange); }
+    .track.sm { height: 3px; margin-top: 3px; }
+
+    /* ── KPI list ──────────────────────────────────── */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
+    .kpi-list { display: flex; flex-direction: column; }
+    .kpi-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .kpi-row:last-child { border-bottom: none; }
+    .kpi-label { font-size: 12px; color: var(--text-2); }
+    .kpi-value { font-size: 12px; font-weight: 700; color: var(--text); }
+
+    /* ── Themes ────────────────────────────────────── */
+    .themes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 24px;
+    }
+    .theme-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+    }
+    .theme-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+      padding-right: 8px;
+      color: var(--text);
+    }
+    .theme-count { font-weight: 700; flex-shrink: 0; color: var(--brand); }
+
+    /* ── AI ────────────────────────────────────────── */
+    .ai-desc { font-size: 12px; color: var(--text-2); margin-bottom: 10px; }
+    #ai-question {
+      display: block;
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-family: inherit;
+      font-size: 12px;
+      resize: vertical;
+      background: var(--surface-2);
+      color: var(--text);
+      outline: none;
+      min-height: 70px;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    #ai-question:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(124,58,237,.12);
+    }
+    .ai-footer { display: flex; align-items: center; gap: 10px; margin-top: 9px; }
+    #ai-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 16px;
+      background: var(--brand);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    #ai-btn:hover:not(:disabled) { background: var(--brand-hover); }
+    #ai-btn:disabled { opacity: .5; cursor: not-allowed; }
+    #ai-spinner { font-size: 11px; color: var(--text-3); display: none; }
+
+    #ai-result { margin-top: 12px; display: none; }
+    .ai-question-echo {
+      font-size: 11px;
+      color: var(--text-3);
+      font-style: italic;
+      margin-bottom: 8px;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+    thead { background: var(--surface-2); }
+    th {
+      padding: 7px 10px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-2);
+      white-space: nowrap;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 6px 10px;
+      color: var(--text);
+      border-bottom: 1px solid #f3f4f6;
+      white-space: nowrap;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surface-2); }
+    details { margin-top: 10px; }
+    summary { font-size: 11px; color: var(--text-3); cursor: pointer; user-select: none; }
+    pre {
+      margin-top: 6px;
+      padding: 9px;
+      background: var(--surface-2);
+      border-radius: 7px;
+      font-size: 10.5px;
+      color: var(--text-2);
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* ── States ────────────────────────────────────── */
+    .state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-2);
+    }
+    .state.error { color: var(--red); }
+    .spinner {
+      width: 30px;
+      height: 30px;
+      border: 3px solid var(--brand-light);
+      border-top-color: var(--brand);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div id="root"><div class="state"><div class="spinner"></div><span>Chargement…</span></div></div>
+
+  <script>
+    const P      = new URLSearchParams(location.search);
+    const CID    = P.get('hubspot_company_id') || '';
+    const TOKEN  = P.get('token') || '';
+    const BASE   = 'https://yhtxrjegdeuwkcjvkfkt.supabase.co/functions/v1';
+    const API    = BASE + '/cse-sales-cockpit';
+    const AI_API = BASE + '/cse-ai-query';
+
+    let currentCseId = null;
+
+    /* ── Helpers ── */
+    function fmt(n, d = 0) {
+      if (n == null || n === '') return '–';
+      const v = Number(n);
+      if (isNaN(v)) return String(n);
+      return v.toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d });
+    }
+    function fmtEur(n) {
+      if (n == null || n === '') return '–';
+      const v = Number(n);
+      if (isNaN(v)) return '–';
+      return v.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+    }
+    function pct(num, den) { return !den ? 0 : Math.min(100, Math.round(num / den * 100)); }
+    function esc(s) {
+      return String(s ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+    function bar(p, cls = '') {
+      return `<div class="track"><div class="fill ${cls}" style="width:${p}%"></div></div>`;
+    }
+    function barSm(p) {
+      return `<div class="track sm"><div class="fill" style="width:${p}%"></div></div>`;
+    }
+    function progressBlock(label, val, p, cls = '') {
+      return `<div class="progress-block">
+        <div class="progress-meta">
+          <span class="label">${esc(label)}</span>
+          <span class="val">${esc(val)}</span>
+        </div>
+        ${bar(p, cls)}
+      </div>`;
+    }
+    function kpiRow(label, val) {
+      return `<div class="kpi-row">
+        <span class="kpi-label">${esc(label)}</span>
+        <span class="kpi-value">${esc(val)}</span>
+      </div>`;
+    }
+
+    /* ── Render ── */
+    function render(rows) {
+      const f = rows[0];
+
+      const cseName      = f.cse_name || 'CSE';
+      const days         = f.window_days || 365;
+      currentCseId       = f.cse_id || null;
+
+      const membTotal    = f.memberships_total    || 0;
+      const membActive   = f.memberships_active   || 0;
+      const membDormant  = f.memberships_dormant  || 0;
+      const mrTotal      = f.mise_relations_total  || 0;
+      const mrAccepted   = f.mise_relations_accepted || 0;
+      const mrPeople     = f.mr_people_count      || 0;
+      const mrAvg        = f.mr_avg_per_person    || 0;
+      const lessTotal    = f.lessons_total        || 0;
+      const lessComp     = f.lessons_completed    || 0;
+      const lessCa       = f.lessons_ca           || 0;
+      const passActifs   = f.pass_actifs          || 0;
+      const passCa       = f.pass_ca              || 0;
+      const walletTx     = f.wallet_transactions_total || 0;
+      const walletTotal  = f.wallet_amount_total  || 0;
+      const walletAvg    = f.wallet_amount_avg    || 0;
+
+      const themes = rows
+        .filter(r => r.theme && (r.theme_count || 0) > 0)
+        .map(r => ({ theme: r.theme, count: r.theme_count }))
+        .sort((a, b) => b.count - a.count);
+
+      const pctActive  = pct(membActive,  membTotal);
+      const pctDormant = pct(membDormant, membTotal);
+      const pctMr      = pct(mrAccepted,  mrTotal);
+      const pctLess    = pct(lessComp,    lessTotal);
+      const maxTheme   = themes[0]?.count || 1;
+      const medals     = ['🥇', '🥈', '🥉'];
+
+      /* Thématiques */
+      const themesInner = themes.length === 0
+        ? '<p style="font-size:12px;color:var(--text-2)">Aucune thématique sur la période.</p>'
+        : `<div class="themes-grid">${
+            themes.slice(0, 12).map((t, i) => {
+              const medal = i < 3 ? medals[i] : `${i + 1}.`;
+              const p2 = pct(t.count, maxTheme);
+              return `<div>
+                <div class="theme-meta">
+                  <span class="theme-name">${esc(medal)} ${esc(t.theme)}</span>
+                  <span class="theme-count">${t.count}</span>
+                </div>
+                ${barSm(p2)}
+              </div>`;
+            }).join('')
+          }</div>`;
+
+      document.getElementById('root').innerHTML = `
+        <div class="header">
+          <div class="header-left">
+            <span class="cse-name">${esc(cseName)}</span>
+            <span class="badge">${days} jours</span>
+          </div>
+          <span class="header-right">Sales Cockpit · Superprof</span>
+        </div>
+
+        <div class="grid">
+
+          <!-- Membres -->
+          <div class="card">
+            <div class="card-title">👥 Membres</div>
+            <div class="card-body">
+              <div class="stat-row">
+                <div class="stat-item">
+                  <div class="stat-value">${fmt(membTotal)}</div>
+                  <div class="stat-label">Total</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value ${pctActive >= 25 ? 'green' : 'orange'}">${pctActive}%</div>
+                  <div class="stat-label">Activation</div>
+                </div>
+              </div>
+              ${progressBlock('Actifs', fmt(membActive), pctActive, 'green')}
+              ${progressBlock('Dormants', fmt(membDormant), pctDormant, 'orange')}
+            </div>
+          </div>
+
+          <!-- Mises en Relation -->
+          <div class="card">
+            <div class="card-title">🤝 Mises en Relation</div>
+            <div class="card-body">
+              <div class="stat-row">
+                <div class="stat-item">
+                  <div class="stat-value">${fmt(mrTotal)}</div>
+                  <div class="stat-label">Total</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">${pctMr}%</div>
+                  <div class="stat-label">Acceptées</div>
+                </div>
+              </div>
+              ${progressBlock('Taux acceptation', `${fmt(mrAccepted)} / ${fmt(mrTotal)}`, pctMr)}
+              <div class="kpi-list">
+                ${kpiRow('Personnes touchées', fmt(mrPeople))}
+                ${kpiRow('Moy. / personne', fmt(mrAvg, 1))}
+              </div>
+            </div>
+          </div>
+
+          <!-- Leçons -->
+          <div class="card">
+            <div class="card-title">📚 Leçons</div>
+            <div class="card-body">
+              <div class="stat-row">
+                <div class="stat-item">
+                  <div class="stat-value">${fmt(lessTotal)}</div>
+                  <div class="stat-label">Total</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">${pctLess}%</div>
+                  <div class="stat-label">Complétées</div>
+                </div>
+              </div>
+              ${progressBlock('Complétion', `${fmt(lessComp)} / ${fmt(lessTotal)}`, pctLess)}
+              <div class="kpi-list">
+                ${kpiRow('CA leçons', fmtEur(lessCa))}
+              </div>
+            </div>
+          </div>
+
+          <!-- Pass & Wallet -->
+          <div class="card">
+            <div class="card-title">💳 Pass & Wallet</div>
+            <div class="card-body">
+              <div class="stat-row">
+                <div class="stat-item">
+                  <div class="stat-value">${fmt(passActifs)}</div>
+                  <div class="stat-label">Pass actifs</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">${fmt(walletTx)}</div>
+                  <div class="stat-label">Tx wallet</div>
+                </div>
+              </div>
+              <div class="kpi-list">
+                ${kpiRow('CA pass', fmtEur(passCa))}
+                ${kpiRow('Total rechargé', fmtEur(walletTotal))}
+                ${kpiRow('Moy. / transaction', fmtEur(walletAvg))}
+              </div>
+            </div>
+          </div>
+
+          <!-- Thématiques -->
+          <div class="card col-full">
+            <div class="card-title">
+              <span>🎯 Top Thématiques</span>
+              ${themes.length > 0 ? `<span style="font-weight:500;text-transform:none;font-size:11px;color:var(--text-3)">${themes.length} matières</span>` : ''}
+            </div>
+            <div class="card-body">${themesInner}</div>
+          </div>
+
+          <!-- IA -->
+          <div class="card col-full">
+            <div class="card-title">✦ Analyse IA</div>
+            <div class="card-body">
+              <p class="ai-desc">Posez une question en langage naturel sur ce CSE — membres, leçons, wallet, thématiques…</p>
+              <textarea id="ai-question" rows="3" placeholder="ex : Top 5 membres les plus actifs, CA par thématique ce trimestre…"></textarea>
+              <div class="ai-footer">
+                <button id="ai-btn" onclick="handleAI()">✦ Analyser</button>
+                <span id="ai-spinner">Analyse en cours…</span>
+              </div>
+              <div id="ai-result"></div>
+            </div>
+          </div>
+
+        </div>`;
+
+      document.getElementById('ai-question').addEventListener('keydown', e => {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) handleAI();
+      });
+    }
+
+    /* ── AI handler ── */
+    async function handleAI() {
+      const question = document.getElementById('ai-question').value.trim();
+      if (!question) return;
+      const btn      = document.getElementById('ai-btn');
+      const spinner  = document.getElementById('ai-spinner');
+      const resultEl = document.getElementById('ai-result');
+      btn.disabled = true;
+      spinner.style.display = 'inline';
+      resultEl.style.display = 'none';
+      try {
+        const p = new URLSearchParams({ question, hubspot_company_id: CID });
+        if (currentCseId) p.set('cse_id', currentCseId);
+        const res  = await fetch(`${AI_API}?${p}`, { headers: { Authorization: `Bearer ${TOKEN}` } });
+        const json = await res.json();
+        if (!json.ok) throw new Error(json.error || 'Erreur IA');
+        const rows = Array.isArray(json.data) ? json.data : [];
+        if (!rows.length) {
+          resultEl.innerHTML = '<p style="font-size:12px;color:var(--text-3);margin-top:8px">Aucun résultat pour cette question.</p>';
+        } else {
+          const cols  = Object.keys(rows[0]);
+          const thead = '<tr>' + cols.map(c => `<th>${esc(c.replace(/_/g, ' '))}</th>`).join('') + '</tr>';
+          const tbody = rows.slice(0, 50).map(r =>
+            '<tr>' + cols.map(c => `<td>${esc(r[c] == null ? '–' : String(r[c]))}</td>`).join('') + '</tr>'
+          ).join('');
+          let html = '';
+          if (json.question) html += `<p class="ai-question-echo">&ldquo;${esc(json.question)}&rdquo;</p>`;
+          html += `<div class="table-wrap"><table><thead>${thead}</thead><tbody>${tbody}</tbody></table></div>`;
+          if (json.sql) html += `<details><summary>Voir le SQL généré</summary><pre>${esc(json.sql)}</pre></details>`;
+          resultEl.innerHTML = html;
+        }
+        resultEl.style.display = 'block';
+      } catch (e) {
+        resultEl.innerHTML = `<p style="font-size:12px;color:var(--red);margin-top:8px">⚠ ${esc(e.message)}</p>`;
+        resultEl.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        spinner.style.display = 'none';
+      }
+    }
+
+    /* ── Init ── */
+    (async function init() {
+      if (!CID || !TOKEN) {
+        document.getElementById('root').innerHTML =
+          '<div class="state error">Paramètres manquants (hubspot_company_id, token)</div>';
+        return;
+      }
+      try {
+        const res  = await fetch(`${API}?hubspot_company_id=${encodeURIComponent(CID)}&days=365&top_n=12`, {
+          headers: { Authorization: `Bearer ${TOKEN}` }
+        });
+        const json = await res.json();
+        if (!json.ok) throw new Error(json.error || 'Erreur API');
+        if (!json.data?.length) throw new Error('CSE non lié à ce compte HubSpot');
+        render(json.data);
+      } catch (e) {
+        document.getElementById('root').innerHTML =
+          `<div class="state error">⚠ ${esc(e.message)}</div>`;
+      }
+    })();
+  </script>
+</body>
+</html>
