@@ -195,7 +195,7 @@
     .fill-rose   { background: linear-gradient(90deg,#fb7185,#f43f5e); }
     .theme-meta { display:flex; align-items:center; gap:4px; font-size:11.5px; margin-bottom:2px; }
     .theme-name { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--slate-700); font-weight:500; }
-    .theme-count { font-weight:700; color:var(--cyan); flex-shrink:0; }
+    .theme-count { font-weight:700; color:var(--rose); flex-shrink:0; }
 
     /* ── AI ── */
     .ai-desc { font-size:11.5px; color:var(--slate-400); margin-bottom:7px; line-height:1.5; }
@@ -364,7 +364,7 @@
         `<div class="card col-full"><div class="card-accent accent-rose"></div>
          <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-rose">🎯</div><span class="card-title">Top Thématiques</span></div><span class="badge badge-rose">${themes.length} matières</span></div>
          <div class="card-body"><div class="themes-grid">${
-           themes.slice(0,14).map((t,i) => {
+           themes.slice(0,10).map((t,i) => {
              const m = i<3 ? ['🥇','🥈','🥉'][i] : `${i+1}.`;
              return `<div><div class="theme-meta"><span class="theme-name">${esc(m)} ${esc(t.theme)}</span><span class="theme-count">${t.count}</span></div><div class="track sm"><div class="fill fill-rose" style="width:${pct(t.count,mT)}%"></div></div></div>`;
            }).join('')
