@@ -251,6 +251,51 @@
     .state.error { color:var(--rose); }
     .spinner { width:32px; height:32px; border:3px solid var(--indigo-light); border-top-color:var(--indigo); border-radius:50%; animation:spin .75s linear infinite; }
     @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* ── Period tabs ── */
+    .period-tabs { display:flex; background:rgba(255,255,255,.15); border-radius:10px; padding:3px; gap:2px; margin-top:8px; align-self:flex-start; backdrop-filter:blur(4px); }
+    .period-tab { padding:4px 14px; border:none; border-radius:7px; background:transparent; color:rgba(255,255,255,.75); font-size:11.5px; font-weight:600; cursor:pointer; transition:all .2s; font-family:inherit; letter-spacing:.01em; }
+    .period-tab.active { background:white; color:var(--indigo); box-shadow:0 1px 6px rgba(0,0,0,.18); }
+    .period-tab:hover:not(.active) { background:rgba(255,255,255,.22); color:white; }
+
+    /* ── Dark toggle ── */
+    .dark-toggle { width:32px; height:32px; border:none; border-radius:8px; background:rgba(255,255,255,.15); cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center; transition:background .2s; flex-shrink:0; margin-left:10px; }
+    .dark-toggle:hover { background:rgba(255,255,255,.28); }
+
+    /* ── CSV button ── */
+    .csv-btn { display:inline-flex; align-items:center; gap:5px; margin-top:10px; padding:5px 12px; background:var(--slate-100); border:1px solid var(--slate-200); border-radius:7px; color:var(--slate-600); font-size:11px; font-weight:600; cursor:pointer; font-family:inherit; transition:background .15s; }
+    .csv-btn:hover { background:var(--slate-200); }
+
+    /* ── Dark mode ── */
+    body.dark { background:#0f172a; color:#f8fafc; }
+    body.dark .card { background:#1e293b; border-color:rgba(255,255,255,.07); box-shadow:0 1px 3px rgba(0,0,0,.3); }
+    body.dark .card-title { color:#e2e8f0; }
+    body.dark .track { background:#334155; }
+    body.dark .kpi-lbl { color:#64748b; } body.dark .kpi-val { color:#f1f5f9; }
+    body.dark .kpi-row { border-bottom-color:#334155; } body.dark .divider { border-top-color:#334155; }
+    body.dark .prog-lbl { color:#94a3b8; } body.dark .prog-val { color:#f1f5f9; }
+    body.dark .big-lbl { color:#64748b; } body.dark .theme-name { color:#94a3b8; }
+    body.dark .ai-desc { color:#64748b; }
+    body.dark #ai-question { background:#1e293b; color:#e2e8f0; border-color:#334155; }
+    body.dark #ai-question:focus { background:#263248; }
+    body.dark #ai-placeholder { color:#64748b; }
+    body.dark .ai-hint { color:#64748b; } body.dark .ai-quote { color:#64748b; }
+    body.dark kbd { background:#334155; border-color:#475569; color:#94a3b8; }
+    body.dark .table-wrap { border-color:#334155; }
+    body.dark thead { background:#0f172a; } body.dark th { color:#64748b; border-bottom-color:#334155; }
+    body.dark td { color:#94a3b8; border-bottom-color:#1e293b; }
+    body.dark tr:hover td { background:#263248; }
+    body.dark pre { background:#0f172a; border-color:#334155; color:#94a3b8; }
+    body.dark summary { color:#64748b; }
+    body.dark .badge-indigo  { background:#3730a3; color:#a5b4fc; }
+    body.dark .badge-emerald { background:#064e3b; color:#6ee7b7; }
+    body.dark .badge-violet  { background:#4c1d95; color:#c4b5fd; }
+    body.dark .badge-amber   { background:#78350f; color:#fcd34d; }
+    body.dark .badge-rose    { background:#881337; color:#fda4af; }
+    body.dark .csv-btn { background:#334155; border-color:#475569; color:#94a3b8; }
+    body.dark .csv-btn:hover { background:#475569; }
+    body.dark .state { color:#475569; } body.dark .state.error { color:#fb7185; }
+    body.dark .spinner { border-color:#334155; border-top-color:var(--indigo); }
   </style>
 </head>
 <body>
@@ -266,6 +311,9 @@
 
     let currentCseId  = null;
     let suggestionIdx = 0;
+    let selectedDays  = 365;
+    let lastAiRows    = [];
+    let lastAiCols    = [];
 
     const AI_SUGGESTIONS = [
       "Top 5 membres les plus actifs",
@@ -390,8 +438,13 @@
       document.getElementById('root').innerHTML = `
         <div class="hero"><div class="hero-inner">
           <div class="hero-left">
-            <span class="hero-eyebrow">Sales Cockpit · ${days} derniers jours</span>
+            <span class="hero-eyebrow">Sales Cockpit</span>
             <span class="hero-name">${esc(cseName)}</span>
+            <div class="period-tabs">
+              <button class="period-tab ${selectedDays===30?'active':''}" onclick="switchPeriod(30)">30 jours</button>
+              <button class="period-tab ${selectedDays===90?'active':''}" onclick="switchPeriod(90)">90 jours</button>
+              <button class="period-tab ${selectedDays===365?'active':''}" onclick="switchPeriod(365)">1 an</button>
+            </div>
           </div>
           <div class="hero-right">
             <div class="hero-stat"><div class="hero-stat-value">${fmt(membTotal)}</div><div class="hero-stat-label">membres</div></div>
@@ -399,6 +452,7 @@
             <div class="hero-stat"><div class="hero-stat-value">${fmtEur(lessCa + passCa)}</div><div class="hero-stat-label">CA total</div></div>
             <div class="hero-sep"></div>
             <div class="hero-stat"><div class="hero-stat-value">${fmt(lessTotal)}</div><div class="hero-stat-label">leçons</div></div>
+            <button class="dark-toggle" onclick="toggleDark()" title="Mode sombre / clair">${document.body.classList.contains('dark')?'☀️':'🌙'}</button>
           </div>
         </div></div>
         <div class="grid">${membCard}${mrCard}${lessCard}${walletCard}${themesCard}${aiCard}</div>`;
@@ -420,6 +474,31 @@
           ph.style.opacity = '1';
         }, 400);
       }, 3000);
+    }
+
+    /* ── Period ── */
+    function switchPeriod(days) {
+      if (days === selectedDays) return;
+      selectedDays = days;
+      loadData();
+    }
+
+    /* ── Dark mode ── */
+    function toggleDark() {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('cockpit-dark', document.body.classList.contains('dark'));
+      document.querySelectorAll('.dark-toggle').forEach(b => { b.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙'; });
+    }
+
+    /* ── Export CSV ── */
+    function exportCSV() {
+      if (!lastAiRows.length) return;
+      const e = v => { v = v == null ? '' : String(v); return (v.includes(',') || v.includes('"') || v.includes('\n')) ? `"${v.replace(/"/g,'""')}"` : v; };
+      const csv = [lastAiCols.join(','), ...lastAiRows.map(r => lastAiCols.map(c => e(r[c])).join(','))].join('\n');
+      const a = document.createElement('a');
+      a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent('\uFEFF' + csv);
+      a.download = `cockpit-ia-${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
     }
 
     /* ── AI ── */
@@ -448,12 +527,14 @@
           res.innerHTML = '<p style="font-size:12px;color:var(--slate-400);margin-top:8px;padding-left:10px;border-left:2px solid var(--indigo-light)">Aucun résultat pour cette question.</p>';
         } else {
           const cols  = Object.keys(rows[0]);
+          lastAiRows = rows; lastAiCols = cols;
           const thead = '<tr>' + cols.map(c => `<th>${esc(c.replace(/_/g,' '))}</th>`).join('') + '</tr>';
           const tbody = rows.slice(0,50).map(r => '<tr>' + cols.map(c => `<td>${esc(r[c]==null?'–':String(r[c]))}</td>`).join('') + '</tr>').join('');
           let html = '';
           if (json.question) html += `<p class="ai-quote">&ldquo;${esc(json.question)}&rdquo;</p>`;
           html += `<div class="table-wrap"><table><thead>${thead}</thead><tbody>${tbody}</tbody></table></div>`;
-          if (json.sql) html += `<details><summary>▸ Voir le SQL généré</summary><pre>${esc(json.sql)}</pre></details>`;
+          html += `<button class="csv-btn" onclick="exportCSV()">📥 Exporter CSV <span style="opacity:.6;font-weight:400">(${rows.length} lignes)</span></button>`;
+          if (json.sql) html += `<details style="margin-top:6px"><summary>▸ Voir le SQL généré</summary><pre>${esc(json.sql)}</pre></details>`;
           res.innerHTML = html;
         }
         res.style.display = 'block';
@@ -466,20 +547,29 @@
     }
 
     /* ── Init ── */
+    async function loadData() {
+      document.getElementById('root').innerHTML = '<div class="state"><div class="spinner"></div><span>Chargement…</span></div>';
+      try {
+        const r    = await fetch(`${API}?hubspot_company_id=${encodeURIComponent(CID)}&days=${selectedDays}&top_n=14`, { headers:{ Authorization:`Bearer ${TOKEN}` }});
+        const json = await r.json();
+        if (!json.ok) throw new Error(json.error || 'Erreur API');
+        if (!json.data?.length) throw new Error('CSE non lié à ce compte HubSpot');
+        render(json.data);
+        if (document.body.classList.contains('dark')) {
+          document.querySelectorAll('.dark-toggle').forEach(b => { b.textContent = '☀️'; });
+        }
+      } catch(e) {
+        document.getElementById('root').innerHTML = `<div class="state error">⚠ ${esc(e.message)}</div>`;
+      }
+    }
+
     (async () => {
       if (!CID || !TOKEN) {
         document.getElementById('root').innerHTML = '<div class="state error">⚠ Paramètres manquants</div>';
         return;
       }
-      try {
-        const r    = await fetch(`${API}?hubspot_company_id=${encodeURIComponent(CID)}&days=365&top_n=14`, { headers:{ Authorization:`Bearer ${TOKEN}` }});
-        const json = await r.json();
-        if (!json.ok) throw new Error(json.error || 'Erreur API');
-        if (!json.data?.length) throw new Error('CSE non lié à ce compte HubSpot');
-        render(json.data);
-      } catch(e) {
-        document.getElementById('root').innerHTML = `<div class="state error">⚠ ${esc(e.message)}</div>`;
-      }
+      if (localStorage.getItem('cockpit-dark') === 'true') document.body.classList.add('dark');
+      await loadData();
     })();
   </script>
 </body>
