@@ -187,7 +187,8 @@
     .kpi-val { font-size:12px; font-weight:700; color:var(--slate-900); }
 
     /* ── Themes ── */
-    .themes-grid { display:grid; grid-template-columns:1fr; gap:6px; }
+    .themes-grid { columns: 2; column-gap: 24px; }
+    .themes-grid > div { break-inside: avoid; margin-bottom: 6px; }
     .accent-rose { background: linear-gradient(90deg,#fb7185,#f43f5e); }
     .icon-rose   { background: #ffe4e6; }
     .badge-rose  { background: #ffe4e6; color: #9f1239; }
