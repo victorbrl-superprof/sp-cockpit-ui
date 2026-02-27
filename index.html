@@ -46,7 +46,7 @@
     /* ── Hero ── */
     .hero {
       background: linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #8b5cf6 100%);
-      padding: 13px 18px 14px;
+      padding: 10px 18px 10px;
       color: white;
       position: relative;
       overflow: hidden;
@@ -83,8 +83,8 @@
     .grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      padding: 10px;
+      gap: 6px;
+      padding: 8px;
     }
     .col-full { grid-column: 1 / -1; }
 
@@ -117,7 +117,7 @@
     .accent-ai      { background: linear-gradient(90deg,#a78bfa,#6366f1,#22d3ee); }
 
     .card-header {
-      padding: 8px 14px 4px;
+      padding: 6px 14px 3px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -145,11 +145,11 @@
     .badge-amber   { background:#fef3c7; color:#92400e; }
     .badge-cyan    { background:#cffafe; color:#155e75; }
 
-    .card-body { padding: 4px 14px 8px; }
+    .card-body { padding: 3px 14px 6px; }
 
     /* ── Stats ── */
-    .big-stats { display:flex; margin-bottom:10px; }
-    .big-stat  { flex:1; text-align:center; padding:5px 4px; }
+    .big-stats { display:flex; margin-bottom:6px; }
+    .big-stat  { flex:1; text-align:center; padding:3px 4px; }
     .big-stat + .big-stat { border-left:1px solid var(--slate-100); }
     .big-val {
       font-size: 22px; font-weight: 800;
@@ -253,8 +253,8 @@
     @keyframes spin { to { transform:rotate(360deg); } }
 
     /* ── Period tabs ── */
-    .period-tabs { display:flex; background:rgba(255,255,255,.15); border-radius:10px; padding:3px; gap:2px; margin-top:8px; align-self:flex-start; backdrop-filter:blur(4px); }
-    .period-tab { padding:4px 14px; border:none; border-radius:7px; background:transparent; color:rgba(255,255,255,.75); font-size:11.5px; font-weight:600; cursor:pointer; transition:all .2s; font-family:inherit; letter-spacing:.01em; }
+    .period-tabs { display:flex; background:rgba(255,255,255,.15); border-radius:10px; padding:2px; gap:2px; margin-top:5px; align-self:flex-start; backdrop-filter:blur(4px); }
+    .period-tab { padding:3px 12px; border:none; border-radius:7px; background:transparent; color:rgba(255,255,255,.75); font-size:11px; font-weight:600; cursor:pointer; transition:all .2s; font-family:inherit; letter-spacing:.01em; }
     .period-tab.active { background:white; color:var(--indigo); box-shadow:0 1px 6px rgba(0,0,0,.18); }
     .period-tab:hover:not(.active) { background:rgba(255,255,255,.22); color:white; }
 
@@ -412,7 +412,7 @@
         `<div class="card col-full"><div class="card-accent accent-rose"></div>
          <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-rose">🎯</div><span class="card-title">Top Thématiques</span></div><span class="badge badge-rose">${themes.length} matières</span></div>
          <div class="card-body"><div class="themes-grid">${
-           themes.slice(0,10).map((t,i) => {
+           themes.slice(0,8).map((t,i) => {
              const m = i<3 ? ['🥇','🥈','🥉'][i] : `${i+1}.`;
              return `<div><div class="theme-meta"><span class="theme-name">${esc(m)} ${esc(t.theme)}</span><span class="theme-count">${t.count}</span></div><div class="track sm"><div class="fill fill-rose" style="width:${pct(t.count,mT)}%"></div></div></div>`;
            }).join('')
