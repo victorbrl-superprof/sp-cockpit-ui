@@ -296,6 +296,19 @@
     body.dark .csv-btn:hover { background:#475569; }
     body.dark .state { color:#475569; } body.dark .state.error { color:#fb7185; }
     body.dark .spinner { border-color:#334155; border-top-color:var(--indigo); }
+
+    /* ── Card toggle ── */
+    .card-toggle { border:none; background:none; cursor:pointer; font-size:13px; opacity:.3; transition:opacity .2s; padding:2px 4px; line-height:1; }
+    .card-toggle:hover { opacity:.8; }
+    .card.card-hidden { max-height:0; opacity:0; overflow:hidden; border:none; box-shadow:none; padding:0; margin:0; transition:all .3s ease; }
+
+    /* ── Restore bar ── */
+    .restore-bar { display:flex; flex-wrap:wrap; gap:6px; padding:6px 8px 0; }
+    .restore-bar:empty { display:none; }
+    .restore-chip { padding:3px 10px; font-size:11px; font-weight:600; border:1.5px dashed var(--slate-200); border-radius:8px; background:white; color:var(--slate-500); cursor:pointer; transition:all .15s; font-family:inherit; }
+    .restore-chip:hover { border-color:var(--indigo); color:var(--indigo); background:var(--indigo-light); }
+    body.dark .restore-chip { background:#1e293b; border-color:#475569; color:#94a3b8; }
+    body.dark .restore-chip:hover { border-color:var(--indigo); color:#a5b4fc; background:#3730a3; }
   </style>
 </head>
 <body>
@@ -314,6 +327,8 @@
     let selectedDays  = 365;
     let lastAiRows    = [];
     let lastAiCols    = [];
+    const HIDDEN_KEY  = 'cockpit-hidden-cards';
+    let hiddenCards   = JSON.parse(localStorage.getItem(HIDDEN_KEY) || '[]');
 
     const AI_SUGGESTIONS = [
       "Top 5 membres les plus actifs",
@@ -344,8 +359,8 @@
     const kpi = (lbl,val) =>
       `<div class="kpi-row"><span class="kpi-lbl">${esc(lbl)}</span><span class="kpi-val">${esc(val)}</span></div>`;
 
-    const card = (accentCls,iconCls,icon,title,badge,body) =>
-      `<div class="card"><div class="card-accent ${accentCls}"></div><div class="card-header"><div class="card-title-wrap"><div class="card-icon ${iconCls}">${icon}</div><span class="card-title">${esc(title)}</span></div>${badge}</div><div class="card-body">${body}</div></div>`;
+    const card = (cardId,accentCls,iconCls,icon,title,badge,body) =>
+      `<div class="card" data-card="${cardId}"><div class="card-accent ${accentCls}"></div><div class="card-header"><div class="card-title-wrap"><div class="card-icon ${iconCls}">${icon}</div><span class="card-title">${esc(title)}</span></div><div style="display:flex;align-items:center;gap:6px">${badge}<button class="card-toggle" onclick="toggleCard('${cardId}')" title="Masquer">👁</button></div></div><div class="card-body">${body}</div></div>`;
 
     /* ── Render ── */
     function render(rows) {
@@ -381,13 +396,13 @@
       const mT = themes[0]?.count || 1;
 
       /* Cards */
-      const membCard = card('accent-indigo','icon-indigo','👥','Membres',
+      const membCard = card('membres','accent-indigo','icon-indigo','👥','Membres',
         `<span class="badge badge-indigo">${pA}% actifs</span>`,
         `<div class="big-stats">${stat(fmt(membTotal),'Total membres','val-indigo')}${stat(fmt(membActive),'Actifs','val-emerald')}${stat(fmt(membDormant),'Dormants','val-neutral')}</div>
          ${prog("Taux d'activation",`${pA}%`,pA,'fill-indigo')}
          ${prog('Dormants',`${pD}%`,pD,'fill-amber')}`);
 
-      const mrCard = card('accent-emerald','icon-emerald','🤝','Mises en Relation',
+      const mrCard = card('mr','accent-emerald','icon-emerald','🤝','Mises en Relation',
         mrTotal > 0 ? `<span class="badge badge-emerald">${mrPeople} personnes</span>` : '',
         mrTotal === 0
           ? '<p style="font-size:12px;color:var(--slate-400);padding:8px 0">Aucune mise en relation sur la période.</p>'
@@ -395,7 +410,7 @@
              ${prog("Taux d'acceptation",`${fmt(mrAccepted)} / ${fmt(mrTotal)}`,pM,'fill-emerald')}
              <div class="divider"></div><div class="kpi-list">${kpi('Personnes touchées',fmt(mrPeople))}${kpi('Moyenne / personne',fmt(mrAvg,1))}</div>`);
 
-      const lessCard = card('accent-violet','icon-violet','📚','Leçons',
+      const lessCard = card('lecons','accent-violet','icon-violet','📚','Leçons',
         lessTotal > 0 ? `<span class="badge badge-violet">${pL}% complétées</span>` : '',
         lessTotal === 0
           ? '<p style="font-size:12px;color:var(--slate-400);padding:8px 0">Aucune leçon sur la période.</p>'
@@ -403,14 +418,14 @@
              ${prog('Taux de complétion',`${fmt(lessComp)} / ${fmt(lessTotal)}`,pL,'fill-violet')}
              <div class="divider"></div><div class="kpi-list">${kpi('CA leçons',fmtEur(lessCa))}</div>`);
 
-      const walletCard = card('accent-amber','icon-amber','💳','Pass & Wallet',
+      const walletCard = card('wallet','accent-amber','icon-amber','💳','Pass & Wallet',
         walletTx > 0 ? `<span class="badge badge-amber">${fmt(walletTx)} tx</span>` : '',
         `<div class="big-stats">${stat(fmt(passActifs),'Pass actifs','val-amber')}${stat(fmt(walletTx),'Transactions','val-amber')}</div>
          <div class="kpi-list">${kpi('CA pass',fmtEur(passCa))}${kpi('Total rechargé',fmtEur(walletTotal))}${kpi('Moy. / transaction',fmtEur(walletAvg))}</div>`);
 
       const themesCard = themes.length === 0 ? '' :
-        `<div class="card col-full"><div class="card-accent accent-rose"></div>
-         <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-rose">🎯</div><span class="card-title">Top Thématiques</span></div><span class="badge badge-rose">${themes.length} matières</span></div>
+        `<div class="card col-full" data-card="themes"><div class="card-accent accent-rose"></div>
+         <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-rose">🎯</div><span class="card-title">Top Thématiques</span></div><div style="display:flex;align-items:center;gap:6px"><span class="badge badge-rose">${themes.length} matières</span><button class="card-toggle" onclick="toggleCard('themes')" title="Masquer">👁</button></div></div>
          <div class="card-body"><div class="themes-grid">${
            themes.slice(0,10).map((t,i) => {
              const m = i<3 ? ['🥇','🥈','🥉'][i] : `${i+1}.`;
@@ -419,8 +434,8 @@
          }</div></div></div>`;
 
       const aiCard =
-        `<div class="card col-full"><div class="card-accent accent-ai"></div>
-         <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-violet">✦</div><span class="card-title">Analyse IA</span></div><span class="badge badge-violet">GPT-5.2 · Superprof</span></div>
+        `<div class="card col-full" data-card="ia"><div class="card-accent accent-ai"></div>
+         <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-violet">✦</div><span class="card-title">Analyse IA</span></div><div style="display:flex;align-items:center;gap:6px"><span class="badge badge-violet">GPT-5.2 · Superprof</span><button class="card-toggle" onclick="toggleCard('ia')" title="Masquer">👁</button></div></div>
          <div class="card-body">
            <p class="ai-desc">Posez une question en langage naturel sur ce CSE — membres, leçons, wallet, thématiques, tendances…</p>
            <div class="ai-input-wrap">
@@ -455,7 +470,10 @@
             <button class="dark-toggle" onclick="toggleDark()" title="Mode sombre / clair">${document.body.classList.contains('dark')?'☀️':'🌙'}</button>
           </div>
         </div></div>
+        <div id="restore-bar" class="restore-bar"></div>
         <div class="grid">${membCard}${mrCard}${lessCard}${walletCard}${themesCard}${aiCard}</div>`;
+
+      applyHidden();
 
       /* Suggestions rotatives */
       const ph = document.getElementById('ai-placeholder');
@@ -474,6 +492,29 @@
           ph.style.opacity = '1';
         }, 400);
       }, 3000);
+    }
+
+    /* ── Card visibility ── */
+    const CARD_LABELS = { membres:'👥 Membres', mr:'🤝 MR', lecons:'📚 Leçons', wallet:'💳 Wallet', themes:'🎯 Thématiques', ia:'✦ IA' };
+
+    function toggleCard(name) {
+      if (!hiddenCards.includes(name)) hiddenCards.push(name);
+      localStorage.setItem(HIDDEN_KEY, JSON.stringify(hiddenCards));
+      applyHidden();
+    }
+    function restoreCard(name) {
+      hiddenCards = hiddenCards.filter(n => n !== name);
+      localStorage.setItem(HIDDEN_KEY, JSON.stringify(hiddenCards));
+      applyHidden();
+    }
+    function applyHidden() {
+      document.querySelectorAll('[data-card]').forEach(el => {
+        el.classList.toggle('card-hidden', hiddenCards.includes(el.dataset.card));
+      });
+      const bar = document.getElementById('restore-bar');
+      if (bar) bar.innerHTML = hiddenCards.map(n =>
+        `<button class="restore-chip" onclick="restoreCard('${n}')">+ ${CARD_LABELS[n]||n}</button>`
+      ).join('');
     }
 
     /* ── Period ── */
