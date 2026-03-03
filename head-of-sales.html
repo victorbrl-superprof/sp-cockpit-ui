@@ -754,7 +754,7 @@
             <div class="hero-stat"><div class="hero-stat-value">${fmtEur(lessCa + passCa)}</div><div class="hero-stat-label">CA total</div></div>
             <div class="hero-sep"></div>
             <div class="hero-stat"><div class="hero-stat-value">${fmt(lessTotal)}</div><div class="hero-stat-label">leçons</div></div>
-            <button class="dark-toggle" onclick="toggleDark()" title="Mode sombre / clair">${document.body.classList.contains('dark')?'☀️':'🌙'}</button>
+            <button class="dark-toggle" onclick="toggleDark()" title="Mode sombre / clair">${document.body.classList.contains('dark')?'☀️':'🌑'}</button>
           </div>
         </div></div>
         <div id="cse-banner" class="cse-banner" style="display:none">
@@ -802,7 +802,7 @@
     function toggleDark() {
       document.body.classList.toggle('dark');
       localStorage.setItem('cockpit-dark', document.body.classList.contains('dark'));
-      document.querySelectorAll('.dark-toggle').forEach(b => { b.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙'; });
+      document.querySelectorAll('.dark-toggle').forEach(b => { b.textContent = document.body.classList.contains('dark') ? '☀️' : '🌑'; });
     }
 
     /* ── Export CSV ── */
