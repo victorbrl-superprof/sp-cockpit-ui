@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,31 +9,41 @@
   <meta http-equiv="Expires" content="0">
   <title>Sales Cockpit — Head of Sales</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --indigo:       #6366f1;
-      --indigo-dark:  #4f46e5;
-      --indigo-light: #e0e7ff;
-      --emerald:      #10b981;
-      --emerald-light:#d1fae5;
-      --violet:       #8b5cf6;
-      --violet-light: #ede9fe;
-      --amber:        #f59e0b;
-      --amber-light:  #fef3c7;
-      --cyan:         #06b6d4;
-      --cyan-light:   #cffafe;
-      --rose:         #f43f5e;
-      --slate-50:     #f8fafc;
-      --slate-100:    #f1f5f9;
-      --slate-200:    #e2e8f0;
-      --slate-400:    #94a3b8;
-      --slate-600:    #475569;
-      --slate-700:    #334155;
-      --slate-900:    #0f172a;
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    html, body { height: 100%; }
+    :root {
+      --indigo: #6366f1;
+      --indigo-dark: #4f46e5;
+      --indigo-light: #e0e7ff;
+      --emerald: #10b981;
+      --emerald-light: #d1fae5;
+      --violet: #8b5cf6;
+      --violet-light: #ede9fe;
+      --amber: #f59e0b;
+      --amber-light: #fef3c7;
+      --cyan: #06b6d4;
+      --cyan-light: #cffafe;
+      --rose: #f43f5e;
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-400: #94a3b8;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-900: #0f172a;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
       font-size: 13px;
@@ -42,9 +53,19 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--slate-200); border-radius: 999px; }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--slate-200);
+      border-radius: 999px;
+    }
 
     /* ── Hero ── */
     .hero {
@@ -54,12 +75,14 @@
       position: relative;
       overflow: hidden;
     }
+
     .hero::before {
       content: "";
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse at 80% 50%, rgba(255,255,255,.07) 0%, transparent 60%);
+      background: radial-gradient(ellipse at 80% 50%, rgba(255, 255, 255, .07) 0%, transparent 60%);
     }
+
     .hero-inner {
       position: relative;
       display: flex;
@@ -67,20 +90,58 @@
       justify-content: space-between;
       gap: 16px;
     }
-    .hero-left { display: flex; flex-direction: column; gap: 3px; }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
     .hero-eyebrow {
       font-size: 10.5px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: .1em;
-      color: rgba(255,255,255,.6);
+      color: rgba(255, 255, 255, .6);
     }
-    .hero-name { font-size: 19px; font-weight: 800; color: white; line-height: 1.15; }
-    .hero-right { display: flex; gap: 18px; flex-shrink: 0; }
-    .hero-stat { text-align: center; }
-    .hero-stat-value { font-size: 19px; font-weight: 800; color: white; line-height: 1; font-variant-numeric: tabular-nums; }
-    .hero-stat-label { font-size: 10px; color: rgba(255,255,255,.6); margin-top: 2px; white-space: nowrap; }
-    .hero-sep { width: 1px; background: rgba(255,255,255,.2); align-self: stretch; }
+
+    .hero-name {
+      font-size: 19px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.15;
+    }
+
+    .hero-right {
+      display: flex;
+      gap: 18px;
+      flex-shrink: 0;
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat-value {
+      font-size: 19px;
+      font-weight: 800;
+      color: white;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hero-stat-label {
+      font-size: 10px;
+      color: rgba(255, 255, 255, .6);
+      margin-top: 2px;
+      white-space: nowrap;
+    }
+
+    .hero-sep {
+      width: 1px;
+      background: rgba(255, 255, 255, .2);
+      align-self: stretch;
+    }
 
     /* ── Grid ── */
     .grid {
@@ -89,34 +150,80 @@
       gap: 6px;
       padding: 8px;
     }
-    .col-full { grid-column: 1 / -1; }
+
+    .col-full {
+      grid-column: 1 / -1;
+    }
 
     /* ── Card ── */
     .card {
       background: white;
       border-radius: 14px;
-      box-shadow: 0 1px 2px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.04);
-      border: 1px solid rgba(0,0,0,.06);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .05), 0 4px 16px rgba(0, 0, 0, .04);
+      border: 1px solid rgba(0, 0, 0, .06);
       overflow: hidden;
       animation: fadeUp .4s ease both;
     }
-    .card:nth-child(1){animation-delay:.00s}
-    .card:nth-child(2){animation-delay:.06s}
-    .card:nth-child(3){animation-delay:.12s}
-    .card:nth-child(4){animation-delay:.18s}
-    .card:nth-child(5){animation-delay:.24s}
-    @keyframes fadeUp {
-      from { opacity:0; transform:translateY(12px); }
-      to   { opacity:1; transform:translateY(0); }
+
+    .card:nth-child(1) {
+      animation-delay: .00s
     }
 
-    .card-accent { height: 3px; }
-    .accent-indigo  { background: linear-gradient(90deg,#818cf8,#6366f1); }
-    .accent-emerald { background: linear-gradient(90deg,#34d399,#10b981); }
-    .accent-violet  { background: linear-gradient(90deg,#a78bfa,#8b5cf6); }
-    .accent-amber   { background: linear-gradient(90deg,#fbbf24,#f59e0b); }
-    .accent-cyan    { background: linear-gradient(90deg,#22d3ee,#06b6d4); }
-    .accent-ai      { background: linear-gradient(90deg,#a78bfa,#6366f1,#22d3ee); }
+    .card:nth-child(2) {
+      animation-delay: .06s
+    }
+
+    .card:nth-child(3) {
+      animation-delay: .12s
+    }
+
+    .card:nth-child(4) {
+      animation-delay: .18s
+    }
+
+    .card:nth-child(5) {
+      animation-delay: .24s
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card-accent {
+      height: 3px;
+    }
+
+    .accent-indigo {
+      background: linear-gradient(90deg, #818cf8, #6366f1);
+    }
+
+    .accent-emerald {
+      background: linear-gradient(90deg, #34d399, #10b981);
+    }
+
+    .accent-violet {
+      background: linear-gradient(90deg, #a78bfa, #8b5cf6);
+    }
+
+    .accent-amber {
+      background: linear-gradient(90deg, #fbbf24, #f59e0b);
+    }
+
+    .accent-cyan {
+      background: linear-gradient(90deg, #22d3ee, #06b6d4);
+    }
+
+    .accent-ai {
+      background: linear-gradient(90deg, #a78bfa, #6366f1, #22d3ee);
+    }
 
     .card-header {
       padding: 6px 14px 3px;
@@ -124,256 +231,1048 @@
       align-items: center;
       justify-content: space-between;
     }
-    .card-title-wrap { display: flex; align-items: center; gap: 8px; }
-    .card-icon {
-      width: 30px; height: 30px;
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 15px; flex-shrink: 0;
-    }
-    .icon-indigo  { background: #e0e7ff; }
-    .icon-emerald { background: #d1fae5; }
-    .icon-violet  { background: #ede9fe; }
-    .icon-amber   { background: #fef3c7; }
-    .icon-cyan    { background: #cffafe; }
-    .card-title { font-size: 12.5px; font-weight: 700; color: var(--slate-700); }
-    .badge {
-      font-size: 10.5px; font-weight: 700;
-      padding: 2px 9px; border-radius: 999px;
-    }
-    .badge-indigo  { background:#e0e7ff; color:#4338ca; }
-    .badge-emerald { background:#d1fae5; color:#065f46; }
-    .badge-violet  { background:#ede9fe; color:#5b21b6; }
-    .badge-amber   { background:#fef3c7; color:#92400e; }
-    .badge-cyan    { background:#cffafe; color:#155e75; }
 
-    .card-body { padding: 3px 14px 6px; }
+    .card-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .icon-indigo {
+      background: #e0e7ff;
+    }
+
+    .icon-emerald {
+      background: #d1fae5;
+    }
+
+    .icon-violet {
+      background: #ede9fe;
+    }
+
+    .icon-amber {
+      background: #fef3c7;
+    }
+
+    .icon-cyan {
+      background: #cffafe;
+    }
+
+    .card-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--slate-700);
+    }
+
+    .badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 999px;
+    }
+
+    .badge-indigo {
+      background: #e0e7ff;
+      color: #4338ca;
+    }
+
+    .badge-emerald {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .badge-violet {
+      background: #ede9fe;
+      color: #5b21b6;
+    }
+
+    .badge-amber {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-cyan {
+      background: #cffafe;
+      color: #155e75;
+    }
+
+    .card-body {
+      padding: 3px 14px 6px;
+    }
 
     /* ── Stats ── */
-    .big-stats { display:flex; margin-bottom:6px; }
-    .big-stat  { flex:1; text-align:center; padding:3px 4px; }
-    .big-stat + .big-stat { border-left:1px solid var(--slate-100); }
+    .big-stats {
+      display: flex;
+      margin-bottom: 6px;
+    }
+
+    .big-stat {
+      flex: 1;
+      text-align: center;
+      padding: 3px 4px;
+    }
+
+    .big-stat+.big-stat {
+      border-left: 1px solid var(--slate-100);
+    }
+
     .big-val {
-      font-size: 22px; font-weight: 800;
-      line-height: 1; letter-spacing: -.03em;
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -.03em;
       font-variant-numeric: tabular-nums;
     }
-    .val-indigo  { color: var(--indigo); }
-    .val-emerald { color: var(--emerald); }
-    .val-violet  { color: var(--violet); }
-    .val-amber   { color: var(--amber); }
-    .val-neutral { color: var(--slate-700); }
-    .big-lbl { font-size: 10px; color: var(--slate-400); margin-top:2px; font-weight:500; }
+
+    .val-indigo {
+      color: var(--indigo);
+    }
+
+    .val-emerald {
+      color: var(--emerald);
+    }
+
+    .val-violet {
+      color: var(--violet);
+    }
+
+    .val-amber {
+      color: var(--amber);
+    }
+
+    .val-neutral {
+      color: var(--slate-700);
+    }
+
+    .big-lbl {
+      font-size: 10px;
+      color: var(--slate-400);
+      margin-top: 2px;
+      font-weight: 500;
+    }
 
     /* ── Progress ── */
-    .prog-block { margin-bottom: 6px; }
-    .prog-block:last-of-type { margin-bottom:0; }
-    .prog-meta { display:flex; justify-content:space-between; margin-bottom:5px; font-size:11.5px; }
-    .prog-lbl { color:var(--slate-600); font-weight:500; }
-    .prog-val { font-weight:700; color:var(--slate-900); }
-    .track { height:7px; background:var(--slate-100); border-radius:999px; overflow:hidden; }
-    .track.sm { height:4px; margin-top:3px; }
-    .fill { height:100%; border-radius:999px; transition: width .8s cubic-bezier(.4,0,.2,1); }
-    .fill-indigo  { background: linear-gradient(90deg,#818cf8,#6366f1); }
-    .fill-emerald { background: linear-gradient(90deg,#34d399,#10b981); }
-    .fill-violet  { background: linear-gradient(90deg,#a78bfa,#8b5cf6); }
-    .fill-amber   { background: linear-gradient(90deg,#fbbf24,#f59e0b); }
-    .fill-cyan    { background: linear-gradient(90deg,#22d3ee,#06b6d4); }
+    .prog-block {
+      margin-bottom: 6px;
+    }
+
+    .prog-block:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .prog-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      font-size: 11.5px;
+    }
+
+    .prog-lbl {
+      color: var(--slate-600);
+      font-weight: 500;
+    }
+
+    .prog-val {
+      font-weight: 700;
+      color: var(--slate-900);
+    }
+
+    .track {
+      height: 7px;
+      background: var(--slate-100);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .track.sm {
+      height: 4px;
+      margin-top: 3px;
+    }
+
+    .fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width .8s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .fill-indigo {
+      background: linear-gradient(90deg, #818cf8, #6366f1);
+    }
+
+    .fill-emerald {
+      background: linear-gradient(90deg, #34d399, #10b981);
+    }
+
+    .fill-violet {
+      background: linear-gradient(90deg, #a78bfa, #8b5cf6);
+    }
+
+    .fill-amber {
+      background: linear-gradient(90deg, #fbbf24, #f59e0b);
+    }
+
+    .fill-cyan {
+      background: linear-gradient(90deg, #22d3ee, #06b6d4);
+    }
 
     /* ── KPI list ── */
-    .divider { border:none; border-top:1px solid var(--slate-100); margin:6px 0; }
-    .kpi-list { display:flex; flex-direction:column; }
-    .kpi-row { display:flex; justify-content:space-between; align-items:center; padding:4px 0; border-bottom:1px solid var(--slate-100); }
-    .kpi-row:last-child { border-bottom:none; }
-    .kpi-lbl { font-size:12px; color:var(--slate-400); font-weight:500; }
-    .kpi-val { font-size:12px; font-weight:700; color:var(--slate-900); }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--slate-100);
+      margin: 6px 0;
+    }
+
+    .kpi-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .kpi-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+      border-bottom: 1px solid var(--slate-100);
+    }
+
+    .kpi-row:last-child {
+      border-bottom: none;
+    }
+
+    .kpi-lbl {
+      font-size: 12px;
+      color: var(--slate-400);
+      font-weight: 500;
+    }
+
+    .kpi-val {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--slate-900);
+    }
 
     /* ── AI ── */
-    .ai-desc { font-size:11.5px; color:var(--slate-400); margin-bottom:5px; line-height:1.4; }
-    .ai-input-wrap { position:relative; }
-    #ai-question {
-      display:block; width:100%;
-      border:1.5px solid var(--slate-200); border-radius:10px;
-      padding:11px 13px; font-family:inherit; font-size:12px;
-      resize:none; background:var(--slate-50); color:var(--slate-900);
-      outline:none; min-height:46px;
-      transition:border-color .15s, box-shadow .15s;
+    .ai-desc {
+      font-size: 11.5px;
+      color: var(--slate-400);
+      margin-bottom: 5px;
+      line-height: 1.4;
     }
-    #ai-question:focus { border-color:var(--indigo); box-shadow:0 0 0 3px rgba(99,102,241,.12); background:white; }
-    #ai-placeholder {
-      position:absolute; top:12px; left:13px; right:13px;
-      pointer-events:none; font-size:12px; color:var(--slate-400);
-      transition:opacity .4s ease; white-space:nowrap;
-      overflow:hidden; text-overflow:ellipsis;
-    }
-    .ai-footer { display:flex; align-items:center; gap:10px; margin-top:5px; flex-wrap:wrap; }
-    #ai-btn {
-      display:inline-flex; align-items:center; gap:6px;
-      padding:7px 20px;
-      background:linear-gradient(135deg,#7c3aed,#6366f1);
-      color:white; border:none; border-radius:9px;
-      font-size:12.5px; font-weight:700; cursor:pointer;
-      box-shadow:0 2px 8px rgba(99,102,241,.35);
-      transition:opacity .15s, transform .15s, box-shadow .15s;
-    }
-    #ai-btn:hover:not(:disabled) { opacity:.9; transform:translateY(-1px); box-shadow:0 4px 14px rgba(99,102,241,.45); }
-    #ai-btn:active:not(:disabled) { transform:translateY(0); }
-    #ai-btn:disabled { opacity:.5; cursor:not-allowed; transform:none; }
-    .ai-hint { font-size:11px; color:var(--slate-400); }
-    kbd { font-size:10px; background:var(--slate-100); border:1px solid var(--slate-200); border-radius:4px; padding:1px 5px; font-family:inherit; }
-    #ai-spinner { font-size:11px; color:var(--slate-400); display:none; }
 
-    #ai-result { margin-top:14px; display:none; }
-    .ai-quote { font-size:11px; color:var(--slate-400); font-style:italic; margin-bottom:10px; padding-left:10px; border-left:2px solid var(--indigo-light); }
-    .table-wrap { overflow-x:auto; border:1px solid var(--slate-200); border-radius:10px; }
-    table { width:100%; border-collapse:collapse; font-size:11.5px; }
-    thead { background:var(--slate-50); }
-    th { padding:8px 12px; text-align:left; font-weight:700; color:var(--slate-400); white-space:nowrap; border-bottom:1px solid var(--slate-200); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; }
-    td { padding:7px 12px; color:var(--slate-700); border-bottom:1px solid var(--slate-100); white-space:nowrap; }
-    tr:last-child td { border-bottom:none; }
-    tr:hover td { background:var(--slate-50); }
-    details { margin-top:10px; }
-    summary { font-size:11px; color:var(--slate-400); cursor:pointer; user-select:none; }
-    summary::-webkit-details-marker { display:none; }
-    pre { margin-top:8px; padding:10px 12px; background:var(--slate-50); border-radius:8px; font-size:10.5px; color:var(--slate-600); overflow-x:auto; white-space:pre-wrap; word-break:break-word; border:1px solid var(--slate-200); }
+    .ai-input-wrap {
+      position: relative;
+    }
+
+    #ai-question {
+      display: block;
+      width: 100%;
+      border: 1.5px solid var(--slate-200);
+      border-radius: 10px;
+      padding: 11px 13px;
+      font-family: inherit;
+      font-size: 12px;
+      resize: none;
+      background: var(--slate-50);
+      color: var(--slate-900);
+      outline: none;
+      min-height: 46px;
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    #ai-question:focus {
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .12);
+      background: white;
+    }
+
+    #ai-placeholder {
+      position: absolute;
+      top: 12px;
+      left: 13px;
+      right: 13px;
+      pointer-events: none;
+      font-size: 12px;
+      color: var(--slate-400);
+      transition: opacity .4s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ai-footer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+
+    #ai-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 20px;
+      background: linear-gradient(135deg, #7c3aed, #6366f1);
+      color: white;
+      border: none;
+      border-radius: 9px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, .35);
+      transition: opacity .15s, transform .15s, box-shadow .15s;
+    }
+
+    #ai-btn:hover:not(:disabled) {
+      opacity: .9;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(99, 102, 241, .45);
+    }
+
+    #ai-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    #ai-btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .ai-hint {
+      font-size: 11px;
+      color: var(--slate-400);
+    }
+
+    kbd {
+      font-size: 10px;
+      background: var(--slate-100);
+      border: 1px solid var(--slate-200);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-family: inherit;
+    }
+
+    #ai-spinner {
+      font-size: 11px;
+      color: var(--slate-400);
+      display: none;
+    }
+
+    #ai-result {
+      margin-top: 14px;
+      display: none;
+    }
+
+    .ai-quote {
+      font-size: 11px;
+      color: var(--slate-400);
+      font-style: italic;
+      margin-bottom: 10px;
+      padding-left: 10px;
+      border-left: 2px solid var(--indigo-light);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--slate-200);
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+    }
+
+    thead {
+      background: var(--slate-50);
+    }
+
+    th {
+      padding: 8px 12px;
+      text-align: left;
+      font-weight: 700;
+      color: var(--slate-400);
+      white-space: nowrap;
+      border-bottom: 1px solid var(--slate-200);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    td {
+      padding: 7px 12px;
+      color: var(--slate-700);
+      border-bottom: 1px solid var(--slate-100);
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: var(--slate-50);
+    }
+
+    details {
+      margin-top: 10px;
+    }
+
+    summary {
+      font-size: 11px;
+      color: var(--slate-400);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    pre {
+      margin-top: 8px;
+      padding: 10px 12px;
+      background: var(--slate-50);
+      border-radius: 8px;
+      font-size: 10.5px;
+      color: var(--slate-600);
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      border: 1px solid var(--slate-200);
+    }
 
     /* ── State ── */
-    .state { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:300px; gap:12px; color:var(--slate-400); font-size:13px; }
-    .state.error { color:var(--rose); }
-    .spinner { width:32px; height:32px; border:3px solid var(--indigo-light); border-top-color:var(--indigo); border-radius:50%; animation:spin .75s linear infinite; }
-    @keyframes spin { to { transform:rotate(360deg); } }
+    .state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+      gap: 12px;
+      color: var(--slate-400);
+      font-size: 13px;
+    }
+
+    .state.error {
+      color: var(--rose);
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--indigo-light);
+      border-top-color: var(--indigo);
+      border-radius: 50%;
+      animation: spin .75s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
     /* ── Period tabs ── */
-    .period-tabs { display:flex; background:rgba(255,255,255,.15); border-radius:10px; padding:2px; gap:2px; margin-top:5px; align-self:flex-start; backdrop-filter:blur(4px); }
-    .period-tab { padding:3px 12px; border:none; border-radius:7px; background:transparent; color:rgba(255,255,255,.75); font-size:11px; font-weight:600; cursor:pointer; transition:all .2s; font-family:inherit; letter-spacing:.01em; }
-    .period-tab.active { background:white; color:var(--indigo); box-shadow:0 1px 6px rgba(0,0,0,.18); }
-    .period-tab:hover:not(.active) { background:rgba(255,255,255,.22); color:white; }
+    .period-tabs {
+      display: flex;
+      background: rgba(255, 255, 255, .15);
+      border-radius: 10px;
+      padding: 2px;
+      gap: 2px;
+      margin-top: 5px;
+      align-self: flex-start;
+      backdrop-filter: blur(4px);
+    }
+
+    .period-tab {
+      padding: 3px 12px;
+      border: none;
+      border-radius: 7px;
+      background: transparent;
+      color: rgba(255, 255, 255, .75);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: inherit;
+      letter-spacing: .01em;
+    }
+
+    .period-tab.active {
+      background: white;
+      color: var(--indigo);
+      box-shadow: 0 1px 6px rgba(0, 0, 0, .18);
+    }
+
+    .period-tab:hover:not(.active) {
+      background: rgba(255, 255, 255, .22);
+      color: white;
+    }
 
     /* ── Dark toggle ── */
-    .dark-toggle { width:32px; height:32px; border:none; border-radius:8px; background:rgba(255,255,255,.15); cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center; transition:background .2s; flex-shrink:0; margin-left:10px; }
-    .dark-toggle:hover { background:rgba(255,255,255,.28); }
+    .dark-toggle {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .15);
+      cursor: pointer;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+      flex-shrink: 0;
+      margin-left: 10px;
+    }
+
+    .dark-toggle:hover {
+      background: rgba(255, 255, 255, .28);
+    }
 
     /* ── CSV button ── */
-    .csv-btn { display:inline-flex; align-items:center; gap:5px; margin-top:10px; padding:5px 12px; background:var(--slate-100); border:1px solid var(--slate-200); border-radius:7px; color:var(--slate-600); font-size:11px; font-weight:600; cursor:pointer; font-family:inherit; transition:background .15s; }
-    .csv-btn:hover { background:var(--slate-200); }
+    .csv-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 10px;
+      padding: 5px 12px;
+      background: var(--slate-100);
+      border: 1px solid var(--slate-200);
+      border-radius: 7px;
+      color: var(--slate-600);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .15s;
+    }
+
+    .csv-btn:hover {
+      background: var(--slate-200);
+    }
 
     /* ── Dark mode ── */
-    body.dark { background:#0f172a; color:#f8fafc; }
-    body.dark .card { background:#1e293b; border-color:rgba(255,255,255,.07); box-shadow:0 1px 3px rgba(0,0,0,.3); }
-    body.dark .card-title { color:#e2e8f0; }
-    body.dark .track { background:#334155; }
-    body.dark .kpi-lbl { color:#64748b; } body.dark .kpi-val { color:#f1f5f9; }
-    body.dark .kpi-row { border-bottom-color:#334155; } body.dark .divider { border-top-color:#334155; }
-    body.dark .prog-lbl { color:#94a3b8; } body.dark .prog-val { color:#f1f5f9; }
-    body.dark .big-lbl { color:#64748b; }
-    body.dark .ai-desc { color:#64748b; }
-    body.dark #ai-question { background:#1e293b; color:#e2e8f0; border-color:#334155; }
-    body.dark #ai-question:focus { background:#263248; }
-    body.dark #ai-placeholder { color:#64748b; }
-    body.dark .ai-hint { color:#64748b; } body.dark .ai-quote { color:#64748b; }
-    body.dark kbd { background:#334155; border-color:#475569; color:#94a3b8; }
-    body.dark .table-wrap { border-color:#334155; }
-    body.dark thead { background:#0f172a; } body.dark th { color:#64748b; border-bottom-color:#334155; }
-    body.dark td { color:#94a3b8; border-bottom-color:#1e293b; }
-    body.dark tr:hover td { background:#263248; }
-    body.dark pre { background:#0f172a; border-color:#334155; color:#94a3b8; }
-    body.dark summary { color:#64748b; }
-    body.dark .badge-indigo  { background:#3730a3; color:#a5b4fc; }
-    body.dark .badge-emerald { background:#064e3b; color:#6ee7b7; }
-    body.dark .badge-violet  { background:#4c1d95; color:#c4b5fd; }
-    body.dark .badge-amber   { background:#78350f; color:#fcd34d; }
-    body.dark .csv-btn { background:#334155; border-color:#475569; color:#94a3b8; }
-    body.dark .csv-btn:hover { background:#475569; }
-    body.dark .state { color:#475569; } body.dark .state.error { color:#fb7185; }
-    body.dark .spinner { border-color:#334155; border-top-color:var(--indigo); }
+    body.dark {
+      background: #0f172a;
+      color: #f8fafc;
+    }
+
+    body.dark .card {
+      background: #1e293b;
+      border-color: rgba(255, 255, 255, .07);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+    }
+
+    body.dark .card-title {
+      color: #e2e8f0;
+    }
+
+    body.dark .track {
+      background: #334155;
+    }
+
+    body.dark .kpi-lbl {
+      color: #64748b;
+    }
+
+    body.dark .kpi-val {
+      color: #f1f5f9;
+    }
+
+    body.dark .kpi-row {
+      border-bottom-color: #334155;
+    }
+
+    body.dark .divider {
+      border-top-color: #334155;
+    }
+
+    body.dark .prog-lbl {
+      color: #94a3b8;
+    }
+
+    body.dark .prog-val {
+      color: #f1f5f9;
+    }
+
+    body.dark .big-lbl {
+      color: #64748b;
+    }
+
+    body.dark .ai-desc {
+      color: #64748b;
+    }
+
+    body.dark #ai-question {
+      background: #1e293b;
+      color: #e2e8f0;
+      border-color: #334155;
+    }
+
+    body.dark #ai-question:focus {
+      background: #263248;
+    }
+
+    body.dark #ai-placeholder {
+      color: #64748b;
+    }
+
+    body.dark .ai-hint {
+      color: #64748b;
+    }
+
+    body.dark .ai-quote {
+      color: #64748b;
+    }
+
+    body.dark kbd {
+      background: #334155;
+      border-color: #475569;
+      color: #94a3b8;
+    }
+
+    body.dark .table-wrap {
+      border-color: #334155;
+    }
+
+    body.dark thead {
+      background: #0f172a;
+    }
+
+    body.dark th {
+      color: #64748b;
+      border-bottom-color: #334155;
+    }
+
+    body.dark td {
+      color: #94a3b8;
+      border-bottom-color: #1e293b;
+    }
+
+    body.dark tr:hover td {
+      background: #263248;
+    }
+
+    body.dark pre {
+      background: #0f172a;
+      border-color: #334155;
+      color: #94a3b8;
+    }
+
+    body.dark summary {
+      color: #64748b;
+    }
+
+    body.dark .badge-indigo {
+      background: #3730a3;
+      color: #a5b4fc;
+    }
+
+    body.dark .badge-emerald {
+      background: #064e3b;
+      color: #6ee7b7;
+    }
+
+    body.dark .badge-violet {
+      background: #4c1d95;
+      color: #c4b5fd;
+    }
+
+    body.dark .badge-amber {
+      background: #78350f;
+      color: #fcd34d;
+    }
+
+    body.dark .csv-btn {
+      background: #334155;
+      border-color: #475569;
+      color: #94a3b8;
+    }
+
+    body.dark .csv-btn:hover {
+      background: #475569;
+    }
+
+    body.dark .state {
+      color: #475569;
+    }
+
+    body.dark .state.error {
+      color: #fb7185;
+    }
+
+    body.dark .spinner {
+      border-color: #334155;
+      border-top-color: var(--indigo);
+    }
 
     /* ── Card toggle ── */
-    .card-toggle { border:none; background:none; cursor:pointer; font-size:13px; opacity:.3; transition:opacity .2s; padding:2px 4px; line-height:1; }
-    .card-toggle:hover { opacity:.8; }
-    .card.card-hidden { display:none; }
+    .card-toggle {
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 13px;
+      opacity: .3;
+      transition: opacity .2s;
+      padding: 2px 4px;
+      line-height: 1;
+    }
+
+    .card-toggle:hover {
+      opacity: .8;
+    }
+
+    .card.card-hidden {
+      display: none;
+    }
 
     /* ── Restore bar ── */
-    .restore-bar { display:flex; flex-wrap:wrap; gap:6px; padding:6px 8px 0; }
-    .restore-bar:empty { display:none; }
-    .restore-chip { padding:3px 10px; font-size:11px; font-weight:600; border:1.5px dashed var(--slate-200); border-radius:8px; background:white; color:var(--slate-500); cursor:pointer; transition:all .15s; font-family:inherit; }
-    .restore-chip:hover { border-color:var(--indigo); color:var(--indigo); background:var(--indigo-light); }
-    body.dark .restore-chip { background:#1e293b; border-color:#475569; color:#94a3b8; }
-    body.dark .restore-chip:hover { border-color:var(--indigo); color:#a5b4fc; background:#3730a3; }
+    .restore-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 6px 8px 0;
+    }
+
+    .restore-bar:empty {
+      display: none;
+    }
+
+    .restore-chip {
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1.5px dashed var(--slate-200);
+      border-radius: 8px;
+      background: white;
+      color: var(--slate-500);
+      cursor: pointer;
+      transition: all .15s;
+      font-family: inherit;
+    }
+
+    .restore-chip:hover {
+      border-color: var(--indigo);
+      color: var(--indigo);
+      background: var(--indigo-light);
+    }
+
+    body.dark .restore-chip {
+      background: #1e293b;
+      border-color: #475569;
+      color: #94a3b8;
+    }
+
+    body.dark .restore-chip:hover {
+      border-color: var(--indigo);
+      color: #a5b4fc;
+      background: #3730a3;
+    }
 
     /* ── CSE select ── */
     .cse-select {
-      margin-top: 6px; align-self: flex-start;
-      padding: 4px 10px 4px 8px; border: none; border-radius: 8px;
-      background: rgba(255,255,255,.18); backdrop-filter: blur(4px);
-      color: white; font-size: 11px; font-weight: 600; font-family: inherit;
-      cursor: pointer; outline: none; appearance: none;
+      margin-top: 6px;
+      align-self: flex-start;
+      padding: 4px 10px 4px 8px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .18);
+      backdrop-filter: blur(4px);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      outline: none;
+      appearance: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,.7)'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 8px center;
-      padding-right: 24px; max-width: 280px;
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      padding-right: 24px;
+      max-width: 280px;
     }
-    .cse-select option { background: #4f46e5; color: white; }
-    .cse-select:hover { background-color: rgba(255,255,255,.26); }
+
+    .cse-select option {
+      background: #4f46e5;
+      color: white;
+    }
+
+    .cse-select:hover {
+      background-color: rgba(255, 255, 255, .26);
+    }
 
     /* ── CSE zoom banner ── */
     .cse-banner {
       background: linear-gradient(90deg, #4f46e5, #8b5cf6);
-      color: white; padding: 5px 14px;
-      display: flex; align-items: center; justify-content: space-between; gap: 10px;
-      font-size: 11.5px; font-weight: 600;
+      color: white;
+      padding: 5px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 11.5px;
+      font-weight: 600;
     }
-    .cse-banner-back { border: none; background: rgba(255,255,255,.2); color: white; border-radius: 6px; padding: 2px 10px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .15s; }
-    .cse-banner-back:hover { background: rgba(255,255,255,.35); }
+
+    .cse-banner-back {
+      border: none;
+      background: rgba(255, 255, 255, .2);
+      color: white;
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .15s;
+    }
+
+    .cse-banner-back:hover {
+      background: rgba(255, 255, 255, .35);
+    }
 
     /* ── Ranking card table ── */
-    .rank-sort-bar { display: flex; gap: 4px; margin-bottom: 8px; }
-    .rank-sort-btn { padding: 3px 10px; border: 1.5px solid var(--slate-200); border-radius: 6px; background: white; color: var(--slate-600); font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .15s; }
-    .rank-sort-btn.active { background: var(--cyan); border-color: var(--cyan); color: white; }
-    .rank-sort-btn:hover:not(.active) { border-color: var(--cyan); color: var(--cyan); }
-    .rank-table-wrap { overflow-x: auto; border: 1px solid var(--slate-200); border-radius: 10px; }
-    .rank-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
-    .rank-table thead { background: var(--slate-50); }
-    .rank-table th { padding: 7px 10px; text-align: left; font-weight: 700; color: var(--slate-400); white-space: nowrap; border-bottom: 1px solid var(--slate-200); font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; }
-    .rank-table td { padding: 6px 10px; color: var(--slate-700); border-bottom: 1px solid var(--slate-100); white-space: nowrap; }
-    .rank-table tr:last-child td { border-bottom: none; }
-    .rank-table tr.rank-clickable { cursor: pointer; }
-    .rank-table tr.rank-clickable:hover td { background: #eef2ff; }
-    .rank-table .rank-name { font-weight: 600; color: var(--slate-900); max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
-    .rank-badge { font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 999px; }
-    .rank-badge-capture { background: #cffafe; color: #155e75; }
-    body.dark .rank-sort-btn { background: #1e293b; border-color: #475569; color: #94a3b8; }
-    body.dark .rank-sort-btn.active { background: var(--cyan); border-color: var(--cyan); color: white; }
-    body.dark .rank-table-wrap { border-color: #334155; }
-    body.dark .rank-table thead { background: #0f172a; }
-    body.dark .rank-table th { color: #64748b; border-bottom-color: #334155; }
-    body.dark .rank-table td { color: #94a3b8; border-bottom-color: #1e293b; }
-    body.dark .rank-table tr.rank-clickable:hover td { background: #263248; }
-    body.dark .rank-table .rank-name { color: #f1f5f9; }
-    body.dark .cse-banner { background: linear-gradient(90deg,#3730a3,#4c1d95); }
+    .rank-sort-bar {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .rank-sort-btn {
+      padding: 3px 10px;
+      border: 1.5px solid var(--slate-200);
+      border-radius: 6px;
+      background: white;
+      color: var(--slate-600);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .15s;
+    }
+
+    .rank-sort-btn.active {
+      background: var(--cyan);
+      border-color: var(--cyan);
+      color: white;
+    }
+
+    .rank-sort-btn:hover:not(.active) {
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    .rank-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--slate-200);
+      border-radius: 10px;
+    }
+
+    .rank-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+    }
+
+    .rank-table thead {
+      background: var(--slate-50);
+    }
+
+    .rank-table th {
+      padding: 7px 10px;
+      text-align: left;
+      font-weight: 700;
+      color: var(--slate-400);
+      white-space: nowrap;
+      border-bottom: 1px solid var(--slate-200);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .rank-table td {
+      padding: 6px 10px;
+      color: var(--slate-700);
+      border-bottom: 1px solid var(--slate-100);
+      white-space: nowrap;
+    }
+
+    .rank-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .rank-table tr.rank-clickable {
+      cursor: pointer;
+    }
+
+    .rank-table tr.rank-clickable:hover td {
+      background: #eef2ff;
+    }
+
+    .rank-table .rank-name {
+      font-weight: 600;
+      color: var(--slate-900);
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rank-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 999px;
+    }
+
+    .rank-badge-capture {
+      background: #cffafe;
+      color: #155e75;
+    }
+
+    /* ── Sortable column headers ── */
+    .rank-th-sortable {
+      cursor: pointer;
+      user-select: none;
+      transition: color .15s;
+      position: relative;
+    }
+
+    .rank-th-sortable:hover {
+      color: var(--cyan);
+    }
+
+    .rank-sort-icon {
+      font-size: 9px;
+      margin-left: 2px;
+      opacity: .3;
+      transition: opacity .15s, color .15s;
+      font-style: normal;
+      vertical-align: middle;
+    }
+
+    .rank-th-sortable.sort-active {
+      color: var(--slate-600);
+    }
+
+    .rank-th-sortable.sort-active .rank-sort-icon {
+      opacity: 1;
+      color: var(--cyan);
+    }
+
+    body.dark .rank-sort-btn {
+      background: #1e293b;
+      border-color: #475569;
+      color: #94a3b8;
+    }
+
+    body.dark .rank-sort-btn.active {
+      background: var(--cyan);
+      border-color: var(--cyan);
+      color: white;
+    }
+
+    body.dark .rank-table-wrap {
+      border-color: #334155;
+    }
+
+    body.dark .rank-table thead {
+      background: #0f172a;
+    }
+
+    body.dark .rank-table th {
+      color: #64748b;
+      border-bottom-color: #334155;
+    }
+
+    body.dark .rank-table td {
+      color: #94a3b8;
+      border-bottom-color: #1e293b;
+    }
+
+    body.dark .rank-table tr.rank-clickable:hover td {
+      background: #263248;
+    }
+
+    body.dark .rank-table .rank-name {
+      color: #f1f5f9;
+    }
+
+    body.dark .rank-th-sortable:hover {
+      color: var(--cyan);
+    }
+
+    body.dark .rank-th-sortable.sort-active {
+      color: #e2e8f0;
+    }
+
+    body.dark .rank-th-sortable.sort-active .rank-sort-icon {
+      color: var(--cyan);
+    }
+
+    body.dark .cse-banner {
+      background: linear-gradient(90deg, #3730a3, #4c1d95);
+    }
   </style>
 </head>
+
 <body>
-  <div id="root"><div class="state"><div class="spinner"></div><span>Chargement du dashboard…</span></div></div>
+  <div id="root">
+    <div class="state">
+      <div class="spinner"></div><span>Chargement du dashboard…</span>
+    </div>
+  </div>
 
   <script>
-    const P          = new URLSearchParams(location.search);
-    const TOKEN      = P.get('token') || '';
-    const BASE       = 'https://yhtxrjegdeuwkcjvkfkt.supabase.co/functions/v1';
-    const API        = BASE + '/cse-sales-cockpit-global';
-    const CSE_API    = BASE + '/cse-sales-cockpit';
-    const AI_API     = BASE + '/global-ai-query';
+    const P = new URLSearchParams(location.search);
+    const TOKEN = P.get('token') || '';
+    const BASE = 'https://yhtxrjegdeuwkcjvkfkt.supabase.co/functions/v1';
+    const API = BASE + '/cse-sales-cockpit-global';
+    const CSE_API = BASE + '/cse-sales-cockpit';
+    const AI_API = BASE + '/global-ai-query';
     const CSE_AI_API = BASE + '/cse-ai-query';
 
-    let suggestionIdx        = 0;
-    let selectedDays         = 365;
-    let lastAiRows           = [];
-    let lastAiCols           = [];
-    let rankingData          = [];
-    let rankSortKey          = 'lessons_ca';
+    let suggestionIdx = 0;
+    let selectedDays = 365;
+    let lastAiRows = [];
+    let lastAiCols = [];
+    let rankingData = [];
+    let rankSortKey = 'lessons_ca';
+    let rankSortDir = 'desc';
+
+    /* ── Ranking column config ── */
+    const RANK_COLUMNS = [
+      { key: null, label: '#', align: 'left', type: null },
+      { key: 'cse_name', label: 'CSE', align: 'left', type: 'text' },
+      { key: 'pe_quota_total', label: 'Quota', align: 'right', type: 'number' },
+      { key: 'memberships_total', label: 'Membres', align: 'right', type: 'number' },
+      { key: 'capture_rate', label: 'Capture', align: 'right', type: 'percent' },
+      { key: 'lessons_total', label: 'Leçons', align: 'right', type: 'number' },
+      { key: 'lessons_ca', label: 'CA', align: 'right', type: 'money' },
+      { key: 'mise_relations_total', label: 'MR', align: 'right', type: 'number' },
+    ];
+
+    /* ── Button → key mapping for synchro ── */
+    const RANK_BTN_KEYS = ['lessons_ca', 'memberships_total', 'capture_rate'];
     let selectedCseHubspotId = null;
-    let selectedCseName      = null;
-    let selectedCseId        = null;
-    const HIDDEN_KEY         = 'cockpit-global-hidden-cards';
-    let hiddenCards          = JSON.parse(localStorage.getItem(HIDDEN_KEY) || '[]');
+    let selectedCseName = null;
+    let selectedCseId = null;
+    const HIDDEN_KEY = 'cockpit-global-hidden-cards';
+    let hiddenCards = JSON.parse(localStorage.getItem(HIDDEN_KEY) || '[]');
 
     const AI_SUGGESTIONS = [
       "Top 5 CSE avec le plus de leçons ce trimestre",
@@ -389,42 +1288,57 @@
     ];
 
     /* ── Helpers ── */
-    const fmt    = (n, d=0) => n==null ? '–' : isNaN(+n) ? String(n) : (+n).toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d});
-    const fmtEur = (n)      => n==null ? '–' : isNaN(+n) ? '–' : (+n).toLocaleString('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0});
-    const pct    = (a,b)    => !b ? 0 : Math.min(100,Math.round(a/b*100));
-    const esc    = (s)      => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    const fmt = (n, d = 0) => n == null ? '–' : isNaN(+n) ? String(n) : (+n).toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d });
+    const fmtEur = (n) => n == null ? '–' : isNaN(+n) ? '–' : (+n).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+    const pct = (a, b) => !b ? 0 : Math.min(100, Math.round(a / b * 100));
+    const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
     /* ── Sub-components ── */
-    const stat = (val,lbl,cls='val-neutral') =>
+    const stat = (val, lbl, cls = 'val-neutral') =>
       `<div class="big-stat"><div class="big-val ${cls}">${esc(val)}</div><div class="big-lbl">${esc(lbl)}</div></div>`;
 
-    const prog = (lbl,val,p,cls) =>
+    const prog = (lbl, val, p, cls) =>
       `<div class="prog-block"><div class="prog-meta"><span class="prog-lbl">${esc(lbl)}</span><span class="prog-val">${esc(val)}</span></div><div class="track"><div class="fill ${cls}" style="width:${p}%"></div></div></div>`;
 
-    const kpi = (lbl,val) =>
+    const kpi = (lbl, val) =>
       `<div class="kpi-row"><span class="kpi-lbl">${esc(lbl)}</span><span class="kpi-val">${esc(val)}</span></div>`;
 
-    const card = (cardId,accentCls,iconCls,icon,title,badge,body) =>
+    const card = (cardId, accentCls, iconCls, icon, title, badge, body) =>
       `<div class="card" data-card="${cardId}"><div class="card-accent ${accentCls}"></div><div class="card-header"><div class="card-title-wrap"><div class="card-icon ${iconCls}">${icon}</div><span class="card-title">${esc(title)}</span></div><div style="display:flex;align-items:center;gap:6px">${badge}<button class="card-toggle" onclick="toggleCard('${cardId}')" title="Masquer">👁</button></div></div><div class="card-body">${body}</div></div>`;
 
     /* ── Ranking card ── */
-    function renderRankingCard() {
-      if (!rankingData.length) return '';
-      const sorted = [...rankingData].sort((a,b) => {
-        if (rankSortKey === 'lessons_ca')      return (b.lessons_ca||0)      - (a.lessons_ca||0);
-        if (rankSortKey === 'memberships_total') return (b.memberships_total||0) - (a.memberships_total||0);
-        if (rankSortKey === 'capture_rate')    return (b.capture_rate||0)    - (a.capture_rate||0);
-        return 0;
-      });
-      const sortBtns = [
-        ['lessons_ca','CA leçons'],['memberships_total','Membres'],['capture_rate','Capture']
-      ].map(([k,l]) => `<button class="rank-sort-btn${rankSortKey===k?' active':''}" onclick="sortRanking('${k}')">${l}</button>`).join('');
 
-      const rows = sorted.map((r,i) => {
+    /* Comparateur robuste : texte, nombres, montants, pourcentages */
+    function rankCompare(a, b, key, dir) {
+      const col = RANK_COLUMNS.find(c => c.key === key);
+      if (col && col.type === 'text') {
+        const va = String(a[key] || '').toLowerCase();
+        const vb = String(b[key] || '').toLowerCase();
+        return dir === 'asc' ? va.localeCompare(vb, 'fr') : vb.localeCompare(va, 'fr');
+      }
+      const va = a[key] == null ? -Infinity : +a[key];
+      const vb = b[key] == null ? -Infinity : +b[key];
+      return dir === 'asc' ? va - vb : vb - va;
+    }
+
+    /* Génère le HTML d'un <th> (triable ou non) */
+    function buildRankTh(col) {
+      if (!col.key) return `<th>${col.label}</th>`;
+      const isActive = rankSortKey === col.key;
+      const icon = isActive ? (rankSortDir === 'desc' ? '↓' : '↑') : '↕';
+      const cls = 'rank-th-sortable' + (isActive ? ' sort-active' : '');
+      const align = col.align === 'right' ? ' style="text-align:right"' : '';
+      return `<th class="${cls}" data-sort-key="${col.key}"${align} onclick="headerSort('${col.key}')">${col.label} <span class="rank-sort-icon">${icon}</span></th>`;
+    }
+
+    /* Génère le HTML du <tbody> trié */
+    function buildRankTbody() {
+      const sorted = [...rankingData].sort((a, b) => rankCompare(a, b, rankSortKey, rankSortDir));
+      return sorted.map((r, i) => {
         const cap = r.capture_rate ? `<span class="rank-badge rank-badge-capture">${r.capture_rate}%</span>` : '–';
-        return `<tr class="rank-clickable" onclick="switchCse('${esc(r.hubspot_company_id||'')}','${esc(r.cse_name||'')}','${esc(r.cse_id||'')}')">
-          <td style="color:var(--slate-400);font-size:11px;width:28px">${i+1}</td>
-          <td class="rank-name">${esc(r.cse_name||'—')}</td>
+        return `<tr class="rank-clickable" onclick="switchCse('${esc(r.hubspot_company_id || '')}','${esc(r.cse_name || '')}','${esc(r.cse_id || '')}')">
+          <td style="color:var(--slate-400);font-size:11px;width:28px">${i + 1}</td>
+          <td class="rank-name">${esc(r.cse_name || '—')}</td>
           <td style="text-align:right">${fmt(r.pe_quota_total)}</td>
           <td style="text-align:right">${fmt(r.memberships_total)}</td>
           <td style="text-align:right">${cap}</td>
@@ -433,6 +1347,63 @@
           <td style="text-align:right">${fmt(r.mise_relations_total)}</td>
         </tr>`;
       }).join('');
+    }
+
+    /* Moteur de tri unique — point d'entrée partagé boutons / headers */
+    function applyRankSort(key, dir) {
+      rankSortKey = key;
+      rankSortDir = dir;
+      updateRankSortUI();
+      rerenderRankTbody();
+    }
+
+    /* Clic sur un en-tête de colonne */
+    function headerSort(key) {
+      if (key === rankSortKey) {
+        applyRankSort(key, rankSortDir === 'desc' ? 'asc' : 'desc');
+      } else {
+        applyRankSort(key, 'desc');
+      }
+    }
+
+    /* Clic sur un bouton de tri rapide — toujours DESC */
+    function sortRanking(key) {
+      applyRankSort(key, 'desc');
+    }
+
+    /* Met à jour les icônes headers + boutons actifs (sans re-render complet) */
+    function updateRankSortUI() {
+      const el = document.querySelector('[data-card="ranking"]');
+      if (!el) return;
+      // Boutons
+      el.querySelectorAll('.rank-sort-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.sortKey === rankSortKey);
+      });
+      // Headers
+      el.querySelectorAll('.rank-th-sortable').forEach(th => {
+        const key = th.dataset.sortKey;
+        const isActive = key === rankSortKey;
+        th.classList.toggle('sort-active', isActive);
+        const iconEl = th.querySelector('.rank-sort-icon');
+        if (iconEl) iconEl.textContent = isActive ? (rankSortDir === 'desc' ? '↓' : '↑') : '↕';
+      });
+    }
+
+    /* Re-render du tbody uniquement */
+    function rerenderRankTbody() {
+      const tbody = document.querySelector('[data-card="ranking"] tbody');
+      if (tbody) tbody.innerHTML = buildRankTbody();
+    }
+
+    function renderRankingCard() {
+      if (!rankingData.length) return '';
+
+      const sortBtns = [
+        ['lessons_ca', 'CA leçons'], ['memberships_total', 'Membres'], ['capture_rate', 'Capture']
+      ].map(([k, l]) => `<button class="rank-sort-btn${rankSortKey === k ? ' active' : ''}" data-sort-key="${k}" onclick="sortRanking('${k}')">${l}</button>`).join('');
+
+      const theadCells = RANK_COLUMNS.map(c => buildRankTh(c)).join('');
+      const rows = buildRankTbody();
 
       return `<div class="card col-full" data-card="ranking">
         <div class="card-accent accent-cyan"></div>
@@ -444,7 +1415,7 @@
           <div class="rank-sort-bar">${sortBtns}</div>
           <div class="rank-table-wrap">
             <table class="rank-table">
-              <thead><tr><th>#</th><th>CSE</th><th style="text-align:right">Quota</th><th style="text-align:right">Membres</th><th style="text-align:right">Capture</th><th style="text-align:right">Leçons</th><th style="text-align:right">CA</th><th style="text-align:right">MR</th></tr></thead>
+              <thead><tr>${theadCells}</tr></thead>
               <tbody>${rows}</tbody>
             </table>
           </div>
@@ -453,42 +1424,12 @@
       </div>`;
     }
 
-    function sortRanking(key) {
-      rankSortKey = key;
-      const el = document.querySelector('[data-card="ranking"] .card-body');
-      if (!el) return;
-      const sortBtns = [
-        ['lessons_ca','CA leçons'],['memberships_total','Membres'],['capture_rate','Capture']
-      ].map(([k,l]) => `<button class="rank-sort-btn${rankSortKey===k?' active':''}" onclick="sortRanking('${k}')">${l}</button>`).join('');
-      el.querySelector('.rank-sort-bar').innerHTML = sortBtns;
-
-      const sorted = [...rankingData].sort((a,b) => {
-        if (key === 'lessons_ca')       return (b.lessons_ca||0)       - (a.lessons_ca||0);
-        if (key === 'memberships_total') return (b.memberships_total||0) - (a.memberships_total||0);
-        if (key === 'capture_rate')     return (b.capture_rate||0)     - (a.capture_rate||0);
-        return 0;
-      });
-      el.querySelector('tbody').innerHTML = sorted.map((r,i) => {
-        const cap = r.capture_rate ? `<span class="rank-badge rank-badge-capture">${r.capture_rate}%</span>` : '–';
-        return `<tr class="rank-clickable" onclick="switchCse('${esc(r.hubspot_company_id||'')}','${esc(r.cse_name||'')}','${esc(r.cse_id||'')}')">
-          <td style="color:var(--slate-400);font-size:11px;width:28px">${i+1}</td>
-          <td class="rank-name">${esc(r.cse_name||'—')}</td>
-          <td style="text-align:right">${fmt(r.pe_quota_total)}</td>
-          <td style="text-align:right">${fmt(r.memberships_total)}</td>
-          <td style="text-align:right">${cap}</td>
-          <td style="text-align:right">${fmt(r.lessons_total)}</td>
-          <td style="text-align:right">${fmtEur(r.lessons_ca)}</td>
-          <td style="text-align:right">${fmt(r.mise_relations_total)}</td>
-        </tr>`;
-      }).join('');
-    }
-
     /* ── CSE drill-down ── */
     async function switchCse(hubspotId, cseName, cseId) {
       if (!hubspotId) return;
       selectedCseHubspotId = hubspotId;
-      selectedCseName      = cseName;
-      selectedCseId        = cseId || null;
+      selectedCseName = cseName;
+      selectedCseId = cseId || null;
       // Update selector if exists
       const sel = document.getElementById('cse-selector');
       if (sel) sel.value = hubspotId;
@@ -506,8 +1447,8 @@
 
     async function clearCse() {
       selectedCseHubspotId = null;
-      selectedCseName      = null;
-      selectedCseId        = null;
+      selectedCseName = null;
+      selectedCseId = null;
       const sel = document.getElementById('cse-selector');
       if (sel) sel.value = '';
       const banner = document.getElementById('cse-banner');
@@ -525,85 +1466,84 @@
       const cardsEl = document.getElementById('cards-container');
       if (cardsEl) cardsEl.innerHTML = '<div class="state" style="min-height:200px"><div class="spinner"></div><span>Chargement du CSE…</span></div>';
       try {
-        const r    = await fetch(`${CSE_API}?hubspot_company_id=${encodeURIComponent(selectedCseHubspotId)}&days=${selectedDays}&top_n=10`, { headers:{ Authorization:`Bearer ${TOKEN}` }});
+        const r = await fetch(`${CSE_API}?hubspot_company_id=${encodeURIComponent(selectedCseHubspotId)}&days=${selectedDays}&top_n=10`, { headers: { Authorization: `Bearer ${TOKEN}` } });
         const json = await r.json();
         if (!json.ok) throw new Error(json.error || 'Erreur API');
         if (!json.data?.length) throw new Error('Aucune donnée pour ce CSE');
         renderCseCards(json.data);
         const banner = document.getElementById('cse-banner');
         if (banner) { banner.style.display = 'flex'; banner.querySelector('.cse-banner-title').textContent = `Vue CSE : ${selectedCseName}`; }
-      } catch(e) {
+      } catch (e) {
         if (cardsEl) cardsEl.innerHTML = `<div class="state error" style="min-height:200px">⚠ ${esc(e.message)}</div>`;
       }
     }
 
     function renderCseCards(rows) {
       const f = rows[0];
-      const membTotal   = f.memberships_total       || 0;
-      const membActive  = f.memberships_active      || 0;
-      const membDormant = f.memberships_dormant     || 0;
-      const mrTotal     = f.mise_relations_total    || 0;
-      const mrAccepted  = f.mise_relations_accepted || 0;
-      const mrPeople    = f.mr_people_count         || 0;
-      const mrAvg       = f.mr_avg_per_person       || 0;
-      const lessTotal   = f.lessons_total           || 0;
-      const lessComp    = f.lessons_completed       || 0;
-      const lessCa      = f.lessons_ca              || 0;
-      const passActifs  = f.pass_actifs             || 0;
-      const passCa      = f.pass_ca                 || 0;
-      const walletTx    = f.wallet_transactions_total || 0;
-      const walletTotal = f.wallet_amount_total     || 0;
-      const walletAvg   = f.wallet_amount_avg       || 0;
-      const peQuota     = f.pe_quota_total          || 0;
-      const peUsed      = f.pe_quota_used           || 0;
+      const membTotal = f.memberships_total || 0;
+      const membActive = f.memberships_active || 0;
+      const membDormant = f.memberships_dormant || 0;
+      const mrTotal = f.mise_relations_total || 0;
+      const mrAccepted = f.mise_relations_accepted || 0;
+      const mrPeople = f.mr_people_count || 0;
+      const mrAvg = f.mr_avg_per_person || 0;
+      const lessTotal = f.lessons_total || 0;
+      const lessComp = f.lessons_completed || 0;
+      const lessCa = f.lessons_ca || 0;
+      const passActifs = f.pass_actifs || 0;
+      const passCa = f.pass_ca || 0;
+      const walletTx = f.wallet_transactions_total || 0;
+      const walletTotal = f.wallet_amount_total || 0;
+      const walletAvg = f.wallet_amount_avg || 0;
+      const peQuota = f.pe_quota_total || 0;
+      const peUsed = f.pe_quota_used || 0;
 
-      const themes = rows.filter(r => r.theme && (r.theme_count||0) > 0)
+      const themes = rows.filter(r => r.theme && (r.theme_count || 0) > 0)
         .map(r => ({ theme: r.theme, count: r.theme_count }))
-        .sort((a,b) => b.count - a.count);
+        .sort((a, b) => b.count - a.count);
 
-      const pA = pct(membActive,  membTotal);
+      const pA = pct(membActive, membTotal);
       const pD = pct(membDormant, membTotal);
-      const pM = pct(mrAccepted,  mrTotal);
-      const pL = pct(lessComp,    lessTotal);
-      const pC = pct(membTotal,   peQuota);
+      const pM = pct(mrAccepted, mrTotal);
+      const pL = pct(lessComp, lessTotal);
+      const pC = pct(membTotal, peQuota);
       const mT = themes[0]?.count || 1;
 
-      const membCard = card('cse-membres','accent-indigo','icon-indigo','👥','Membres',
+      const membCard = card('cse-membres', 'accent-indigo', 'icon-indigo', '👥', 'Membres',
         `<span class="badge badge-indigo">${pA}% actifs</span>`,
-        `<div class="big-stats">${stat(fmt(membTotal),'Total membres','val-indigo')}${stat(fmt(membActive),'Actifs','val-emerald')}${stat(fmt(membDormant),'Dormants','val-neutral')}</div>
-         ${prog("Taux d'activation",`${pA}%`,pA,'fill-indigo')}
-         ${peQuota > 0 ? `<div class="divider"></div><div class="kpi-list">${kpi('Personnes adressables',fmt(peQuota))}${kpi('Pass utilisés',fmt(peUsed))}</div>${prog('Taux de capture',`${pC}%`,pC,'fill-cyan')}` : ''}`);
+        `<div class="big-stats">${stat(fmt(membTotal), 'Total membres', 'val-indigo')}${stat(fmt(membActive), 'Actifs', 'val-emerald')}${stat(fmt(membDormant), 'Dormants', 'val-neutral')}</div>
+         ${prog("Taux d'activation", `${pA}%`, pA, 'fill-indigo')}
+         ${peQuota > 0 ? `<div class="divider"></div><div class="kpi-list">${kpi('Personnes adressables', fmt(peQuota))}${kpi('Pass utilisés', fmt(peUsed))}</div>${prog('Taux de capture', `${pC}%`, pC, 'fill-cyan')}` : ''}`);
 
-      const mrCard = card('cse-mr','accent-emerald','icon-emerald','🤝','Mises en Relation',
+      const mrCard = card('cse-mr', 'accent-emerald', 'icon-emerald', '🤝', 'Mises en Relation',
         mrTotal > 0 ? `<span class="badge badge-emerald">${mrPeople} personnes</span>` : '',
         mrTotal === 0
           ? '<p style="font-size:12px;color:var(--slate-400);padding:8px 0">Aucune MR sur la période.</p>'
-          : `<div class="big-stats">${stat(fmt(mrTotal),'Total MR','val-emerald')}${stat(fmt(mrAccepted),'Acceptées','val-emerald')}${stat(`${pM}%`,'Taux','val-emerald')}</div>
-             ${prog("Taux d'acceptation",`${fmt(mrAccepted)} / ${fmt(mrTotal)}`,pM,'fill-emerald')}
-             <div class="divider"></div><div class="kpi-list">${kpi('Personnes touchées',fmt(mrPeople))}${kpi('Moyenne / personne',fmt(mrAvg,1))}</div>`);
+          : `<div class="big-stats">${stat(fmt(mrTotal), 'Total MR', 'val-emerald')}${stat(fmt(mrAccepted), 'Acceptées', 'val-emerald')}${stat(`${pM}%`, 'Taux', 'val-emerald')}</div>
+             ${prog("Taux d'acceptation", `${fmt(mrAccepted)} / ${fmt(mrTotal)}`, pM, 'fill-emerald')}
+             <div class="divider"></div><div class="kpi-list">${kpi('Personnes touchées', fmt(mrPeople))}${kpi('Moyenne / personne', fmt(mrAvg, 1))}</div>`);
 
-      const lessCard = card('cse-lecons','accent-violet','icon-violet','📚','Leçons',
+      const lessCard = card('cse-lecons', 'accent-violet', 'icon-violet', '📚', 'Leçons',
         lessTotal > 0 ? `<span class="badge badge-violet">${pL}% complétées</span>` : '',
         lessTotal === 0
           ? '<p style="font-size:12px;color:var(--slate-400);padding:8px 0">Aucune leçon sur la période.</p>'
-          : `<div class="big-stats">${stat(fmt(lessTotal),'Total leçons','val-violet')}${stat(fmt(lessComp),'Complétées','val-violet')}${stat(`${pL}%`,'Taux','val-violet')}</div>
-             ${prog('Taux de complétion',`${fmt(lessComp)} / ${fmt(lessTotal)}`,pL,'fill-violet')}
-             <div class="divider"></div><div class="kpi-list">${kpi('CA leçons',fmtEur(lessCa))}</div>`);
+          : `<div class="big-stats">${stat(fmt(lessTotal), 'Total leçons', 'val-violet')}${stat(fmt(lessComp), 'Complétées', 'val-violet')}${stat(`${pL}%`, 'Taux', 'val-violet')}</div>
+             ${prog('Taux de complétion', `${fmt(lessComp)} / ${fmt(lessTotal)}`, pL, 'fill-violet')}
+             <div class="divider"></div><div class="kpi-list">${kpi('CA leçons', fmtEur(lessCa))}</div>`);
 
-      const walletCard = card('cse-wallet','accent-amber','icon-amber','💳','Pass & Wallet',
+      const walletCard = card('cse-wallet', 'accent-amber', 'icon-amber', '💳', 'Pass & Wallet',
         walletTx > 0 ? `<span class="badge badge-amber">${fmt(walletTx)} tx</span>` : '',
-        `<div class="big-stats">${stat(fmt(passActifs),'Pass actifs','val-amber')}${stat(fmt(walletTx),'Transactions','val-amber')}</div>
-         <div class="kpi-list">${kpi('CA pass',fmtEur(passCa))}${kpi('Total rechargé',fmtEur(walletTotal))}${kpi('Moy. / transaction',fmtEur(walletAvg))}</div>`);
+        `<div class="big-stats">${stat(fmt(passActifs), 'Pass actifs', 'val-amber')}${stat(fmt(walletTx), 'Transactions', 'val-amber')}</div>
+         <div class="kpi-list">${kpi('CA pass', fmtEur(passCa))}${kpi('Total rechargé', fmtEur(walletTotal))}${kpi('Moy. / transaction', fmtEur(walletAvg))}</div>`);
 
       const themesCard = themes.length === 0 ? '' :
         `<div class="card col-full" data-card="cse-themes"><div class="card-accent" style="background:linear-gradient(90deg,#fb7185,#f43f5e);height:3px"></div>
          <div class="card-header"><div class="card-title-wrap"><div class="card-icon" style="background:#ffe4e6">🎯</div><span class="card-title">Top Thématiques</span></div><div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#ffe4e6;color:#9f1239">${themes.length} matières</span></div></div>
-         <div class="card-body"><div style="columns:2;column-gap:24px">${
-           themes.slice(0,10).map((t,i) => {
-             const m = i<3 ? ['🥇','🥈','🥉'][i] : `${i+1}.`;
-             return `<div style="break-inside:avoid;margin-bottom:6px"><div style="display:flex;align-items:center;gap:4px;font-size:11.5px;margin-bottom:2px"><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--slate-700);font-weight:500">${esc(m)} ${esc(t.theme)}</span><span style="font-weight:700;color:#f43f5e;flex-shrink:0">${t.count}</span></div><div class="track sm"><div class="fill" style="width:${pct(t.count,mT)}%;background:linear-gradient(90deg,#fb7185,#f43f5e)"></div></div></div>`;
-           }).join('')
-         }</div></div></div>`;
+         <div class="card-body"><div style="columns:2;column-gap:24px">${themes.slice(0, 10).map((t, i) => {
+          const m = i < 3 ? ['🥇', '🥈', '🥉'][i] : `${i + 1}.`;
+          return `<div style="break-inside:avoid;margin-bottom:6px"><div style="display:flex;align-items:center;gap:4px;font-size:11.5px;margin-bottom:2px"><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--slate-700);font-weight:500">${esc(m)} ${esc(t.theme)}</span><span style="font-weight:700;color:#f43f5e;flex-shrink:0">${t.count}</span></div><div class="track sm"><div class="fill" style="width:${pct(t.count, mT)}%;background:linear-gradient(90deg,#fb7185,#f43f5e)"></div></div></div>`;
+        }).join('')
+        }</div></div></div>`;
 
       const cseAiCard =
         `<div class="card col-full" data-card="cse-ia"><div class="card-accent accent-ai"></div>
@@ -633,12 +1573,12 @@
     /* ── AI binding (global vs CSE) ── */
     let _suggestionTimer = null;
     function bindAI(isCseMode) {
-      const q   = document.getElementById('ai-question');
-      const ph  = document.getElementById('ai-placeholder');
+      const q = document.getElementById('ai-question');
+      const ph = document.getElementById('ai-placeholder');
       if (!q) return;
-      q.addEventListener('focus',  () => { if (ph) ph.style.opacity = '0'; });
-      q.addEventListener('blur',   () => { if (ph && !q.value) ph.style.opacity = '1'; });
-      q.addEventListener('input',  () => { if (ph) ph.style.opacity = q.value ? '0' : '1'; });
+      q.addEventListener('focus', () => { if (ph) ph.style.opacity = '0'; });
+      q.addEventListener('blur', () => { if (ph && !q.value) ph.style.opacity = '1'; });
+      q.addEventListener('input', () => { if (ph) ph.style.opacity = q.value ? '0' : '1'; });
       q.onkeydown = e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) handleAI(isCseMode); };
       const btn = document.getElementById('ai-btn');
       if (btn) btn.onclick = () => handleAI(isCseMode);
@@ -659,57 +1599,57 @@
     function render(rows) {
       const f = rows[0];
 
-      const days        = f.window_days             || selectedDays;
-      const membTotal   = f.memberships_total       || 0;
-      const membActive  = f.memberships_active      || 0;
-      const membDormant = f.memberships_dormant     || 0;
-      const mrTotal     = f.mise_relations_total    || 0;
-      const mrAccepted  = f.mise_relations_accepted || 0;
-      const mrPeople    = f.mr_people_count         || 0;
-      const mrAvg       = f.mr_avg_per_person       || 0;
-      const lessTotal   = f.lessons_total           || 0;
-      const lessComp    = f.lessons_completed       || 0;
-      const lessCa      = f.lessons_ca              || 0;
-      const passActifs  = f.pass_actifs             || 0;
-      const passCa      = f.pass_ca                 || 0;
-      const walletTx    = f.wallet_transactions_total || 0;
-      const walletTotal = f.wallet_amount_total     || 0;
-      const walletAvg   = f.wallet_amount_avg       || 0;
-      const peQuota     = f.pe_quota_total          || 0;
+      const days = f.window_days || selectedDays;
+      const membTotal = f.memberships_total || 0;
+      const membActive = f.memberships_active || 0;
+      const membDormant = f.memberships_dormant || 0;
+      const mrTotal = f.mise_relations_total || 0;
+      const mrAccepted = f.mise_relations_accepted || 0;
+      const mrPeople = f.mr_people_count || 0;
+      const mrAvg = f.mr_avg_per_person || 0;
+      const lessTotal = f.lessons_total || 0;
+      const lessComp = f.lessons_completed || 0;
+      const lessCa = f.lessons_ca || 0;
+      const passActifs = f.pass_actifs || 0;
+      const passCa = f.pass_ca || 0;
+      const walletTx = f.wallet_transactions_total || 0;
+      const walletTotal = f.wallet_amount_total || 0;
+      const walletAvg = f.wallet_amount_avg || 0;
+      const peQuota = f.pe_quota_total || 0;
 
-      const pA = pct(membActive,  membTotal);
+      const pA = pct(membActive, membTotal);
       const pD = pct(membDormant, membTotal);
-      const pM = pct(mrAccepted,  mrTotal);
-      const pL = pct(lessComp,    lessTotal);
-      const pC = pct(membTotal,   peQuota);
+      const pM = pct(mrAccepted, mrTotal);
+      const pL = pct(lessComp, lessTotal);
+      const pC = pct(membTotal, peQuota);
 
       /* Cards */
-      const membCard = card('membres','accent-indigo','icon-indigo','👥','Membres',
+      const membCard = card('membres', 'accent-indigo', 'icon-indigo', '👥', 'Membres',
         `<span class="badge badge-indigo">${pA}% actifs</span>`,
-        `<div class="big-stats">${stat(fmt(membTotal),'Total membres','val-indigo')}${stat(fmt(membActive),'Actifs','val-emerald')}${stat(fmt(membDormant),'Dormants','val-neutral')}</div>
-         ${prog("Taux d'activation",`${pA}%`,pA,'fill-indigo')}
-         ${peQuota > 0 ? `<div class="divider"></div><div class="kpi-list">${kpi('Personnes adressables',fmt(peQuota))}</div>${prog('Taux de capture',`${pC}%`,pC,'fill-cyan')}` : ''}`);
+        `<div class="big-stats">${stat(fmt(membTotal), 'Total membres', 'val-indigo')}${stat(fmt(membActive), 'Actifs', 'val-emerald')}${stat(fmt(membDormant), 'Dormants', 'val-neutral')}</div>
+         ${prog("Taux d'activation", `${pA}%`, pA, 'fill-indigo')}
+         ${peQuota > 0 ? `<div class="divider"></div><div class="kpi-list">${kpi('Personnes adressables', fmt(peQuota))}</div>${prog('Taux de capture', `${pC}%`, pC, 'fill-cyan')}` : ''}`);
 
-      const mrCard = card('mr','accent-emerald','icon-emerald','🤝','Mises en Relation',
+      const mrCard = card('mr', 'accent-emerald', 'icon-emerald', '🤝', 'Mises en Relation',
         mrTotal > 0 ? `<span class="badge badge-emerald">${mrPeople} personnes</span>` : '',
         mrTotal === 0
           ? '<p style="font-size:12px;color:var(--slate-400);padding:8px 0">Aucune mise en relation sur la période.</p>'
-          : `<div class="big-stats">${stat(fmt(mrTotal),'Total MR','val-emerald')}${stat(fmt(mrAccepted),'Acceptées','val-emerald')}${stat(`${pM}%`,'Taux','val-emerald')}</div>
-             ${prog("Taux d'acceptation",`${fmt(mrAccepted)} / ${fmt(mrTotal)}`,pM,'fill-emerald')}
-             <div class="divider"></div><div class="kpi-list">${kpi('Personnes touchées',fmt(mrPeople))}${kpi('Moyenne / personne',fmt(mrAvg,1))}</div>`);
+          : `<div class="big-stats">${stat(fmt(mrTotal), 'Total MR', 'val-emerald')}${stat(fmt(mrAccepted), 'Acceptées', 'val-emerald')}${stat(`${pM}%`, 'Taux', 'val-emerald')}</div>
+             ${prog("Taux d'acceptation", `${fmt(mrAccepted)} / ${fmt(mrTotal)}`, pM, 'fill-emerald')}
+             <div class="divider"></div><div class="kpi-list">${kpi('Personnes touchées', fmt(mrPeople))}${kpi('Moyenne / personne', fmt(mrAvg, 1))}</div>`);
 
-      const lessCard = card('lecons','accent-violet','icon-violet','📚','Leçons',
+      const lessCard = card('lecons', 'accent-violet', 'icon-violet', '📚', 'Leçons',
         lessTotal > 0 ? `<span class="badge badge-violet">${pL}% complétées</span>` : '',
         lessTotal === 0
           ? '<p style="font-size:12px;color:var(--slate-400);padding:8px 0">Aucune leçon sur la période.</p>'
-          : `<div class="big-stats">${stat(fmt(lessTotal),'Total leçons','val-violet')}${stat(fmt(lessComp),'Complétées','val-violet')}${stat(`${pL}%`,'Taux','val-violet')}</div>
-             ${prog('Taux de complétion',`${fmt(lessComp)} / ${fmt(lessTotal)}`,pL,'fill-violet')}
-             <div class="divider"></div><div class="kpi-list">${kpi('CA leçons',fmtEur(lessCa))}</div>`);
+          : `<div class="big-stats">${stat(fmt(lessTotal), 'Total leçons', 'val-violet')}${stat(fmt(lessComp), 'Complétées', 'val-violet')}${stat(`${pL}%`, 'Taux', 'val-violet')}</div>
+             ${prog('Taux de complétion', `${fmt(lessComp)} / ${fmt(lessTotal)}`, pL, 'fill-violet')}
+             <div class="divider"></div><div class="kpi-list">${kpi('CA leçons', fmtEur(lessCa))}</div>`);
 
-      const walletCard = card('wallet','accent-amber','icon-amber','💳','Pass & Wallet',
+      const walletCard = card('wallet', 'accent-amber', 'icon-amber', '💳', 'Pass & Wallet',
         walletTx > 0 ? `<span class="badge badge-amber">${fmt(walletTx)} tx</span>` : '',
-        `<div class="big-stats">${stat(fmt(passActifs),'Pass actifs','val-amber')}${stat(fmt(walletTx),'Transactions','val-amber')}</div>
-         <div class="kpi-list">${kpi('CA pass',fmtEur(passCa))}${kpi('Total rechargé',fmtEur(walletTotal))}${kpi('Moy. / transaction',fmtEur(walletAvg))}</div>`);
+        `<div class="big-stats">${stat(fmt(passActifs), 'Pass actifs', 'val-amber')}${stat(fmt(walletTx), 'Transactions', 'val-amber')}</div>
+         <div class="kpi-list">${kpi('CA pass', fmtEur(passCa))}${kpi('Total rechargé', fmtEur(walletTotal))}${kpi('Moy. / transaction', fmtEur(walletAvg))}</div>`);
 
       const aiCard =
         `<div class="card col-full" data-card="ia"><div class="card-accent accent-ai"></div>
@@ -729,7 +1669,7 @@
          </div></div>`;
 
       const cseOptions = rankingData.length
-        ? rankingData.map(r => `<option value="${esc(r.hubspot_company_id||'')}">${esc(r.cse_name||'—')}</option>`).join('')
+        ? rankingData.map(r => `<option value="${esc(r.hubspot_company_id || '')}">${esc(r.cse_name || '—')}</option>`).join('')
         : '';
 
       globalCardsHTML = `<div class="grid">${membCard}${mrCard}${lessCard}${walletCard}${renderRankingCard()}${aiCard}</div>`;
@@ -741,9 +1681,9 @@
             <span class="hero-name">Superprof B2B — Performance Globale</span>
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
               <div class="period-tabs">
-                <button class="period-tab ${selectedDays===30?'active':''}" onclick="switchPeriod(30)">30 jours</button>
-                <button class="period-tab ${selectedDays===90?'active':''}" onclick="switchPeriod(90)">90 jours</button>
-                <button class="period-tab ${selectedDays===365?'active':''}" onclick="switchPeriod(365)">1 an</button>
+                <button class="period-tab ${selectedDays === 30 ? 'active' : ''}" onclick="switchPeriod(30)">30 jours</button>
+                <button class="period-tab ${selectedDays === 90 ? 'active' : ''}" onclick="switchPeriod(90)">90 jours</button>
+                <button class="period-tab ${selectedDays === 365 ? 'active' : ''}" onclick="switchPeriod(365)">1 an</button>
               </div>
               ${cseOptions ? `<select id="cse-selector" class="cse-select" onchange="onCseSelect(this.value)"><option value="">— Tous les CSE —</option>${cseOptions}</select>` : ''}
             </div>
@@ -754,7 +1694,7 @@
             <div class="hero-stat"><div class="hero-stat-value">${fmtEur(lessCa + passCa)}</div><div class="hero-stat-label">CA total</div></div>
             <div class="hero-sep"></div>
             <div class="hero-stat"><div class="hero-stat-value">${fmt(lessTotal)}</div><div class="hero-stat-label">leçons</div></div>
-            <button class="dark-toggle" onclick="toggleDark()" title="Mode sombre / clair">${document.body.classList.contains('dark')?'☀️':'🌑'}</button>
+            <button class="dark-toggle" onclick="toggleDark()" title="Mode sombre / clair">${document.body.classList.contains('dark') ? '☀️' : '🌑'}</button>
           </div>
         </div></div>
         <div id="cse-banner" class="cse-banner" style="display:none">
@@ -769,7 +1709,7 @@
     }
 
     /* ── Card visibility ── */
-    const CARD_LABELS = { membres:'👥 Membres', mr:'🤝 MR', lecons:'📚 Leçons', wallet:'💳 Wallet', ia:'✦ IA' };
+    const CARD_LABELS = { membres: '👥 Membres', mr: '🤝 MR', lecons: '📚 Leçons', wallet: '💳 Wallet', ia: '✦ IA' };
 
     function toggleCard(name) {
       if (!hiddenCards.includes(name)) hiddenCards.push(name);
@@ -787,7 +1727,7 @@
       });
       const bar = document.getElementById('restore-bar');
       if (bar) bar.innerHTML = hiddenCards.map(n =>
-        `<button class="restore-chip" onclick="restoreCard('${n}')">+ ${CARD_LABELS[n]||n}</button>`
+        `<button class="restore-chip" onclick="restoreCard('${n}')">+ ${CARD_LABELS[n] || n}</button>`
       ).join('');
     }
 
@@ -808,11 +1748,11 @@
     /* ── Export CSV ── */
     function exportCSV() {
       if (!lastAiRows.length) return;
-      const e = v => { v = v == null ? '' : String(v); return (v.includes(',') || v.includes('"') || v.includes('\n')) ? `"${v.replace(/"/g,'""')}"` : v; };
+      const e = v => { v = v == null ? '' : String(v); return (v.includes(',') || v.includes('"') || v.includes('\n')) ? `"${v.replace(/"/g, '""')}"` : v; };
       const csv = [lastAiCols.join(','), ...lastAiRows.map(r => lastAiCols.map(c => e(r[c])).join(','))].join('\n');
       const a = document.createElement('a');
       a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent('\uFEFF' + csv);
-      a.download = `cockpit-global-ia-${new Date().toISOString().slice(0,10)}.csv`;
+      a.download = `cockpit-global-ia-${new Date().toISOString().slice(0, 10)}.csv`;
       a.click();
     }
 
@@ -821,14 +1761,14 @@
       const q = document.getElementById('ai-question').value.trim();
       if (!q) return;
       const btn = document.getElementById('ai-btn');
-      const sp  = document.getElementById('ai-spinner');
+      const sp = document.getElementById('ai-spinner');
       const res = document.getElementById('ai-result');
       btn.disabled = true; sp.style.display = 'inline'; res.style.display = 'none';
       try {
         const endpoint = isCseMode ? CSE_AI_API : AI_API;
         const params = new URLSearchParams({ question: q });
         if (isCseMode && selectedCseId) params.set('cse_id', selectedCseId);
-        const r    = await fetch(`${endpoint}?${params}`, { headers: { Authorization: `Bearer ${TOKEN}` } });
+        const r = await fetch(`${endpoint}?${params}`, { headers: { Authorization: `Bearer ${TOKEN}` } });
         const json = await r.json();
         if (!json.ok) {
           let html = `<p style="font-size:12px;color:var(--rose);margin-top:8px">⚠ ${esc(json.error || 'Erreur IA')}</p>`;
@@ -842,10 +1782,10 @@
         if (!rows.length) {
           res.innerHTML = '<p style="font-size:12px;color:var(--slate-400);margin-top:8px;padding-left:10px;border-left:2px solid var(--indigo-light)">Aucun résultat pour cette question.</p>';
         } else {
-          const cols  = Object.keys(rows[0]);
+          const cols = Object.keys(rows[0]);
           lastAiRows = rows; lastAiCols = cols;
-          const thead = '<tr>' + cols.map(c => `<th>${esc(c.replace(/_/g,' '))}</th>`).join('') + '</tr>';
-          const tbody = rows.slice(0,50).map(r => '<tr>' + cols.map(c => `<td>${esc(r[c]==null?'–':String(r[c]))}</td>`).join('') + '</tr>').join('');
+          const thead = '<tr>' + cols.map(c => `<th>${esc(c.replace(/_/g, ' '))}</th>`).join('') + '</tr>';
+          const tbody = rows.slice(0, 50).map(r => '<tr>' + cols.map(c => `<td>${esc(r[c] == null ? '–' : String(r[c]))}</td>`).join('') + '</tr>').join('');
           let html = '';
           if (json.question) html += `<p class="ai-quote">&ldquo;${esc(json.question)}&rdquo;</p>`;
           html += `<div class="table-wrap"><table><thead>${thead}</thead><tbody>${tbody}</tbody></table></div>`;
@@ -854,7 +1794,7 @@
           res.innerHTML = html;
         }
         res.style.display = 'block';
-      } catch(e) {
+      } catch (e) {
         res.innerHTML = `<p style="font-size:12px;color:var(--rose);margin-top:8px">⚠ ${esc(e.message)}</p>`;
         res.style.display = 'block';
       } finally {
@@ -866,7 +1806,7 @@
     async function loadData() {
       document.getElementById('root').innerHTML = '<div class="state"><div class="spinner"></div><span>Chargement…</span></div>';
       try {
-        const r    = await fetch(`${API}?days=${selectedDays}&ranking=true`, { headers:{ Authorization:`Bearer ${TOKEN}` }});
+        const r = await fetch(`${API}?days=${selectedDays}&ranking=true`, { headers: { Authorization: `Bearer ${TOKEN}` } });
         const json = await r.json();
         if (!json.ok) throw new Error(json.error || 'Erreur API');
         if (!json.data?.length) throw new Error('Aucune donnée disponible');
@@ -875,7 +1815,7 @@
         if (document.body.classList.contains('dark')) {
           document.querySelectorAll('.dark-toggle').forEach(b => { b.textContent = '☀️'; });
         }
-      } catch(e) {
+      } catch (e) {
         document.getElementById('root').innerHTML = `<div class="state error">⚠ ${esc(e.message)}</div>`;
       }
     }
@@ -890,4 +1830,5 @@
     })();
   </script>
 </body>
+
 </html>
