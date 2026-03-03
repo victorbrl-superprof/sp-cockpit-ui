@@ -296,24 +296,81 @@
     .restore-chip:hover { border-color:var(--indigo); color:var(--indigo); background:var(--indigo-light); }
     body.dark .restore-chip { background:#1e293b; border-color:#475569; color:#94a3b8; }
     body.dark .restore-chip:hover { border-color:var(--indigo); color:#a5b4fc; background:#3730a3; }
+
+    /* ── CSE select ── */
+    .cse-select {
+      margin-top: 6px; align-self: flex-start;
+      padding: 4px 10px 4px 8px; border: none; border-radius: 8px;
+      background: rgba(255,255,255,.18); backdrop-filter: blur(4px);
+      color: white; font-size: 11px; font-weight: 600; font-family: inherit;
+      cursor: pointer; outline: none; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,.7)'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 8px center;
+      padding-right: 24px; max-width: 280px;
+    }
+    .cse-select option { background: #4f46e5; color: white; }
+    .cse-select:hover { background-color: rgba(255,255,255,.26); }
+
+    /* ── CSE zoom banner ── */
+    .cse-banner {
+      background: linear-gradient(90deg, #4f46e5, #8b5cf6);
+      color: white; padding: 5px 14px;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      font-size: 11.5px; font-weight: 600;
+    }
+    .cse-banner-back { border: none; background: rgba(255,255,255,.2); color: white; border-radius: 6px; padding: 2px 10px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .15s; }
+    .cse-banner-back:hover { background: rgba(255,255,255,.35); }
+
+    /* ── Ranking card table ── */
+    .rank-sort-bar { display: flex; gap: 4px; margin-bottom: 8px; }
+    .rank-sort-btn { padding: 3px 10px; border: 1.5px solid var(--slate-200); border-radius: 6px; background: white; color: var(--slate-600); font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .15s; }
+    .rank-sort-btn.active { background: var(--cyan); border-color: var(--cyan); color: white; }
+    .rank-sort-btn:hover:not(.active) { border-color: var(--cyan); color: var(--cyan); }
+    .rank-table-wrap { overflow-x: auto; border: 1px solid var(--slate-200); border-radius: 10px; }
+    .rank-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+    .rank-table thead { background: var(--slate-50); }
+    .rank-table th { padding: 7px 10px; text-align: left; font-weight: 700; color: var(--slate-400); white-space: nowrap; border-bottom: 1px solid var(--slate-200); font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; }
+    .rank-table td { padding: 6px 10px; color: var(--slate-700); border-bottom: 1px solid var(--slate-100); white-space: nowrap; }
+    .rank-table tr:last-child td { border-bottom: none; }
+    .rank-table tr.rank-clickable { cursor: pointer; }
+    .rank-table tr.rank-clickable:hover td { background: #eef2ff; }
+    .rank-table .rank-name { font-weight: 600; color: var(--slate-900); max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
+    .rank-badge { font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 999px; }
+    .rank-badge-capture { background: #cffafe; color: #155e75; }
+    body.dark .rank-sort-btn { background: #1e293b; border-color: #475569; color: #94a3b8; }
+    body.dark .rank-sort-btn.active { background: var(--cyan); border-color: var(--cyan); color: white; }
+    body.dark .rank-table-wrap { border-color: #334155; }
+    body.dark .rank-table thead { background: #0f172a; }
+    body.dark .rank-table th { color: #64748b; border-bottom-color: #334155; }
+    body.dark .rank-table td { color: #94a3b8; border-bottom-color: #1e293b; }
+    body.dark .rank-table tr.rank-clickable:hover td { background: #263248; }
+    body.dark .rank-table .rank-name { color: #f1f5f9; }
+    body.dark .cse-banner { background: linear-gradient(90deg,#3730a3,#4c1d95); }
   </style>
 </head>
 <body>
   <div id="root"><div class="state"><div class="spinner"></div><span>Chargement du dashboard…</span></div></div>
 
   <script>
-    const P      = new URLSearchParams(location.search);
-    const TOKEN  = P.get('token') || '';
-    const BASE   = 'https://yhtxrjegdeuwkcjvkfkt.supabase.co/functions/v1';
-    const API    = BASE + '/cse-sales-cockpit-global';
-    const AI_API = BASE + '/global-ai-query';
+    const P          = new URLSearchParams(location.search);
+    const TOKEN      = P.get('token') || '';
+    const BASE       = 'https://yhtxrjegdeuwkcjvkfkt.supabase.co/functions/v1';
+    const API        = BASE + '/cse-sales-cockpit-global';
+    const CSE_API    = BASE + '/cse-sales-cockpit';
+    const AI_API     = BASE + '/global-ai-query';
+    const CSE_AI_API = BASE + '/cse-ai-query';
 
-    let suggestionIdx = 0;
-    let selectedDays  = 365;
-    let lastAiRows    = [];
-    let lastAiCols    = [];
-    const HIDDEN_KEY  = 'cockpit-global-hidden-cards';
-    let hiddenCards   = JSON.parse(localStorage.getItem(HIDDEN_KEY) || '[]');
+    let suggestionIdx        = 0;
+    let selectedDays         = 365;
+    let lastAiRows           = [];
+    let lastAiCols           = [];
+    let rankingData          = [];
+    let rankSortKey          = 'lessons_ca';
+    let selectedCseHubspotId = null;
+    let selectedCseName      = null;
+    let selectedCseId        = null;
+    const HIDDEN_KEY         = 'cockpit-global-hidden-cards';
+    let hiddenCards          = JSON.parse(localStorage.getItem(HIDDEN_KEY) || '[]');
 
     const AI_SUGGESTIONS = [
       "Top 5 CSE avec le plus de leçons ce trimestre",
@@ -347,6 +404,254 @@
     const card = (cardId,accentCls,iconCls,icon,title,badge,body) =>
       `<div class="card" data-card="${cardId}"><div class="card-accent ${accentCls}"></div><div class="card-header"><div class="card-title-wrap"><div class="card-icon ${iconCls}">${icon}</div><span class="card-title">${esc(title)}</span></div><div style="display:flex;align-items:center;gap:6px">${badge}<button class="card-toggle" onclick="toggleCard('${cardId}')" title="Masquer">👁</button></div></div><div class="card-body">${body}</div></div>`;
 
+    /* ── Ranking card ── */
+    function renderRankingCard() {
+      if (!rankingData.length) return '';
+      const sorted = [...rankingData].sort((a,b) => {
+        if (rankSortKey === 'lessons_ca')      return (b.lessons_ca||0)      - (a.lessons_ca||0);
+        if (rankSortKey === 'memberships_total') return (b.memberships_total||0) - (a.memberships_total||0);
+        if (rankSortKey === 'capture_rate')    return (b.capture_rate||0)    - (a.capture_rate||0);
+        return 0;
+      });
+      const sortBtns = [
+        ['lessons_ca','CA leçons'],['memberships_total','Membres'],['capture_rate','Capture']
+      ].map(([k,l]) => `<button class="rank-sort-btn${rankSortKey===k?' active':''}" onclick="sortRanking('${k}')">${l}</button>`).join('');
+
+      const rows = sorted.map((r,i) => {
+        const cap = r.capture_rate ? `<span class="rank-badge rank-badge-capture">${r.capture_rate}%</span>` : '–';
+        return `<tr class="rank-clickable" onclick="switchCse('${esc(r.hubspot_company_id||'')}','${esc(r.cse_name||'')}','${esc(r.cse_id||'')}')">
+          <td style="color:var(--slate-400);font-size:11px;width:28px">${i+1}</td>
+          <td class="rank-name">${esc(r.cse_name||'—')}</td>
+          <td style="text-align:right">${fmt(r.pe_quota_total)}</td>
+          <td style="text-align:right">${fmt(r.memberships_total)}</td>
+          <td style="text-align:right">${cap}</td>
+          <td style="text-align:right">${fmt(r.lessons_total)}</td>
+          <td style="text-align:right">${fmtEur(r.lessons_ca)}</td>
+          <td style="text-align:right">${fmt(r.mise_relations_total)}</td>
+        </tr>`;
+      }).join('');
+
+      return `<div class="card col-full" data-card="ranking">
+        <div class="card-accent accent-cyan"></div>
+        <div class="card-header">
+          <div class="card-title-wrap"><div class="card-icon icon-cyan">🏆</div><span class="card-title">Top CSE</span></div>
+          <div style="display:flex;align-items:center;gap:6px"><span class="badge badge-cyan">${rankingData.length} CSE</span><button class="card-toggle" onclick="toggleCard('ranking')" title="Masquer">👁</button></div>
+        </div>
+        <div class="card-body">
+          <div class="rank-sort-bar">${sortBtns}</div>
+          <div class="rank-table-wrap">
+            <table class="rank-table">
+              <thead><tr><th>#</th><th>CSE</th><th style="text-align:right">Quota</th><th style="text-align:right">Membres</th><th style="text-align:right">Capture</th><th style="text-align:right">Leçons</th><th style="text-align:right">CA</th><th style="text-align:right">MR</th></tr></thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+          <p style="font-size:10.5px;color:var(--slate-400);margin-top:6px">Cliquez sur un CSE pour voir son détail.</p>
+        </div>
+      </div>`;
+    }
+
+    function sortRanking(key) {
+      rankSortKey = key;
+      const el = document.querySelector('[data-card="ranking"] .card-body');
+      if (!el) return;
+      const sortBtns = [
+        ['lessons_ca','CA leçons'],['memberships_total','Membres'],['capture_rate','Capture']
+      ].map(([k,l]) => `<button class="rank-sort-btn${rankSortKey===k?' active':''}" onclick="sortRanking('${k}')">${l}</button>`).join('');
+      el.querySelector('.rank-sort-bar').innerHTML = sortBtns;
+
+      const sorted = [...rankingData].sort((a,b) => {
+        if (key === 'lessons_ca')       return (b.lessons_ca||0)       - (a.lessons_ca||0);
+        if (key === 'memberships_total') return (b.memberships_total||0) - (a.memberships_total||0);
+        if (key === 'capture_rate')     return (b.capture_rate||0)     - (a.capture_rate||0);
+        return 0;
+      });
+      el.querySelector('tbody').innerHTML = sorted.map((r,i) => {
+        const cap = r.capture_rate ? `<span class="rank-badge rank-badge-capture">${r.capture_rate}%</span>` : '–';
+        return `<tr class="rank-clickable" onclick="switchCse('${esc(r.hubspot_company_id||'')}','${esc(r.cse_name||'')}','${esc(r.cse_id||'')}')">
+          <td style="color:var(--slate-400);font-size:11px;width:28px">${i+1}</td>
+          <td class="rank-name">${esc(r.cse_name||'—')}</td>
+          <td style="text-align:right">${fmt(r.pe_quota_total)}</td>
+          <td style="text-align:right">${fmt(r.memberships_total)}</td>
+          <td style="text-align:right">${cap}</td>
+          <td style="text-align:right">${fmt(r.lessons_total)}</td>
+          <td style="text-align:right">${fmtEur(r.lessons_ca)}</td>
+          <td style="text-align:right">${fmt(r.mise_relations_total)}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    /* ── CSE drill-down ── */
+    async function switchCse(hubspotId, cseName, cseId) {
+      if (!hubspotId) return;
+      selectedCseHubspotId = hubspotId;
+      selectedCseName      = cseName;
+      selectedCseId        = cseId || null;
+      // Update selector if exists
+      const sel = document.getElementById('cse-selector');
+      if (sel) sel.value = hubspotId;
+      // Show loading banner
+      const banner = document.getElementById('cse-banner');
+      if (banner) { banner.style.display = 'flex'; banner.querySelector('.cse-banner-title').textContent = `Chargement de ${cseName}…`; }
+      await loadCseData();
+    }
+
+    function onCseSelect(value) {
+      if (!value) { clearCse(); return; }
+      const cse = rankingData.find(r => r.hubspot_company_id === value);
+      switchCse(value, cse?.cse_name || value, cse?.cse_id || '');
+    }
+
+    async function clearCse() {
+      selectedCseHubspotId = null;
+      selectedCseName      = null;
+      selectedCseId        = null;
+      const sel = document.getElementById('cse-selector');
+      if (sel) sel.value = '';
+      const banner = document.getElementById('cse-banner');
+      if (banner) banner.style.display = 'none';
+      // Restore global cards
+      const cardsEl = document.getElementById('cards-container');
+      if (cardsEl) cardsEl.innerHTML = globalCardsHTML;
+      applyHidden();
+      bindAI(false);
+    }
+
+    let globalCardsHTML = '';
+
+    async function loadCseData() {
+      const cardsEl = document.getElementById('cards-container');
+      if (cardsEl) cardsEl.innerHTML = '<div class="state" style="min-height:200px"><div class="spinner"></div><span>Chargement du CSE…</span></div>';
+      try {
+        const r    = await fetch(`${CSE_API}?hubspot_company_id=${encodeURIComponent(selectedCseHubspotId)}&days=${selectedDays}&top_n=10`, { headers:{ Authorization:`Bearer ${TOKEN}` }});
+        const json = await r.json();
+        if (!json.ok) throw new Error(json.error || 'Erreur API');
+        if (!json.data?.length) throw new Error('Aucune donnée pour ce CSE');
+        renderCseCards(json.data);
+        const banner = document.getElementById('cse-banner');
+        if (banner) { banner.style.display = 'flex'; banner.querySelector('.cse-banner-title').textContent = `Vue CSE : ${selectedCseName}`; }
+      } catch(e) {
+        if (cardsEl) cardsEl.innerHTML = `<div class="state error" style="min-height:200px">⚠ ${esc(e.message)}</div>`;
+      }
+    }
+
+    function renderCseCards(rows) {
+      const f = rows[0];
+      const membTotal   = f.memberships_total       || 0;
+      const membActive  = f.memberships_active      || 0;
+      const membDormant = f.memberships_dormant     || 0;
+      const mrTotal     = f.mise_relations_total    || 0;
+      const mrAccepted  = f.mise_relations_accepted || 0;
+      const mrPeople    = f.mr_people_count         || 0;
+      const mrAvg       = f.mr_avg_per_person       || 0;
+      const lessTotal   = f.lessons_total           || 0;
+      const lessComp    = f.lessons_completed       || 0;
+      const lessCa      = f.lessons_ca              || 0;
+      const passActifs  = f.pass_actifs             || 0;
+      const passCa      = f.pass_ca                 || 0;
+      const walletTx    = f.wallet_transactions_total || 0;
+      const walletTotal = f.wallet_amount_total     || 0;
+      const walletAvg   = f.wallet_amount_avg       || 0;
+      const peQuota     = f.pe_quota_total          || 0;
+      const peUsed      = f.pe_quota_used           || 0;
+
+      const themes = rows.filter(r => r.theme && (r.theme_count||0) > 0)
+        .map(r => ({ theme: r.theme, count: r.theme_count }))
+        .sort((a,b) => b.count - a.count);
+
+      const pA = pct(membActive,  membTotal);
+      const pD = pct(membDormant, membTotal);
+      const pM = pct(mrAccepted,  mrTotal);
+      const pL = pct(lessComp,    lessTotal);
+      const pC = pct(membTotal,   peQuota);
+      const mT = themes[0]?.count || 1;
+
+      const membCard = card('cse-membres','accent-indigo','icon-indigo','👥','Membres',
+        `<span class="badge badge-indigo">${pA}% actifs</span>`,
+        `<div class="big-stats">${stat(fmt(membTotal),'Total membres','val-indigo')}${stat(fmt(membActive),'Actifs','val-emerald')}${stat(fmt(membDormant),'Dormants','val-neutral')}</div>
+         ${prog("Taux d'activation",`${pA}%`,pA,'fill-indigo')}
+         ${peQuota > 0 ? `<div class="divider"></div><div class="kpi-list">${kpi('Personnes adressables',fmt(peQuota))}${kpi('Pass utilisés',fmt(peUsed))}</div>${prog('Taux de capture',`${pC}%`,pC,'fill-cyan')}` : ''}`);
+
+      const mrCard = card('cse-mr','accent-emerald','icon-emerald','🤝','Mises en Relation',
+        mrTotal > 0 ? `<span class="badge badge-emerald">${mrPeople} personnes</span>` : '',
+        mrTotal === 0
+          ? '<p style="font-size:12px;color:var(--slate-400);padding:8px 0">Aucune MR sur la période.</p>'
+          : `<div class="big-stats">${stat(fmt(mrTotal),'Total MR','val-emerald')}${stat(fmt(mrAccepted),'Acceptées','val-emerald')}${stat(`${pM}%`,'Taux','val-emerald')}</div>
+             ${prog("Taux d'acceptation",`${fmt(mrAccepted)} / ${fmt(mrTotal)}`,pM,'fill-emerald')}
+             <div class="divider"></div><div class="kpi-list">${kpi('Personnes touchées',fmt(mrPeople))}${kpi('Moyenne / personne',fmt(mrAvg,1))}</div>`);
+
+      const lessCard = card('cse-lecons','accent-violet','icon-violet','📚','Leçons',
+        lessTotal > 0 ? `<span class="badge badge-violet">${pL}% complétées</span>` : '',
+        lessTotal === 0
+          ? '<p style="font-size:12px;color:var(--slate-400);padding:8px 0">Aucune leçon sur la période.</p>'
+          : `<div class="big-stats">${stat(fmt(lessTotal),'Total leçons','val-violet')}${stat(fmt(lessComp),'Complétées','val-violet')}${stat(`${pL}%`,'Taux','val-violet')}</div>
+             ${prog('Taux de complétion',`${fmt(lessComp)} / ${fmt(lessTotal)}`,pL,'fill-violet')}
+             <div class="divider"></div><div class="kpi-list">${kpi('CA leçons',fmtEur(lessCa))}</div>`);
+
+      const walletCard = card('cse-wallet','accent-amber','icon-amber','💳','Pass & Wallet',
+        walletTx > 0 ? `<span class="badge badge-amber">${fmt(walletTx)} tx</span>` : '',
+        `<div class="big-stats">${stat(fmt(passActifs),'Pass actifs','val-amber')}${stat(fmt(walletTx),'Transactions','val-amber')}</div>
+         <div class="kpi-list">${kpi('CA pass',fmtEur(passCa))}${kpi('Total rechargé',fmtEur(walletTotal))}${kpi('Moy. / transaction',fmtEur(walletAvg))}</div>`);
+
+      const themesCard = themes.length === 0 ? '' :
+        `<div class="card col-full" data-card="cse-themes"><div class="card-accent" style="background:linear-gradient(90deg,#fb7185,#f43f5e);height:3px"></div>
+         <div class="card-header"><div class="card-title-wrap"><div class="card-icon" style="background:#ffe4e6">🎯</div><span class="card-title">Top Thématiques</span></div><div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#ffe4e6;color:#9f1239">${themes.length} matières</span></div></div>
+         <div class="card-body"><div style="columns:2;column-gap:24px">${
+           themes.slice(0,10).map((t,i) => {
+             const m = i<3 ? ['🥇','🥈','🥉'][i] : `${i+1}.`;
+             return `<div style="break-inside:avoid;margin-bottom:6px"><div style="display:flex;align-items:center;gap:4px;font-size:11.5px;margin-bottom:2px"><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--slate-700);font-weight:500">${esc(m)} ${esc(t.theme)}</span><span style="font-weight:700;color:#f43f5e;flex-shrink:0">${t.count}</span></div><div class="track sm"><div class="fill" style="width:${pct(t.count,mT)}%;background:linear-gradient(90deg,#fb7185,#f43f5e)"></div></div></div>`;
+           }).join('')
+         }</div></div></div>`;
+
+      const cseAiCard =
+        `<div class="card col-full" data-card="cse-ia"><div class="card-accent accent-ai"></div>
+         <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-violet">✦</div><span class="card-title">Analyse IA — ${esc(selectedCseName)}</span></div><div style="display:flex;align-items:center;gap:6px"><span class="badge badge-violet">GPT-5.2 · CSE</span></div></div>
+         <div class="card-body">
+           <p class="ai-desc">Posez une question sur ce CSE spécifique — membres, leçons, thématiques, tendances…</p>
+           <div class="ai-input-wrap">
+             <textarea id="ai-question" rows="3" placeholder=" "></textarea>
+             <span id="ai-placeholder">ex : Top 5 membres les plus actifs…</span>
+           </div>
+           <div class="ai-footer">
+             <button id="ai-btn" onclick="handleAI()">✦ Analyser</button>
+             <span id="ai-spinner">⏳ Analyse en cours…</span>
+             <span class="ai-hint">ou <kbd>⌘↵</kbd> pour envoyer</span>
+           </div>
+           <div id="ai-result"></div>
+         </div></div>`;
+
+      const cardsEl = document.getElementById('cards-container');
+      if (cardsEl) {
+        cardsEl.innerHTML = `<div class="grid">${membCard}${mrCard}${lessCard}${walletCard}${themesCard}${cseAiCard}</div>`;
+        selectedCseId = f.cse_id || selectedCseId;
+        bindAI(true);
+      }
+    }
+
+    /* ── AI binding (global vs CSE) ── */
+    let _suggestionTimer = null;
+    function bindAI(isCseMode) {
+      const q   = document.getElementById('ai-question');
+      const ph  = document.getElementById('ai-placeholder');
+      if (!q) return;
+      q.addEventListener('focus',  () => { if (ph) ph.style.opacity = '0'; });
+      q.addEventListener('blur',   () => { if (ph && !q.value) ph.style.opacity = '1'; });
+      q.addEventListener('input',  () => { if (ph) ph.style.opacity = q.value ? '0' : '1'; });
+      q.onkeydown = e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) handleAI(isCseMode); };
+      const btn = document.getElementById('ai-btn');
+      if (btn) btn.onclick = () => handleAI(isCseMode);
+      if (_suggestionTimer) clearInterval(_suggestionTimer);
+      _suggestionTimer = setInterval(() => {
+        if (document.activeElement === q || q.value) return;
+        if (!ph) return;
+        ph.style.opacity = '0';
+        setTimeout(() => {
+          suggestionIdx = (suggestionIdx + 1) % AI_SUGGESTIONS.length;
+          ph.textContent = `ex : ${AI_SUGGESTIONS[suggestionIdx]}…`;
+          ph.style.opacity = '1';
+        }, 400);
+      }, 3000);
+    }
+
     /* ── Render ── */
     function render(rows) {
       const f = rows[0];
@@ -367,18 +672,20 @@
       const walletTx    = f.wallet_transactions_total || 0;
       const walletTotal = f.wallet_amount_total     || 0;
       const walletAvg   = f.wallet_amount_avg       || 0;
+      const peQuota     = f.pe_quota_total          || 0;
 
       const pA = pct(membActive,  membTotal);
       const pD = pct(membDormant, membTotal);
       const pM = pct(mrAccepted,  mrTotal);
       const pL = pct(lessComp,    lessTotal);
+      const pC = pct(membTotal,   peQuota);
 
       /* Cards */
       const membCard = card('membres','accent-indigo','icon-indigo','👥','Membres',
         `<span class="badge badge-indigo">${pA}% actifs</span>`,
         `<div class="big-stats">${stat(fmt(membTotal),'Total membres','val-indigo')}${stat(fmt(membActive),'Actifs','val-emerald')}${stat(fmt(membDormant),'Dormants','val-neutral')}</div>
          ${prog("Taux d'activation",`${pA}%`,pA,'fill-indigo')}
-         ${prog('Dormants',`${pD}%`,pD,'fill-amber')}`);
+         ${peQuota > 0 ? `<div class="divider"></div><div class="kpi-list">${kpi('Personnes adressables',fmt(peQuota))}</div>${prog('Taux de capture',`${pC}%`,pC,'fill-cyan')}` : ''}`);
 
       const mrCard = card('mr','accent-emerald','icon-emerald','🤝','Mises en Relation',
         mrTotal > 0 ? `<span class="badge badge-emerald">${mrPeople} personnes</span>` : '',
@@ -411,22 +718,31 @@
              <span id="ai-placeholder">ex : ${esc(AI_SUGGESTIONS[0])}…</span>
            </div>
            <div class="ai-footer">
-             <button id="ai-btn" onclick="handleAI()">✦ Analyser</button>
+             <button id="ai-btn" onclick="handleAI(false)">✦ Analyser</button>
              <span id="ai-spinner">⏳ Analyse en cours…</span>
              <span class="ai-hint">ou <kbd>⌘↵</kbd> pour envoyer</span>
            </div>
            <div id="ai-result"></div>
          </div></div>`;
 
+      const cseOptions = rankingData.length
+        ? rankingData.map(r => `<option value="${esc(r.hubspot_company_id||'')}">${esc(r.cse_name||'—')}</option>`).join('')
+        : '';
+
+      globalCardsHTML = `<div class="grid">${membCard}${mrCard}${lessCard}${walletCard}${renderRankingCard()}${aiCard}</div>`;
+
       document.getElementById('root').innerHTML = `
         <div class="hero"><div class="hero-inner">
           <div class="hero-left">
             <span class="hero-eyebrow">Sales Cockpit · Head of Sales</span>
             <span class="hero-name">Superprof B2B — Performance Globale</span>
-            <div class="period-tabs">
-              <button class="period-tab ${selectedDays===30?'active':''}" onclick="switchPeriod(30)">30 jours</button>
-              <button class="period-tab ${selectedDays===90?'active':''}" onclick="switchPeriod(90)">90 jours</button>
-              <button class="period-tab ${selectedDays===365?'active':''}" onclick="switchPeriod(365)">1 an</button>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <div class="period-tabs">
+                <button class="period-tab ${selectedDays===30?'active':''}" onclick="switchPeriod(30)">30 jours</button>
+                <button class="period-tab ${selectedDays===90?'active':''}" onclick="switchPeriod(90)">90 jours</button>
+                <button class="period-tab ${selectedDays===365?'active':''}" onclick="switchPeriod(365)">1 an</button>
+              </div>
+              ${cseOptions ? `<select id="cse-selector" class="cse-select" onchange="onCseSelect(this.value)"><option value="">— Tous les CSE —</option>${cseOptions}</select>` : ''}
             </div>
           </div>
           <div class="hero-right">
@@ -438,28 +754,15 @@
             <button class="dark-toggle" onclick="toggleDark()" title="Mode sombre / clair">${document.body.classList.contains('dark')?'☀️':'🌙'}</button>
           </div>
         </div></div>
+        <div id="cse-banner" class="cse-banner" style="display:none">
+          <span class="cse-banner-title"></span>
+          <button class="cse-banner-back" onclick="clearCse()">← Vue globale</button>
+        </div>
         <div id="restore-bar" class="restore-bar"></div>
-        <div class="grid">${membCard}${mrCard}${lessCard}${walletCard}${aiCard}</div>`;
+        <div id="cards-container">${globalCardsHTML}</div>`;
 
       applyHidden();
-
-      /* Suggestions rotatives */
-      const ph = document.getElementById('ai-placeholder');
-      const q  = document.getElementById('ai-question');
-      q.addEventListener('focus',  () => { ph.style.opacity = '0'; });
-      q.addEventListener('blur',   () => { if (!q.value) ph.style.opacity = '1'; });
-      q.addEventListener('input',  () => { ph.style.opacity = q.value ? '0' : '1'; });
-      q.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) handleAI(); });
-
-      setInterval(() => {
-        if (document.activeElement === q || q.value) return;
-        ph.style.opacity = '0';
-        setTimeout(() => {
-          suggestionIdx = (suggestionIdx + 1) % AI_SUGGESTIONS.length;
-          ph.textContent = `ex : ${AI_SUGGESTIONS[suggestionIdx]}…`;
-          ph.style.opacity = '1';
-        }, 400);
-      }, 3000);
+      bindAI(false);
     }
 
     /* ── Card visibility ── */
@@ -511,7 +814,7 @@
     }
 
     /* ── AI ── */
-    async function handleAI() {
+    async function handleAI(isCseMode) {
       const q = document.getElementById('ai-question').value.trim();
       if (!q) return;
       const btn = document.getElementById('ai-btn');
@@ -519,8 +822,10 @@
       const res = document.getElementById('ai-result');
       btn.disabled = true; sp.style.display = 'inline'; res.style.display = 'none';
       try {
+        const endpoint = isCseMode ? CSE_AI_API : AI_API;
         const params = new URLSearchParams({ question: q });
-        const r    = await fetch(`${AI_API}?${params}`, { headers: { Authorization: `Bearer ${TOKEN}` } });
+        if (isCseMode && selectedCseId) params.set('cse_id', selectedCseId);
+        const r    = await fetch(`${endpoint}?${params}`, { headers: { Authorization: `Bearer ${TOKEN}` } });
         const json = await r.json();
         if (!json.ok) {
           let html = `<p style="font-size:12px;color:var(--rose);margin-top:8px">⚠ ${esc(json.error || 'Erreur IA')}</p>`;
@@ -558,10 +863,11 @@
     async function loadData() {
       document.getElementById('root').innerHTML = '<div class="state"><div class="spinner"></div><span>Chargement…</span></div>';
       try {
-        const r    = await fetch(`${API}?days=${selectedDays}`, { headers:{ Authorization:`Bearer ${TOKEN}` }});
+        const r    = await fetch(`${API}?days=${selectedDays}&ranking=true`, { headers:{ Authorization:`Bearer ${TOKEN}` }});
         const json = await r.json();
         if (!json.ok) throw new Error(json.error || 'Erreur API');
         if (!json.data?.length) throw new Error('Aucune donnée disponible');
+        rankingData = Array.isArray(json.ranking) ? json.ranking : [];
         render(json.data);
         if (document.body.classList.contains('dark')) {
           document.querySelectorAll('.dark-toggle').forEach(b => { b.textContent = '☀️'; });

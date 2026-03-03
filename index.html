@@ -384,6 +384,8 @@
       const walletTx    = f.wallet_transactions_total || 0;
       const walletTotal = f.wallet_amount_total     || 0;
       const walletAvg   = f.wallet_amount_avg       || 0;
+      const peQuota     = f.pe_quota_total          || 0;
+      const peUsed      = f.pe_quota_used           || 0;
 
       const themes = rows.filter(r => r.theme && (r.theme_count||0) > 0)
         .map(r => ({ theme: r.theme, count: r.theme_count }))
@@ -393,6 +395,7 @@
       const pD = pct(membDormant, membTotal);
       const pM = pct(mrAccepted,  mrTotal);
       const pL = pct(lessComp,    lessTotal);
+      const pC = pct(membTotal,   peQuota);
       const mT = themes[0]?.count || 1;
 
       /* Cards */
@@ -400,7 +403,8 @@
         `<span class="badge badge-indigo">${pA}% actifs</span>`,
         `<div class="big-stats">${stat(fmt(membTotal),'Total membres','val-indigo')}${stat(fmt(membActive),'Actifs','val-emerald')}${stat(fmt(membDormant),'Dormants','val-neutral')}</div>
          ${prog("Taux d'activation",`${pA}%`,pA,'fill-indigo')}
-         ${prog('Dormants',`${pD}%`,pD,'fill-amber')}`);
+         ${prog('Dormants',`${pD}%`,pD,'fill-amber')}
+         ${peQuota > 0 ? `<div class="divider"></div><div class="kpi-list">${kpi('Personnes adressables',fmt(peQuota))}${kpi('Pass utilisés',fmt(peUsed))}</div>${prog('Taux de capture',`${pC}%`,pC,'fill-cyan')}` : ''}`);
 
       const mrCard = card('mr','accent-emerald','icon-emerald','🤝','Mises en Relation',
         mrTotal > 0 ? `<span class="badge badge-emerald">${mrPeople} personnes</span>` : '',
