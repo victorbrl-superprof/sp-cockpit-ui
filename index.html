@@ -403,8 +403,7 @@
         `<span class="badge badge-indigo">${pA}% actifs</span>`,
         `<div class="big-stats">${stat(fmt(membTotal),'Total membres','val-indigo')}${stat(fmt(membActive),'Actifs','val-emerald')}${stat(fmt(membDormant),'Dormants','val-neutral')}</div>
          ${prog("Taux d'activation",`${pA}%`,pA,'fill-indigo')}
-         ${prog('Dormants',`${pD}%`,pD,'fill-amber')}
-         ${peQuota > 0 ? `<div class="divider"></div><div class="kpi-list">${kpi('Personnes adressables',fmt(peQuota))}${kpi('Pass utilisés',fmt(peUsed))}</div>${prog('Taux de capture',`${pC}%`,pC,'fill-cyan')}` : ''}`);
+         ${peQuota > 0 ? `<div class="divider"></div><div class="kpi-list">${kpi('Personnes adressables',fmt(peQuota))}</div>${prog('Taux de capture',`${pC}%`,pC,'fill-cyan')}` : ''}`);
 
       const mrCard = card('mr','accent-emerald','icon-emerald','🤝','Mises en Relation',
         mrTotal > 0 ? `<span class="badge badge-emerald">${mrPeople} personnes</span>` : '',
