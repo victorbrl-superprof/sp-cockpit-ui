@@ -534,7 +534,7 @@
     function toggleDark() {
       document.body.classList.toggle('dark');
       localStorage.setItem('cockpit-dark', document.body.classList.contains('dark'));
-      document.querySelectorAll('.dark-toggle').forEach(b => { b.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙'; });
+      document.querySelectorAll('.dark-toggle').forEach(b => { b.textContent = document.body.classList.contains('dark') ? '☀️' : '🌑'; });
     }
 
     /* ── Export CSV ── */
