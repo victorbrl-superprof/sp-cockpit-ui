@@ -255,11 +255,11 @@
     .spinner { width:32px; height:32px; border:3px solid var(--indigo-light); border-top-color:var(--indigo); border-radius:50%; animation:spin .75s linear infinite; }
     @keyframes spin { to { transform:rotate(360deg); } }
 
-    /* ── Period tabs ── */
-    .period-tabs { display:flex; background:rgba(255,255,255,.15); border-radius:10px; padding:2px; gap:2px; margin-top:5px; align-self:flex-start; backdrop-filter:blur(4px); }
-    .period-tab { padding:3px 12px; border:none; border-radius:7px; background:transparent; color:rgba(255,255,255,.75); font-size:11px; font-weight:600; cursor:pointer; transition:all .2s; font-family:inherit; letter-spacing:.01em; }
-    .period-tab.active { background:white; color:var(--indigo); box-shadow:0 1px 6px rgba(0,0,0,.18); }
-    .period-tab:hover:not(.active) { background:rgba(255,255,255,.22); color:white; }
+    /* ── Period tabs — Liquid Glass ── */
+    .period-tabs { display:flex; background:rgba(255,255,255,.10); border-radius:12px; padding:3px; gap:1px; backdrop-filter:blur(24px) saturate(160%); -webkit-backdrop-filter:blur(24px) saturate(160%); border:1px solid rgba(255,255,255,.22); box-shadow:0 1px 0 rgba(255,255,255,.30) inset, 0 4px 16px rgba(0,0,0,.12), 0 1px 3px rgba(0,0,0,.08); }
+    .period-tab { padding:4px 13px; border:none; border-radius:9px; background:transparent; color:rgba(255,255,255,.80); font-size:11px; font-weight:600; cursor:pointer; transition:all .18s ease; font-family:inherit; letter-spacing:.01em; }
+    .period-tab.active { background:rgba(255,255,255,.90); color:var(--indigo-dark); box-shadow:0 1px 4px rgba(0,0,0,.16), 0 0 0 .5px rgba(255,255,255,.55) inset; }
+    .period-tab:hover:not(.active) { background:rgba(255,255,255,.18); color:white; }
 
     /* ── Dark toggle ── */
     .dark-toggle { width:32px; height:32px; border:none; border-radius:8px; background:rgba(255,255,255,.15); cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center; transition:background .2s; flex-shrink:0; margin-left:10px; }
@@ -278,6 +278,9 @@
     body.dark .kpi-row { border-bottom-color:#334155; } body.dark .divider { border-top-color:#334155; }
     body.dark .prog-lbl { color:#94a3b8; } body.dark .prog-val { color:#f1f5f9; }
     body.dark .big-lbl { color:#64748b; } body.dark .theme-name { color:#94a3b8; }
+    body.dark .val-neutral { color: #cbd5e1; }
+    .val-dormant { color: var(--amber); }
+    body.dark .val-dormant { color: #fbbf24; }
     body.dark .ai-desc { color:#64748b; }
     body.dark #ai-question { background:#1e293b; color:#e2e8f0; border-color:#334155; }
     body.dark #ai-question:focus { background:#263248; }
@@ -404,7 +407,7 @@
       /* Cards */
       const membCard = card('membres','accent-indigo','icon-indigo','👥','Membres',
         `<span class="badge badge-indigo">${pA}% actifs</span>`,
-        `<div class="big-stats">${stat(fmt(membTotal),'Total membres','val-indigo')}${stat(fmt(membActive),'Actifs','val-emerald')}${stat(fmt(membDormant),'Dormants','val-neutral')}${peQuota > 0 ? stat(fmt(peQuota),'Adressables','val-neutral') : ''}</div>
+        `<div class="big-stats">${stat(fmt(membTotal),'Total membres','val-indigo')}${stat(fmt(membActive),'Actifs','val-emerald')}${stat(fmt(membDormant),'Dormants','val-dormant')}${peQuota > 0 ? stat(fmt(peQuota),'Adressables','val-neutral') : ''}</div>
          ${prog("Taux d'activation",`${pA}%`,pA,'fill-indigo')}
          ${peQuota > 0 ? prog('Taux de capture',`${pC}%`,pC,'fill-cyan') : ''}`);
 

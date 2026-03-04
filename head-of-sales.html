@@ -355,6 +355,13 @@
       color: var(--slate-700);
     }
 
+    .val-dormant {
+      color: var(--amber);
+    }
+
+    body.dark .val-neutral { color: #cbd5e1; }
+    body.dark .val-dormant { color: #fbbf24; }
+
     .big-lbl {
       font-size: 10px;
       color: var(--slate-400);
@@ -693,8 +700,6 @@
       border-radius: 12px;
       padding: 3px;
       gap: 1px;
-      margin-top: 5px;
-      align-self: flex-start;
       backdrop-filter: blur(24px) saturate(160%);
       -webkit-backdrop-filter: blur(24px) saturate(160%);
       border: 1px solid rgba(255, 255, 255, .22);
@@ -1010,7 +1015,7 @@
       font-family: inherit; cursor: pointer; outline: none;
       transition: background .18s ease, border-color .18s ease;
     }
-    .cse-combo-btn::before { content: '🏢'; font-size: 11px; }
+    .cse-combo-btn::before { content: none; }
     .cse-combo-btn:hover {
       background: rgba(255,255,255,.18);
       border-color: rgba(255,255,255,.38);
@@ -1470,7 +1475,7 @@
 
       const membCard = card('cse-membres', 'accent-indigo', 'icon-indigo', '👥', 'Membres',
         `<span class="badge badge-indigo">${pA}% actifs</span>`,
-        `<div class="big-stats">${stat(fmt(membTotal), 'Total membres', 'val-indigo')}${stat(fmt(membActive), 'Actifs', 'val-emerald')}${stat(fmt(membDormant), 'Dormants', 'val-neutral')}</div>
+        `<div class="big-stats">${stat(fmt(membTotal), 'Total membres', 'val-indigo')}${stat(fmt(membActive), 'Actifs', 'val-emerald')}${stat(fmt(membDormant), 'Dormants', 'val-dormant')}</div>
          ${prog("Taux d'activation", `${pA}%`, pA, 'fill-indigo')}
          ${peQuota > 0 ? `<div class="divider"></div><div class="kpi-list">${kpi('Personnes adressables', fmt(peQuota))}${kpi('Pass utilisés', fmt(peUsed))}</div>${prog('Taux de capture', `${pC}%`, pC, 'fill-cyan')}` : ''}`);
 
@@ -1585,7 +1590,7 @@
       /* Cards */
       const membCard = card('membres', 'accent-indigo', 'icon-indigo', '👥', 'Membres',
         `<span class="badge badge-indigo">${pA}% actifs</span>`,
-        `<div class="big-stats">${stat(fmt(membTotal), 'Total membres', 'val-indigo')}${stat(fmt(membActive), 'Actifs', 'val-emerald')}${stat(fmt(membDormant), 'Dormants', 'val-neutral')}</div>
+        `<div class="big-stats">${stat(fmt(membTotal), 'Total membres', 'val-indigo')}${stat(fmt(membActive), 'Actifs', 'val-emerald')}${stat(fmt(membDormant), 'Dormants', 'val-dormant')}</div>
          ${prog("Taux d'activation", `${pA}%`, pA, 'fill-indigo')}
          ${peQuota > 0 ? `<div class="divider"></div><div class="kpi-list">${kpi('Personnes adressables', fmt(peQuota))}</div>${prog('Taux de capture', `${pC}%`, pC, 'fill-cyan')}` : ''}`);
 
