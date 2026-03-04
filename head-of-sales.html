@@ -1515,7 +1515,7 @@
 
       const themesCard = themes.length === 0 ? '' :
         `<div class="card col-full" data-card="cse-themes"><div class="card-accent" style="background:linear-gradient(90deg,#fb7185,#f43f5e);height:3px"></div>
-         <div class="card-header"><div class="card-title-wrap"><div class="card-icon" style="background:#ffe4e6">🎯</div><span class="card-title">Top Thématiques</span></div><div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#ffe4e6;color:#9f1239">${themes.length} matières</span></div></div>
+         <div class="card-header"><div class="card-title-wrap"><div class="card-icon" style="background:#ffe4e6">🎯</div><span class="card-title">Top Thématiques</span></div><div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#ffe4e6;color:#9f1239">${themes.length} matières</span><button class="card-toggle" onclick="toggleCard('cse-themes')" title="Masquer">👁</button></div></div>
          <div class="card-body"><div style="columns:2;column-gap:24px">${themes.slice(0, 10).map((t, i) => {
           const m = i < 3 ? ['🥇', '🥈', '🥉'][i] : `${i + 1}.`;
           return `<div style="break-inside:avoid;margin-bottom:6px"><div style="display:flex;align-items:center;gap:4px;font-size:11.5px;margin-bottom:2px"><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--slate-700);font-weight:500">${esc(m)} ${esc(t.theme)}</span><span style="font-weight:700;color:#f43f5e;flex-shrink:0">${t.count}</span></div><div class="track sm"><div class="fill" style="width:${pct(t.count, mT)}%;background:linear-gradient(90deg,#fb7185,#f43f5e)"></div></div></div>`;
@@ -1524,7 +1524,7 @@
 
       const cseAiCard =
         `<div class="card col-full" data-card="cse-ia"><div class="card-accent accent-ai"></div>
-         <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-violet">✦</div><span class="card-title">Analyse IA — ${esc(selectedCseName)}</span></div><div style="display:flex;align-items:center;gap:6px"><span class="badge badge-violet">GPT-5.2 · CSE</span></div></div>
+         <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-violet">✦</div><span class="card-title">Analyse IA — ${esc(selectedCseName)}</span></div><div style="display:flex;align-items:center;gap:6px"><span class="badge badge-violet">GPT-5.2 · CSE</span><button class="card-toggle" onclick="toggleCard('cse-ia')" title="Masquer">👁</button></div></div>
          <div class="card-body">
            <p class="ai-desc">Posez une question sur ce CSE spécifique — membres, leçons, thématiques, tendances…</p>
            <div class="ai-input-wrap">
@@ -1543,6 +1543,7 @@
       if (cardsEl) {
         cardsEl.innerHTML = `<div class="grid">${membCard}${mrCard}${lessCard}${walletCard}${themesCard}${cseAiCard}</div>`;
         selectedCseId = f.cse_id || selectedCseId;
+        applyHidden();
         bindAI(true);
       }
     }
@@ -1704,7 +1705,10 @@
     }
 
     /* ── Card visibility ── */
-    const CARD_LABELS = { membres: '👥 Membres', mr: '🤝 MR', lecons: '📚 Leçons', wallet: '💳 Wallet', ranking: '🏆 Top CSE', ia: '✦ IA' };
+    const CARD_LABELS = {
+      membres: '👥 Membres', mr: '🤝 MR', lecons: '📚 Leçons', wallet: '💳 Wallet', ranking: '🏆 Top CSE', ia: '✦ IA',
+      'cse-membres': '👥 Membres', 'cse-mr': '🤝 MR', 'cse-lecons': '📚 Leçons', 'cse-wallet': '💳 Wallet', 'cse-themes': '🎯 Thématiques', 'cse-ia': '✦ IA',
+    };
 
     function toggleCard(name) {
       if (!hiddenCards.includes(name)) hiddenCards.push(name);
