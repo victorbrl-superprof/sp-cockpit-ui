@@ -1433,6 +1433,8 @@
       if (cardsEl) cardsEl.innerHTML = globalCardsHTML;
       applyHidden();
       bindAI(false);
+      bindRankSort();
+      bindRankTable();
     }
 
     let globalCardsHTML = '';
@@ -1715,13 +1717,15 @@
       applyHidden();
     }
     function applyHidden() {
+      const presentCards = new Set([...document.querySelectorAll('[data-card]')].map(el => el.dataset.card));
       document.querySelectorAll('[data-card]').forEach(el => {
         el.classList.toggle('card-hidden', hiddenCards.includes(el.dataset.card));
       });
       const bar = document.getElementById('restore-bar');
-      if (bar) bar.innerHTML = hiddenCards.map(n =>
-        `<button class="restore-chip" onclick="restoreCard('${n}')">+ ${CARD_LABELS[n] || n}</button>`
-      ).join('');
+      if (bar) bar.innerHTML = hiddenCards
+        .filter(n => presentCards.has(n))
+        .map(n => `<button class="restore-chip" onclick="restoreCard('${n}')">+ ${CARD_LABELS[n] || n}</button>`)
+        .join('');
     }
 
     /* ── Period ── */
