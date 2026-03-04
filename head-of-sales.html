@@ -686,40 +686,48 @@
       }
     }
 
-    /* ── Period tabs ── */
+    /* ── Period tabs — Liquid Glass ── */
     .period-tabs {
       display: flex;
-      background: rgba(255, 255, 255, .15);
-      border-radius: 10px;
-      padding: 2px;
-      gap: 2px;
+      background: rgba(255, 255, 255, .10);
+      border-radius: 12px;
+      padding: 3px;
+      gap: 1px;
       margin-top: 5px;
       align-self: flex-start;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(24px) saturate(160%);
+      -webkit-backdrop-filter: blur(24px) saturate(160%);
+      border: 1px solid rgba(255, 255, 255, .22);
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, .30) inset,
+        0 4px 16px rgba(0, 0, 0, .12),
+        0 1px 3px rgba(0, 0, 0, .08);
     }
 
     .period-tab {
-      padding: 3px 12px;
+      padding: 4px 13px;
       border: none;
-      border-radius: 7px;
+      border-radius: 9px;
       background: transparent;
-      color: rgba(255, 255, 255, .75);
+      color: rgba(255, 255, 255, .80);
       font-size: 11px;
       font-weight: 600;
       cursor: pointer;
-      transition: all .2s;
+      transition: all .18s ease;
       font-family: inherit;
       letter-spacing: .01em;
     }
 
     .period-tab.active {
-      background: white;
-      color: var(--indigo);
-      box-shadow: 0 1px 6px rgba(0, 0, 0, .18);
+      background: rgba(255, 255, 255, .90);
+      color: var(--indigo-dark);
+      box-shadow:
+        0 1px 4px rgba(0, 0, 0, .16),
+        0 0 0 .5px rgba(255, 255, 255, .55) inset;
     }
 
     .period-tab:hover:not(.active) {
-      background: rgba(255, 255, 255, .22);
+      background: rgba(255, 255, 255, .18);
       color: white;
     }
 
@@ -984,47 +992,89 @@
       background: #3730a3;
     }
 
-    /* ── CSE combobox ── */
-    .cse-combo { position: relative; margin-top: 5px; }
+    /* ── CSE combobox — Liquid Glass ── */
+    .cse-combo { position: relative; }
     .cse-combo-btn {
-      display: flex; align-items: center; gap: 7px;
-      padding: 5px 12px;
-      border: 1.5px solid rgba(255,255,255,.35); border-radius: 20px;
-      background: rgba(255,255,255,.12);
-      backdrop-filter: blur(6px);
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 12px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 12px;
+      background: rgba(255,255,255,.10);
+      backdrop-filter: blur(24px) saturate(160%);
+      -webkit-backdrop-filter: blur(24px) saturate(160%);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,.30) inset,
+        0 4px 16px rgba(0,0,0,.12),
+        0 1px 3px rgba(0,0,0,.08);
       color: white; font-size: 11px; font-weight: 600;
       font-family: inherit; cursor: pointer; outline: none;
-      transition: background .2s, border-color .2s;
+      transition: background .18s ease, border-color .18s ease;
     }
-    .cse-combo-btn::before { content: '🏢'; font-size: 12px; }
-    .cse-combo-btn:hover { background: rgba(255,255,255,.22); border-color: rgba(255,255,255,.6); }
+    .cse-combo-btn::before { content: '🏢'; font-size: 11px; }
+    .cse-combo-btn:hover {
+      background: rgba(255,255,255,.18);
+      border-color: rgba(255,255,255,.38);
+    }
     .cse-combo-label { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .cse-combo-arrow { font-size: 10px; opacity: .7; flex-shrink: 0; }
+    .cse-combo-arrow { font-size: 9px; opacity: .65; flex-shrink: 0; }
+
+    /* Panel — frosted glass */
     .cse-combo-panel {
-      position: absolute; top: calc(100% + 4px); left: 0; z-index: 200;
+      position: absolute; top: calc(100% + 6px); left: 0; z-index: 200;
       min-width: 240px; max-width: 320px;
-      background: white; border-radius: 10px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.15); overflow: hidden;
+      background: rgba(248, 250, 252, .88);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.65);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,.8) inset,
+        0 8px 32px rgba(0,0,0,.14),
+        0 2px 8px rgba(0,0,0,.07);
+      overflow: hidden;
     }
-    .cse-search-wrap { padding: 8px; border-bottom: 1px solid var(--slate-100); }
+    .cse-search-wrap { padding: 8px; border-bottom: 1px solid rgba(0,0,0,.06); }
     .cse-search-input {
-      width: 100%; padding: 5px 8px;
-      border: 1.5px solid var(--slate-200); border-radius: 6px;
+      width: 100%; padding: 5px 9px;
+      border: 1px solid rgba(0,0,0,.12); border-radius: 8px;
       font-size: 12px; outline: none; font-family: inherit;
+      background: rgba(255,255,255,.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: var(--slate-900);
+      transition: border-color .15s, box-shadow .15s;
     }
-    .cse-search-input:focus { border-color: var(--indigo); }
+    .cse-search-input:focus {
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 3px rgba(99,102,241,.12);
+      background: rgba(255,255,255,.9);
+    }
     .cse-list { max-height: 220px; overflow-y: auto; }
     .cse-opt {
       padding: 7px 12px; font-size: 12px; cursor: pointer;
       color: var(--slate-700); white-space: nowrap;
       overflow: hidden; text-overflow: ellipsis;
+      transition: background .1s;
     }
-    .cse-opt:hover { background: var(--indigo-light); color: var(--indigo); }
+    .cse-opt:hover { background: rgba(99,102,241,.08); color: var(--indigo); }
     .cse-opt.selected { font-weight: 700; color: var(--indigo); }
-    body.dark .cse-combo-panel { background: #1e293b; border: 1px solid #334155; }
-    body.dark .cse-search-input { background: #0f172a; border-color: #475569; color: #e2e8f0; }
+
+    /* Dark mode panel */
+    body.dark .cse-combo-panel {
+      background: rgba(15, 23, 42, .80);
+      border-color: rgba(255,255,255,.10);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,.06) inset,
+        0 8px 32px rgba(0,0,0,.45),
+        0 2px 8px rgba(0,0,0,.25);
+    }
+    body.dark .cse-search-wrap { border-bottom-color: rgba(255,255,255,.07); }
+    body.dark .cse-search-input {
+      background: rgba(30,41,59,.7); border-color: rgba(255,255,255,.12); color: #e2e8f0;
+    }
+    body.dark .cse-search-input:focus { border-color: var(--indigo); background: rgba(30,41,59,.9); }
     body.dark .cse-opt { color: #cbd5e1; }
-    body.dark .cse-opt:hover { background: #334155; color: white; }
+    body.dark .cse-opt:hover { background: rgba(99,102,241,.15); color: #a5b4fc; }
 
     /* ── CSE zoom banner ── */
     .cse-banner {
