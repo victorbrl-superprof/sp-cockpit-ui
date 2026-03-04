@@ -73,7 +73,7 @@
       padding: 10px 18px 10px;
       color: white;
       position: relative;
-      overflow: hidden;
+      z-index: 10;
     }
 
     .hero::before {
@@ -985,17 +985,19 @@
     }
 
     /* ── CSE combobox ── */
-    .cse-combo { position: relative; margin-top: 6px; }
+    .cse-combo { position: relative; margin-top: 5px; }
     .cse-combo-btn {
-      display: flex; align-items: center; gap: 6px;
-      padding: 4px 10px;
-      border: none; border-radius: 8px;
-      background: rgba(255,255,255,.18);
-      backdrop-filter: blur(4px);
+      display: flex; align-items: center; gap: 7px;
+      padding: 5px 12px;
+      border: 1.5px solid rgba(255,255,255,.35); border-radius: 20px;
+      background: rgba(255,255,255,.12);
+      backdrop-filter: blur(6px);
       color: white; font-size: 11px; font-weight: 600;
       font-family: inherit; cursor: pointer; outline: none;
+      transition: background .2s, border-color .2s;
     }
-    .cse-combo-btn:hover { background: rgba(255,255,255,.26); }
+    .cse-combo-btn::before { content: '🏢'; font-size: 12px; }
+    .cse-combo-btn:hover { background: rgba(255,255,255,.22); border-color: rgba(255,255,255,.6); }
     .cse-combo-label { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .cse-combo-arrow { font-size: 10px; opacity: .7; flex-shrink: 0; }
     .cse-combo-panel {
@@ -1239,12 +1241,12 @@
         return `<tr class="rank-clickable" onclick="switchCse('${esc(r.hubspot_company_id || '')}','${esc(r.cse_name || '')}','${esc(r.cse_id || '')}')">
           <td style="color:var(--slate-400);font-size:11px;width:28px">${i + 1}</td>
           <td class="rank-name">${esc(r.cse_name || '—')}</td>
-          <td style="text-align:right">${fmt(r.pe_quota_total)}</td>
-          <td style="text-align:right">${fmt(r.memberships_total)}</td>
-          <td style="text-align:right">${cap}</td>
-          <td style="text-align:right">${fmt(r.lessons_total)}</td>
-          <td style="text-align:right">${fmtEur(r.lessons_ca)}</td>
-          <td style="text-align:right">${fmt(r.mise_relations_total)}</td>
+          <td style="text-align:center">${fmt(r.pe_quota_total)}</td>
+          <td style="text-align:center">${fmt(r.memberships_total)}</td>
+          <td style="text-align:center">${cap}</td>
+          <td style="text-align:center">${fmt(r.lessons_total)}</td>
+          <td style="text-align:center">${fmtEur(r.lessons_ca)}</td>
+          <td style="text-align:center">${fmt(r.mise_relations_total)}</td>
         </tr>`;
       }).join('');
     }
@@ -1277,12 +1279,12 @@
       const cols = [
         [null, '#', ''],
         ['cse_name', 'CSE', ''],
-        ['pe_quota_total', 'Quota', ' style="text-align:right"'],
-        ['memberships_total', 'Membres', ' style="text-align:right"'],
-        ['capture_rate', 'Capture %', ' style="text-align:right"'],
-        ['lessons_total', 'Leçons', ' style="text-align:right"'],
-        ['lessons_ca', 'CA', ' style="text-align:right"'],
-        ['mise_relations_total', 'MR', ' style="text-align:right"'],
+        ['pe_quota_total', 'Quota', ' style="text-align:center"'],
+        ['memberships_total', 'Membres', ' style="text-align:center"'],
+        ['capture_rate', 'Capture', ' style="text-align:center"'],
+        ['lessons_total', 'Leçons', ' style="text-align:center"'],
+        ['lessons_ca', 'CA', ' style="text-align:center"'],
+        ['mise_relations_total', 'MR', ' style="text-align:center"'],
       ];
       const ths = cols.map(([k, l, a]) => {
         if (!k) return `<th>${l}</th>`;
@@ -1315,7 +1317,7 @@
       if (panel.style.display !== 'none') { closeCseDropdown(); return; }
       panel.style.display = 'block';
       const input = document.getElementById('cse-search');
-      if (input) { input.value = ''; input.focus(); }
+      if (input) { input.value = ''; input.focus({ preventScroll: true }); }
       filterCse('');
     }
 
@@ -1648,7 +1650,16 @@
     function switchPeriod(days) {
       if (days === selectedDays) return;
       selectedDays = days;
-      loadData();
+      // Update tab visuals immediately (without full re-render)
+      document.querySelectorAll('.period-tab').forEach((b, i) => {
+        b.classList.toggle('active', [30, 90, 365][i] === days);
+      });
+      // Reload appropriate view: CSE if one is selected, global otherwise
+      if (selectedCseHubspotId) {
+        loadCseData();
+      } else {
+        loadData();
+      }
     }
 
     /* ── Dark mode ── */
