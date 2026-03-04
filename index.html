@@ -318,6 +318,7 @@
   </style>
 </head>
 <body>
+  <script>try{if(localStorage.getItem('cockpit-dark')==='true')document.body.classList.add('dark');}catch(e){}</script>
   <div id="root"><div class="state"><div class="spinner"></div><span>Chargement du dashboard…</span></div></div>
 
   <script>
@@ -334,7 +335,7 @@
     let lastAiRows    = [];
     let lastAiCols    = [];
     const HIDDEN_KEY  = 'cockpit-hidden-cards';
-    let hiddenCards   = JSON.parse(localStorage.getItem(HIDDEN_KEY) || '[]');
+    let hiddenCards   = (() => { try { return JSON.parse(localStorage.getItem(HIDDEN_KEY) || '[]'); } catch(e) { return []; } })();
 
     const AI_SUGGESTIONS = [
       "Top 5 membres les plus actifs",
