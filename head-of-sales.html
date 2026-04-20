@@ -270,6 +270,10 @@
       background: #cffafe;
     }
 
+    .icon-spliit {
+      background: white;
+    }
+
     .card-title {
       font-size: 12.5px;
       font-weight: 700;
@@ -789,6 +793,10 @@
 
     body.dark .card-title {
       color: #e2e8f0;
+    }
+
+    body.dark .icon-spliit {
+      background: #1e293b;
     }
 
     body.dark .track {
@@ -1527,7 +1535,7 @@
 
       /* ── Spliit stats card (top row) ── */
       const spliitStatsCard = !spliitCseStats ? '' :
-        card('cse-spliit-stats','accent-cyan','icon-cyan', SPLIIT_ICON, 'Spliiit',
+        card('cse-spliit-stats','accent-cyan','icon-spliit', SPLIIT_ICON, 'Spliiit',
           `<span class="badge badge-cyan">${fmt(spliitCseStats.codes_utilises)} codes</span>`,
           `<div class="big-stats">
             ${stat(fmt(spliitCseStats.utilisateurs_actifs),'Utilisateurs actifs','val-indigo')}
@@ -1545,7 +1553,7 @@
       const maxSvc = spliitServices[0]?.usage_count || 1;
       const spliitServicesCard = spliitServices.length === 0 ? '' :
         `<div class="card col-full" data-card="cse-spliit-services"><div class="card-accent accent-cyan"></div>
-         <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-cyan">${SPLIIT_ICON}</div><span class="card-title">Top Services Spliiit</span></div>
+         <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-spliit">${SPLIIT_ICON}</div><span class="card-title">Top Services Spliiit</span></div>
          <div style="display:flex;align-items:center;gap:6px"><span class="badge badge-cyan">${spliitServices.length} services</span></div></div>
          <div class="card-body"><div class="themes-grid">${
            spliitServices.slice(0,20).map((s,i) => {
@@ -1667,7 +1675,7 @@
 
       const hasSpliit = globalSpliitStats && globalSpliitStats.total_usages > 0;
       const spliitFinCard = !hasSpliit ? '' :
-        card('spliit', 'accent-cyan', 'icon-cyan', SPLIIT_ICON, 'Spliiit',
+        card('spliit', 'accent-cyan', 'icon-spliit', SPLIIT_ICON, 'Spliiit',
           `<span class="badge badge-cyan">${globalSpliitStats.cse_count} CSE${globalSpliitStats.cse_count > 1 ? 's' : ''}</span>`,
           `<div class="big-stats">${stat(fmt(globalSpliitStats.utilisateurs_actifs || globalSpliitStats.total_usages), 'Utilisateurs actifs', 'val-indigo')}${stat(fmt(globalSpliitStats.codes_utilises || 0), 'Codes utilisés', 'val-emerald')}${stat(fmt(globalSpliitStats.abonnes_perdus || 0), 'Abonnés perdus', 'val-amber')}</div>
            <div class="kpi-list">${kpi('Montant crédité', fmtEur(globalSpliitStats.montant_credite))}${kpi('Montant généré', fmtEur(globalSpliitStats.montant_genere))}${kpi('CSE avec Spliiit', fmt(globalSpliitStats.cse_count))}</div>`);
@@ -1676,7 +1684,7 @@
       const spliitMaxSvc = spliitTopServices[0]?.total || 1;
       const spliitRankCard = !hasSpliit ? '' :
         `<div class="card col-full" data-card="spliit-services"><div class="card-accent accent-cyan"></div>
-         <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-cyan">${SPLIIT_ICON}</div><span class="card-title">Top Services Spliiit</span></div>
+         <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-spliit">${SPLIIT_ICON}</div><span class="card-title">Top Services Spliiit</span></div>
          <div style="display:flex;align-items:center;gap:6px"><span class="badge badge-cyan">${spliitTopServices.length} services</span><button class="card-toggle" onclick="toggleCard('spliit-services')" title="Masquer">👁</button></div></div>
          <div class="card-body"><div style="columns:2;column-gap:24px">${
            spliitTopServices.slice(0,20).map((s,i) => {
@@ -1727,7 +1735,7 @@
     }
 
     /* ── Card visibility ── */
-    const CARD_LABELS = { membres: '👥 Membres', mr: '🤝 MR', lecons: '📚 Leçons', wallet: '💳 Wallet', spliit: '🔵 Spliiit', 'spliit-services': '🔵 Services Spliiit', ranking: '🏆 Top CSE', ia: '✦ IA', 'cse-spliit-stats': '🔵 Spliiit', 'cse-spliit-services': '🔵 Services Spliiit' };
+    const CARD_LABELS = { membres: '👥 Membres', mr: '🤝 MR', lecons: '📚 Leçons', wallet: '💳 Wallet', spliit: 'Spliiit', 'spliit-services': 'Services Spliiit', ranking: '🏆 Top CSE', ia: '✦ IA', 'cse-spliit-stats': 'Spliiit', 'cse-spliit-services': 'Services Spliiit' };
 
     function toggleCard(name) {
       if (!hiddenCards.includes(name)) hiddenCards.push(name);

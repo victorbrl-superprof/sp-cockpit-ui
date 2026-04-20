@@ -138,6 +138,8 @@
     .icon-violet  { background: #ede9fe; }
     .icon-amber   { background: #fef3c7; }
     .icon-cyan    { background: #cffafe; }
+    .icon-spliit  { background: white; }
+    body.dark .icon-spliit { background: #1e293b; }
     .card-title { font-size: 12.5px; font-weight: 700; color: var(--slate-700); }
     .badge {
       font-size: 10.5px; font-weight: 700;
@@ -449,7 +451,7 @@
 
       /* ── Spliit stats card (top row) ── */
       const spliitStatsCard = !spliitCseStats ? '' :
-        card('spliit-stats','accent-cyan','icon-cyan', SPLIIT_ICON, 'Spliiit',
+        card('spliit-stats','accent-cyan','icon-spliit', SPLIIT_ICON, 'Spliiit',
           `<span class="badge badge-cyan">${fmt(spliitCseStats.codes_utilises)} codes</span>`,
           `<div class="big-stats">
             ${stat(fmt(spliitCseStats.utilisateurs_actifs),'Utilisateurs actifs','val-indigo')}
@@ -467,7 +469,7 @@
       const maxSvc = spliitServices[0]?.usage_count || 1;
       const spliitServicesCard = spliitServices.length === 0 ? '' :
         `<div class="card col-full" data-card="spliit-services"><div class="card-accent accent-cyan"></div>
-         <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-cyan">${SPLIIT_ICON}</div><span class="card-title">Top Services Spliiit</span></div>
+         <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-spliit">${SPLIIT_ICON}</div><span class="card-title">Top Services Spliiit</span></div>
          <div style="display:flex;align-items:center;gap:6px"><span class="badge badge-cyan">${spliitServices.length} services</span><button class="card-toggle" onclick="toggleCard('spliit-services')" title="Masquer">👁</button></div></div>
          <div class="card-body"><div class="themes-grid">${
            spliitServices.slice(0,20).map((s,i) => {
@@ -538,7 +540,7 @@
     }
 
     /* ── Card visibility ── */
-    const CARD_LABELS = { membres:'👥 Membres', mr:'🤝 MR', lecons:'📚 Leçons', wallet:'💳 Wallet', themes:'🎯 Thématiques', 'spliit-stats':'📊 Spliiit', 'spliit-services':'📱 Services Spliiit', ia:'✦ IA' };
+    const CARD_LABELS = { membres:'👥 Membres', mr:'🤝 MR', lecons:'📚 Leçons', wallet:'💳 Wallet', themes:'🎯 Thématiques', 'spliit-stats':'Spliiit', 'spliit-services':'Services Spliiit', ia:'✦ IA' };
 
     function toggleCard(name) {
       if (!hiddenCards.includes(name)) hiddenCards.push(name);
