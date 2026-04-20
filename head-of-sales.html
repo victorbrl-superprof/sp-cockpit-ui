@@ -467,6 +467,15 @@
       color: var(--slate-900);
     }
 
+    /* ── Themes / Ranked lists ── */
+    .themes-grid { columns: 2; column-gap: 24px; }
+    .themes-grid > div { break-inside: avoid; margin-bottom: 6px; }
+    .theme-meta { display: flex; align-items: center; gap: 4px; font-size: 11.5px; margin-bottom: 2px; }
+    .theme-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--slate-700); font-weight: 500; }
+    .theme-count { font-weight: 700; flex-shrink: 0; }
+
+    body.dark .theme-name { color: #94a3b8; }
+
     /* ── AI ── */
     .ai-desc {
       font-size: 11.5px;
@@ -1686,10 +1695,10 @@
         `<div class="card col-full" data-card="spliit-services"><div class="card-accent accent-cyan"></div>
          <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-spliit">${SPLIIT_ICON}</div><span class="card-title">Top Services Spliiit</span></div>
          <div style="display:flex;align-items:center;gap:6px"><span class="badge badge-cyan">${spliitTopServices.length} services</span><button class="card-toggle" onclick="toggleCard('spliit-services')" title="Masquer">👁</button></div></div>
-         <div class="card-body"><div style="columns:2;column-gap:24px">${
+         <div class="card-body"><div class="themes-grid">${
            spliitTopServices.slice(0,20).map((s,i) => {
              const m = i<3?['🥇','🥈','🥉'][i]:`${i+1}.`;
-             return `<div style="break-inside:avoid;margin-bottom:6px"><div style="display:flex;align-items:center;gap:4px;font-size:11.5px;margin-bottom:2px"><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--slate-700);font-weight:500">${esc(m)} ${esc(s.service)}</span><span style="font-weight:700;color:var(--cyan);flex-shrink:0">${s.total}</span></div><div class="track sm"><div class="fill fill-cyan" style="width:${pct(s.total,spliitMaxSvc)}%"></div></div></div>`;
+             return `<div><div class="theme-meta"><span class="theme-name">${esc(m)} ${esc(s.service)}</span><span class="theme-count" style="color:var(--cyan)">${s.total}</span></div><div class="track sm"><div class="fill fill-cyan" style="width:${pct(s.total,spliitMaxSvc)}%"></div></div></div>`;
            }).join('')
          }</div></div></div>`;
 
