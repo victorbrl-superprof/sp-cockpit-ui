@@ -355,13 +355,6 @@
       color: var(--slate-700);
     }
 
-    .val-dormant {
-      color: var(--amber);
-    }
-
-    body.dark .val-neutral { color: #cbd5e1; }
-    body.dark .val-dormant { color: #fbbf24; }
-
     .big-lbl {
       font-size: 10px;
       color: var(--slate-400);
@@ -700,6 +693,8 @@
       border-radius: 12px;
       padding: 3px;
       gap: 1px;
+      margin-top: 5px;
+      align-self: flex-start;
       backdrop-filter: blur(24px) saturate(160%);
       -webkit-backdrop-filter: blur(24px) saturate(160%);
       border: 1px solid rgba(255, 255, 255, .22);
@@ -1015,7 +1010,7 @@
       font-family: inherit; cursor: pointer; outline: none;
       transition: background .18s ease, border-color .18s ease;
     }
-    .cse-combo-btn::before { content: none; }
+    .cse-combo-btn::before { content: '🏢'; font-size: 11px; }
     .cse-combo-btn:hover {
       background: rgba(255,255,255,.18);
       border-color: rgba(255,255,255,.38);
@@ -1222,7 +1217,6 @@
 </head>
 
 <body>
-  <script>try{if(localStorage.getItem('cockpit-dark')==='true')document.body.classList.add('dark');}catch(e){}</script>
   <div id="root">
     <div class="state">
       <div class="spinner"></div><span>Chargement du dashboard…</span>
@@ -1250,7 +1244,7 @@
     let selectedCseName = null;
     let selectedCseId = null;
     const HIDDEN_KEY = 'cockpit-global-hidden-cards';
-    let hiddenCards = (() => { try { return JSON.parse(localStorage.getItem(HIDDEN_KEY) || '[]'); } catch(e) { return []; } })();
+    let hiddenCards = JSON.parse(localStorage.getItem(HIDDEN_KEY) || '[]');
 
     const AI_SUGGESTIONS = [
       "Top 5 CSE avec le plus de leçons ce trimestre",
@@ -1294,7 +1288,7 @@
       });
       return sorted.map((r, i) => {
         const cap = r.capture_rate ? `<span class="rank-badge rank-badge-capture">${r.capture_rate}%</span>` : '–';
-        return `<tr class="rank-clickable" data-hid="${esc(r.hubspot_company_id || '')}" data-name="${esc(r.cse_name || '')}" data-cse-id="${esc(r.cse_id || '')}">
+        return `<tr class="rank-clickable" onclick="switchCse('${esc(r.hubspot_company_id || '')}','${esc(r.cse_name || '')}','${esc(r.cse_id || '')}')">
           <td style="color:var(--slate-400);font-size:11px;width:28px">${i + 1}</td>
           <td class="rank-name">${esc(r.cse_name || '—')}</td>
           <td style="text-align:center">${fmt(r.pe_quota_total)}</td>
@@ -1327,16 +1321,6 @@
       thead.addEventListener('click', e => {
         const th = e.target.closest('th[data-sort-key]');
         if (th) sortRanking(th.dataset.sortKey);
-      });
-    }
-
-    function bindRankTable() {
-      const wrap = document.querySelector('[data-card="ranking"] .rank-table-wrap');
-      if (!wrap || wrap._bound) return;
-      wrap._bound = true;
-      wrap.addEventListener('click', e => {
-        const tr = e.target.closest('tr[data-hid]');
-        if (tr) switchCse(tr.dataset.hid, tr.dataset.name, tr.dataset.cseId || '');
       });
     }
 
@@ -1433,11 +1417,10 @@
       if (cardsEl) cardsEl.innerHTML = globalCardsHTML;
       applyHidden();
       bindAI(false);
-      bindRankSort();
-      bindRankTable();
     }
 
     let globalCardsHTML = '';
+    let globalSpliitStats = null;
 
     async function loadCseData() {
       const cardsEl = document.getElementById('cards-container');
@@ -1447,7 +1430,7 @@
         const json = await r.json();
         if (!json.ok) throw new Error(json.error || 'Erreur API');
         if (!json.data?.length) throw new Error('Aucune donnée pour ce CSE');
-        renderCseCards(json.data);
+        renderCseCards(json.data, json.spliit_services || []);
         const banner = document.getElementById('cse-banner');
         if (banner) { banner.style.display = 'flex'; banner.querySelector('.cse-banner-title').textContent = `Vue CSE : ${selectedCseName}`; }
       } catch (e) {
@@ -1455,7 +1438,7 @@
       }
     }
 
-    function renderCseCards(rows) {
+    function renderCseCards(rows, spliitServices = []) {
       const f = rows[0];
       const membTotal = f.memberships_total || 0;
       const membActive = f.memberships_active || 0;
@@ -1488,7 +1471,7 @@
 
       const membCard = card('cse-membres', 'accent-indigo', 'icon-indigo', '👥', 'Membres',
         `<span class="badge badge-indigo">${pA}% actifs</span>`,
-        `<div class="big-stats">${stat(fmt(membTotal), 'Total membres', 'val-indigo')}${stat(fmt(membActive), 'Actifs', 'val-emerald')}${stat(fmt(membDormant), 'Dormants', 'val-dormant')}</div>
+        `<div class="big-stats">${stat(fmt(membTotal), 'Total membres', 'val-indigo')}${stat(fmt(membActive), 'Actifs', 'val-emerald')}${stat(fmt(membDormant), 'Dormants', 'val-neutral')}</div>
          ${prog("Taux d'activation", `${pA}%`, pA, 'fill-indigo')}
          ${peQuota > 0 ? `<div class="divider"></div><div class="kpi-list">${kpi('Personnes adressables', fmt(peQuota))}${kpi('Pass utilisés', fmt(peUsed))}</div>${prog('Taux de capture', `${pC}%`, pC, 'fill-cyan')}` : ''}`);
 
@@ -1515,7 +1498,7 @@
 
       const themesCard = themes.length === 0 ? '' :
         `<div class="card col-full" data-card="cse-themes"><div class="card-accent" style="background:linear-gradient(90deg,#fb7185,#f43f5e);height:3px"></div>
-         <div class="card-header"><div class="card-title-wrap"><div class="card-icon" style="background:#ffe4e6">🎯</div><span class="card-title">Top Thématiques</span></div><div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#ffe4e6;color:#9f1239">${themes.length} matières</span><button class="card-toggle" onclick="toggleCard('cse-themes')" title="Masquer">👁</button></div></div>
+         <div class="card-header"><div class="card-title-wrap"><div class="card-icon" style="background:#ffe4e6">🎯</div><span class="card-title">Top Thématiques</span></div><div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#ffe4e6;color:#9f1239">${themes.length} matières</span></div></div>
          <div class="card-body"><div style="columns:2;column-gap:24px">${themes.slice(0, 10).map((t, i) => {
           const m = i < 3 ? ['🥇', '🥈', '🥉'][i] : `${i + 1}.`;
           return `<div style="break-inside:avoid;margin-bottom:6px"><div style="display:flex;align-items:center;gap:4px;font-size:11.5px;margin-bottom:2px"><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--slate-700);font-weight:500">${esc(m)} ${esc(t.theme)}</span><span style="font-weight:700;color:#f43f5e;flex-shrink:0">${t.count}</span></div><div class="track sm"><div class="fill" style="width:${pct(t.count, mT)}%;background:linear-gradient(90deg,#fb7185,#f43f5e)"></div></div></div>`;
@@ -1524,7 +1507,7 @@
 
       const cseAiCard =
         `<div class="card col-full" data-card="cse-ia"><div class="card-accent accent-ai"></div>
-         <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-violet">✦</div><span class="card-title">Analyse IA — ${esc(selectedCseName)}</span></div><div style="display:flex;align-items:center;gap:6px"><span class="badge badge-violet">GPT-5.2 · CSE</span><button class="card-toggle" onclick="toggleCard('cse-ia')" title="Masquer">👁</button></div></div>
+         <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-violet">✦</div><span class="card-title">Analyse IA — ${esc(selectedCseName)}</span></div><div style="display:flex;align-items:center;gap:6px"><span class="badge badge-violet">GPT-5.2 · CSE</span></div></div>
          <div class="card-body">
            <p class="ai-desc">Posez une question sur ce CSE spécifique — membres, leçons, thématiques, tendances…</p>
            <div class="ai-input-wrap">
@@ -1539,11 +1522,15 @@
            <div id="ai-result"></div>
          </div></div>`;
 
+      const spliitCard = spliitServices.length === 0 ? '' :
+        card('cse-spliit', 'accent-cyan', 'icon-cyan', '<img src="https://spliit.app/favicon.ico" style="width:18px;height:18px;object-fit:contain" alt="Spliit" />', 'Services Spliit',
+          `<span class="badge badge-cyan">${spliitServices.length} services</span>`,
+          `<div class="kpi-list">${spliitServices.map(s => kpi(esc(s.service), fmt(s.usage_count))).join('')}</div>`);
+
       const cardsEl = document.getElementById('cards-container');
       if (cardsEl) {
-        cardsEl.innerHTML = `<div class="grid">${membCard}${mrCard}${lessCard}${walletCard}${themesCard}${cseAiCard}</div>`;
+        cardsEl.innerHTML = `<div class="grid">${membCard}${mrCard}${lessCard}${walletCard}${themesCard}${spliitCard}${cseAiCard}</div>`;
         selectedCseId = f.cse_id || selectedCseId;
-        applyHidden();
         bindAI(true);
       }
     }
@@ -1554,12 +1541,9 @@
       const q = document.getElementById('ai-question');
       const ph = document.getElementById('ai-placeholder');
       if (!q) return;
-      if (!q._bound) {
-        q._bound = true;
-        q.addEventListener('focus', () => { if (ph) ph.style.opacity = '0'; });
-        q.addEventListener('blur',  () => { if (ph && !q.value) ph.style.opacity = '1'; });
-        q.addEventListener('input', () => { if (ph) ph.style.opacity = q.value ? '0' : '1'; });
-      }
+      q.addEventListener('focus', () => { if (ph) ph.style.opacity = '0'; });
+      q.addEventListener('blur', () => { if (ph && !q.value) ph.style.opacity = '1'; });
+      q.addEventListener('input', () => { if (ph) ph.style.opacity = q.value ? '0' : '1'; });
       q.onkeydown = e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) handleAI(isCseMode); };
       const btn = document.getElementById('ai-btn');
       if (btn) btn.onclick = () => handleAI(isCseMode);
@@ -1607,7 +1591,7 @@
       /* Cards */
       const membCard = card('membres', 'accent-indigo', 'icon-indigo', '👥', 'Membres',
         `<span class="badge badge-indigo">${pA}% actifs</span>`,
-        `<div class="big-stats">${stat(fmt(membTotal), 'Total membres', 'val-indigo')}${stat(fmt(membActive), 'Actifs', 'val-emerald')}${stat(fmt(membDormant), 'Dormants', 'val-dormant')}</div>
+        `<div class="big-stats">${stat(fmt(membTotal), 'Total membres', 'val-indigo')}${stat(fmt(membActive), 'Actifs', 'val-emerald')}${stat(fmt(membDormant), 'Dormants', 'val-neutral')}</div>
          ${prog("Taux d'activation", `${pA}%`, pA, 'fill-indigo')}
          ${peQuota > 0 ? `<div class="divider"></div><div class="kpi-list">${kpi('Personnes adressables', fmt(peQuota))}</div>${prog('Taux de capture', `${pC}%`, pC, 'fill-cyan')}` : ''}`);
 
@@ -1634,7 +1618,7 @@
 
       const aiCard =
         `<div class="card col-full" data-card="ia"><div class="card-accent accent-ai"></div>
-         <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-violet">✦</div><span class="card-title">Analyse IA</span></div><div style="display:flex;align-items:center;gap:6px"><span class="badge badge-violet">GPT-5.2 · Superprof</span><button class="card-toggle" onclick="toggleCard('ia')" title="Masquer">👁</button></div></div>
+         <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-violet">✦</div><span class="card-title">Analyse IA</span></div><div style="display:flex;align-items:center;gap:6px"><span class="badge badge-violet">GPT-5.2 · Global</span><button class="card-toggle" onclick="toggleCard('ia')" title="Masquer">👁</button></div></div>
          <div class="card-body">
            <p class="ai-desc">Posez une question en langage naturel sur l'ensemble des CSE — comparaisons, tendances, top matières, CA global…</p>
            <div class="ai-input-wrap">
@@ -1651,15 +1635,23 @@
 
       const cseItems = rankingData.length
         ? [...rankingData].sort((a, b) => (a.cse_name || '').localeCompare(b.cse_name || '', 'fr'))
-            .map(r => `<div class="cse-opt" data-hid="${esc(r.hubspot_company_id || '')}" data-name="${esc(r.cse_name || '')}" data-cse-id="${esc(r.cse_id || '')}">${esc(r.cse_name || '—')}</div>`).join('')
+            .map(r => `<div class="cse-opt" data-hid="${esc(r.hubspot_company_id || '')}" data-name="${esc(r.cse_name || '')}" onclick="selectCseOption('${esc(r.hubspot_company_id || '')}','${esc(r.cse_name || '')}','${esc(r.cse_id || '')}')">${esc(r.cse_name || '—')}</div>`).join('')
         : '';
 
-      globalCardsHTML = `<div class="grid">${membCard}${mrCard}${lessCard}${walletCard}${renderRankingCard()}${aiCard}</div>`;
+      const spliitGlobalCard = globalSpliitStats && globalSpliitStats.total_usages > 0
+        ? card('spliit', 'accent-cyan', 'icon-cyan', '<img src="https://spliit.app/favicon.ico" style="width:18px;height:18px;object-fit:contain" alt="Spliit" />', 'Spliit — Usages Abonnements',
+            `<span class="badge badge-cyan">${globalSpliitStats.cse_count} CSE${globalSpliitStats.cse_count > 1 ? 's' : ''}</span>`,
+            `<div class="big-stats">${stat(fmt(globalSpliitStats.total_usages), 'Abonnements actifs', 'val-indigo')}${stat(fmt(globalSpliitStats.cse_count), 'CSE avec Spliit', 'val-neutral')}</div>
+             <div class="divider"></div>
+             <div class="kpi-list">${(globalSpliitStats.top_services || []).map(s => kpi(esc(s.service), fmt(s.total))).join('')}</div>`)
+        : '';
+
+      globalCardsHTML = `<div class="grid">${membCard}${mrCard}${lessCard}${walletCard}${spliitGlobalCard}${renderRankingCard()}${aiCard}</div>`;
 
       document.getElementById('root').innerHTML = `
         <div class="hero"><div class="hero-inner">
           <div class="hero-left">
-            <span class="hero-eyebrow">Sales Cockpit · Head of Sales <span style="opacity:.5">· v1.5</span></span>
+            <span class="hero-eyebrow">Sales Cockpit · Head of Sales <span style="opacity:.5">· v1.3</span></span>
             <span class="hero-name">Superprof B2B — Performance Globale</span>
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
               <div class="period-tabs">
@@ -1689,26 +1681,14 @@
       applyHidden();
       bindAI(false);
       bindRankSort();
-      bindRankTable();
       if (!document._cseOutside) {
         document._cseOutside = true;
         document.addEventListener('click', e => { if (!e.target.closest('#cse-combobox')) closeCseDropdown(); }, true);
       }
-      if (!document._cseListBound) {
-        document._cseListBound = true;
-        document.addEventListener('click', e => {
-          const opt = e.target.closest('#cse-list .cse-opt');
-          if (!opt) return;
-          selectCseOption(opt.dataset.hid || '', opt.dataset.name || '', opt.dataset.cseId || '');
-        });
-      }
     }
 
     /* ── Card visibility ── */
-    const CARD_LABELS = {
-      membres: '👥 Membres', mr: '🤝 MR', lecons: '📚 Leçons', wallet: '💳 Wallet', ranking: '🏆 Top CSE', ia: '✦ IA',
-      'cse-membres': '👥 Membres', 'cse-mr': '🤝 MR', 'cse-lecons': '📚 Leçons', 'cse-wallet': '💳 Wallet', 'cse-themes': '🎯 Thématiques', 'cse-ia': '✦ IA',
-    };
+    const CARD_LABELS = { membres: '👥 Membres', mr: '🤝 MR', lecons: '📚 Leçons', wallet: '💳 Wallet', ranking: '🏆 Top CSE', ia: '✦ IA' };
 
     function toggleCard(name) {
       if (!hiddenCards.includes(name)) hiddenCards.push(name);
@@ -1721,15 +1701,13 @@
       applyHidden();
     }
     function applyHidden() {
-      const presentCards = new Set([...document.querySelectorAll('[data-card]')].map(el => el.dataset.card));
       document.querySelectorAll('[data-card]').forEach(el => {
         el.classList.toggle('card-hidden', hiddenCards.includes(el.dataset.card));
       });
       const bar = document.getElementById('restore-bar');
-      if (bar) bar.innerHTML = hiddenCards
-        .filter(n => presentCards.has(n))
-        .map(n => `<button class="restore-chip" onclick="restoreCard('${n}')">+ ${CARD_LABELS[n] || n}</button>`)
-        .join('');
+      if (bar) bar.innerHTML = hiddenCards.map(n =>
+        `<button class="restore-chip" onclick="restoreCard('${n}')">+ ${CARD_LABELS[n] || n}</button>`
+      ).join('');
     }
 
     /* ── Period ── */
@@ -1821,6 +1799,7 @@
         if (!json.ok) throw new Error(json.error || 'Erreur API');
         if (!json.data?.length) throw new Error('Aucune donnée disponible');
         rankingData = Array.isArray(json.ranking) ? json.ranking : [];
+        globalSpliitStats = json.spliit_stats || null;
         render(json.data);
         if (document.body.classList.contains('dark')) {
           document.querySelectorAll('.dark-toggle').forEach(b => { b.textContent = '☀️'; });
