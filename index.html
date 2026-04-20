@@ -371,7 +371,7 @@
     const card = (cardId,accentCls,iconCls,icon,title,badge,body) =>
       `<div class="card" data-card="${cardId}"><div class="card-accent ${accentCls}"></div><div class="card-header"><div class="card-title-wrap"><div class="card-icon ${iconCls}">${icon}</div><span class="card-title">${esc(title)}</span></div><div style="display:flex;align-items:center;gap:6px">${badge}<button class="card-toggle" onclick="toggleCard('${cardId}')" title="Masquer">👁</button></div></div><div class="card-body">${body}</div></div>`;
 
-    const SPLIIT_ICON = '<img src="https://www.google.com/s2/favicons?domain=spliiit.com&sz=32" style="width:18px;height:18px;object-fit:contain" alt="Spliiit" />';
+    const SPLIIT_ICON = '<img src="https://victorbrl-superprof.github.io/sp-cockpit-ui/spliiit-logo.png" style="width:22px;height:22px;object-fit:contain" alt="Spliiit" />';
 
     /* ── Render ── */
     function render(rows, spliitServices = [], spliitCseStats = null) {
