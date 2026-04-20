@@ -1431,7 +1431,7 @@
         const json = await r.json();
         if (!json.ok) throw new Error(json.error || 'Erreur API');
         if (!json.data?.length) throw new Error('Aucune donnée pour ce CSE');
-        renderCseCards(json.data, json.spliit_services || []);
+        renderCseCards(json.data, json.spliit_services || [], json.spliit_cse_stats || null);
         const banner = document.getElementById('cse-banner');
         if (banner) { banner.style.display = 'flex'; banner.querySelector('.cse-banner-title').textContent = `Vue CSE : ${selectedCseName}`; }
       } catch (e) {
@@ -1439,7 +1439,9 @@
       }
     }
 
-    function renderCseCards(rows, spliitServices = []) {
+    const SPLIIT_ICON = '<img src="https://www.google.com/s2/favicons?domain=spliiit.com&sz=32" style="width:18px;height:18px;object-fit:contain" alt="Spliiit" />';
+
+    function renderCseCards(rows, spliitServices = [], spliitCseStats = null) {
       const f = rows[0];
       const membTotal = f.memberships_total || 0;
       const membActive = f.memberships_active || 0;
@@ -1523,14 +1525,38 @@
            <div id="ai-result"></div>
          </div></div>`;
 
-      const spliitCard = spliitServices.length === 0 ? '' :
-        card('cse-spliit', 'accent-cyan', 'icon-cyan', '<img src="https://www.spliiit.com/favicon.ico" style="width:18px;height:18px;object-fit:contain" alt="Spliit" />', 'Services Spliit',
-          `<span class="badge badge-cyan">${spliitServices.length} services</span>`,
-          `<div class="kpi-list">${spliitServices.map(s => kpi(esc(s.service), fmt(s.usage_count))).join('')}</div>`);
+      /* ── Spliit stats card (top row) ── */
+      const spliitStatsCard = !spliitCseStats ? '' :
+        card('cse-spliit-stats','accent-cyan','icon-cyan', SPLIIT_ICON, 'Spliiit',
+          `<span class="badge badge-cyan">${fmt(spliitCseStats.codes_utilises)} codes</span>`,
+          `<div class="big-stats">
+            ${stat(fmt(spliitCseStats.utilisateurs_actifs),'Utilisateurs actifs','val-indigo')}
+            ${stat(fmt(spliitCseStats.codes_utilises),'Codes utilisés','val-emerald')}
+            ${stat(fmt(spliitCseStats.abonnes_perdus),'Abonnés perdus','val-amber')}
+           </div>
+           <div class="kpi-list">
+            ${kpi('Montant crédité', fmtEur(spliitCseStats.montant_credite))}
+            ${kpi('Montant généré', fmtEur(spliitCseStats.montant_genere))}
+            ${kpi('Moy. abonnements/user', fmt(spliitCseStats.abonnements_actifs_moy, 2))}
+            ${kpi('Montant moyen', fmtEur(spliitCseStats.montant_moyen))}
+           </div>`);
+
+      /* ── Spliit services ranked card (col-full) ── */
+      const maxSvc = spliitServices[0]?.usage_count || 1;
+      const spliitServicesCard = spliitServices.length === 0 ? '' :
+        `<div class="card col-full" data-card="cse-spliit-services"><div class="card-accent accent-cyan"></div>
+         <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-cyan">${SPLIIT_ICON}</div><span class="card-title">Top Services Spliiit</span></div>
+         <div style="display:flex;align-items:center;gap:6px"><span class="badge badge-cyan">${spliitServices.length} services</span></div></div>
+         <div class="card-body"><div class="themes-grid">${
+           spliitServices.slice(0,20).map((s,i) => {
+             const m = i<3?['🥇','🥈','🥉'][i]:`${i+1}.`;
+             return `<div><div class="theme-meta"><span class="theme-name">${esc(m)} ${esc(s.service)}</span><span class="theme-count" style="color:var(--cyan)">${s.usage_count}</span></div><div class="track sm"><div class="fill fill-cyan" style="width:${pct(s.usage_count,maxSvc)}%"></div></div></div>`;
+           }).join('')
+         }</div></div></div>`;
 
       const cardsEl = document.getElementById('cards-container');
       if (cardsEl) {
-        cardsEl.innerHTML = `<div class="grid">${membCard}${mrCard}${lessCard}${walletCard}${themesCard}${spliitCard}${cseAiCard}</div>`;
+        cardsEl.innerHTML = `<div class="grid${spliitStatsCard ? ' has-spliit' : ''}">${membCard}${mrCard}${lessCard}${walletCard}${spliitStatsCard}${themesCard}${spliitServicesCard}${cseAiCard}</div>`;
         selectedCseId = f.cse_id || selectedCseId;
         bindAI(true);
       }
@@ -1640,7 +1666,7 @@
         : '';
 
       const spliitGlobalCard = globalSpliitStats && globalSpliitStats.total_usages > 0
-        ? card('spliit', 'accent-cyan', 'icon-cyan', '<img src="https://www.spliiit.com/favicon.ico" style="width:18px;height:18px;object-fit:contain" alt="Spliit" />', 'Spliit — Usages Abonnements',
+        ? card('spliit', 'accent-cyan', 'icon-cyan', '<img src="https://www.google.com/s2/favicons?domain=spliiit.com&sz=32" style="width:18px;height:18px;object-fit:contain" alt="Spliit" />', 'Spliit — Usages Abonnements',
             `<span class="badge badge-cyan">${globalSpliitStats.cse_count} CSE${globalSpliitStats.cse_count > 1 ? 's' : ''}</span>`,
             `<div class="big-stats">${stat(fmt(globalSpliitStats.total_usages), 'Abonnements actifs', 'val-indigo')}${stat(fmt(globalSpliitStats.cse_count), 'CSE avec Spliit', 'val-neutral')}</div>
              <div class="divider"></div>
