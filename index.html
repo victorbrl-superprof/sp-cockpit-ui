@@ -83,6 +83,7 @@
     .hero-sep { width: 1px; background: rgba(255,255,255,.2); align-self: stretch; }
 
     /* ── Grid ── */
+    .grid.has-spliit { grid-template-columns: repeat(5, 1fr); }
     .grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -446,7 +447,7 @@
 
       const spliitCard = spliitServices.length === 0 ? '' :
         card('spliit','accent-cyan','icon-cyan',
-          '<img src="https://spliit.app/favicon.ico" style="width:18px;height:18px;object-fit:contain" alt="Spliit" />',
+          '<img src="https://www.spliiit.com/favicon.ico" style="width:18px;height:18px;object-fit:contain" alt="Spliit" />',
           'Services Spliit',
           `<span class="badge badge-cyan">${spliitServices.length} services</span>`,
           `<div class="kpi-list">${spliitServices.map(s => kpi(esc(s.service), fmt(s.usage_count))).join('')}</div>`);
@@ -489,7 +490,7 @@
           </div>
         </div></div>
         <div id="restore-bar" class="restore-bar"></div>
-        <div class="grid">${membCard}${mrCard}${lessCard}${walletCard}${themesCard}${spliitCard}${aiCard}</div>`;
+        <div class="grid${spliitCard ? ' has-spliit' : ''}">${membCard}${mrCard}${lessCard}${walletCard}${themesCard}${spliitCard}${aiCard}</div>`;
 
       applyHidden();
 
