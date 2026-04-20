@@ -298,6 +298,7 @@
     body.dark .badge-violet  { background:#4c1d95; color:#c4b5fd; }
     body.dark .badge-amber   { background:#78350f; color:#fcd34d; }
     body.dark .badge-rose    { background:#881337; color:#fda4af; }
+    body.dark .badge-cyan    { background:#164e63; color:#67e8f9; }
     body.dark .csv-btn { background:#334155; border-color:#475569; color:#94a3b8; }
     body.dark .csv-btn:hover { background:#475569; }
     body.dark .state { color:#475569; } body.dark .state.error { color:#fb7185; }
@@ -370,7 +371,7 @@
       `<div class="card" data-card="${cardId}"><div class="card-accent ${accentCls}"></div><div class="card-header"><div class="card-title-wrap"><div class="card-icon ${iconCls}">${icon}</div><span class="card-title">${esc(title)}</span></div><div style="display:flex;align-items:center;gap:6px">${badge}<button class="card-toggle" onclick="toggleCard('${cardId}')" title="Masquer">👁</button></div></div><div class="card-body">${body}</div></div>`;
 
     /* ── Render ── */
-    function render(rows) {
+    function render(rows, spliitServices = []) {
       const f = rows[0];
       currentCseId = f.cse_id || null;
 
@@ -443,6 +444,13 @@
            }).join('')
          }</div></div></div>`;
 
+      const spliitCard = spliitServices.length === 0 ? '' :
+        card('spliit','accent-cyan','icon-cyan',
+          '<img src="https://spliit.app/favicon.ico" style="width:18px;height:18px;object-fit:contain" alt="Spliit" />',
+          'Services Spliit',
+          `<span class="badge badge-cyan">${spliitServices.length} services</span>`,
+          `<div class="kpi-list">${spliitServices.map(s => kpi(esc(s.service), fmt(s.usage_count))).join('')}</div>`);
+
       const aiCard =
         `<div class="card col-full" data-card="ia"><div class="card-accent accent-ai"></div>
          <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-violet">✦</div><span class="card-title">Analyse IA</span></div><div style="display:flex;align-items:center;gap:6px"><span class="badge badge-violet">GPT-5.2 · Superprof</span><button class="card-toggle" onclick="toggleCard('ia')" title="Masquer">👁</button></div></div>
@@ -481,7 +489,7 @@
           </div>
         </div></div>
         <div id="restore-bar" class="restore-bar"></div>
-        <div class="grid">${membCard}${mrCard}${lessCard}${walletCard}${themesCard}${aiCard}</div>`;
+        <div class="grid">${membCard}${mrCard}${lessCard}${walletCard}${themesCard}${spliitCard}${aiCard}</div>`;
 
       applyHidden();
 
@@ -505,7 +513,7 @@
     }
 
     /* ── Card visibility ── */
-    const CARD_LABELS = { membres:'👥 Membres', mr:'🤝 MR', lecons:'📚 Leçons', wallet:'💳 Wallet', themes:'🎯 Thématiques', ia:'✦ IA' };
+    const CARD_LABELS = { membres:'👥 Membres', mr:'🤝 MR', lecons:'📚 Leçons', wallet:'💳 Wallet', themes:'🎯 Thématiques', spliit:'📱 Spliit', ia:'✦ IA' };
 
     function toggleCard(name) {
       if (!hiddenCards.includes(name)) hiddenCards.push(name);
@@ -605,7 +613,7 @@
         const json = await r.json();
         if (!json.ok) throw new Error(json.error || 'Erreur API');
         if (!json.data?.length) throw new Error('CSE non lié à ce compte HubSpot');
-        render(json.data);
+        render(json.data, json.spliit_services || []);
         if (document.body.classList.contains('dark')) {
           document.querySelectorAll('.dark-toggle').forEach(b => { b.textContent = '☀️'; });
         }
