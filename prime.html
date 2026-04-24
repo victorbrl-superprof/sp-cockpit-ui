@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <title>Prime Q2 2026 — Superprof</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --indigo: #6366f1; --indigo-dark: #4f46e5; --indigo-light: #e0e7ff;
+      --emerald: #10b981; --emerald-light: #d1fae5;
+      --amber: #f59e0b; --amber-light: #fef3c7;
+      --rose: #f43f5e; --rose-light: #ffe4e6;
+      --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0;
+      --slate-400: #94a3b8; --slate-500: #64748b; --slate-600: #475569;
+      --slate-700: #334155; --slate-900: #0f172a;
+    }
+    html, body { height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
+      font-size: 13px;
+      background: #eef2ff;
+      color: var(--slate-900);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-thumb { background: var(--slate-200); border-radius: 999px; }
+
+    .hero {
+      background: linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #8b5cf6 100%);
+      padding: 18px 22px;
+      color: white;
+      position: relative;
+    }
+    .hero h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+    .hero .sub { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+    .hero .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);
+      padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 600;
+      margin-top: 8px;
+    }
+    .hero .badge::before {
+      content: ""; width: 6px; height: 6px; background: #34d399; border-radius: 50%;
+    }
+
+    .grid { padding: 14px; display: grid; gap: 12px; }
+
+    .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .kpi {
+      background: white; border: 1px solid var(--slate-200); border-radius: 12px;
+      padding: 14px; position: relative; overflow: hidden;
+    }
+    .kpi::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .kpi.indigo::before { background: var(--indigo); }
+    .kpi.emerald::before { background: var(--emerald); }
+    .kpi.amber::before { background: var(--amber); }
+    .kpi.violet::before { background: #8b5cf6; }
+    .kpi .lbl { font-size: 11px; color: var(--slate-500); font-weight: 500; text-transform: uppercase; letter-spacing: 0.03em; }
+    .kpi .val { font-size: 22px; font-weight: 700; color: var(--slate-900); margin-top: 4px; font-variant-numeric: tabular-nums; }
+    .kpi .sub { font-size: 11px; color: var(--slate-500); margin-top: 2px; }
+
+    .card {
+      background: white; border: 1px solid var(--slate-200); border-radius: 12px; overflow: hidden;
+    }
+    .card-head {
+      padding: 12px 16px; border-bottom: 1px solid var(--slate-100);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-head h3 { font-size: 13px; font-weight: 600; color: var(--slate-900); }
+    .card-head .meta { font-size: 11px; color: var(--slate-500); }
+    .card-body { padding: 14px 16px; }
+
+    /* Bar chart SVG */
+    .chart { width: 100%; height: 220px; }
+    .chart .axis-label { fill: var(--slate-500); font-size: 10px; }
+    .chart .bar-realise { fill: var(--indigo); }
+    .chart .bar-objectif { fill: var(--amber); opacity: 0.55; }
+    .chart .grid-line { stroke: var(--slate-100); stroke-width: 1; }
+    .chart .month-label { fill: var(--slate-600); font-size: 10px; text-anchor: middle; }
+    .chart .val-label { fill: var(--slate-700); font-size: 9px; text-anchor: middle; font-weight: 600; }
+    .legend { display: flex; gap: 14px; justify-content: center; margin-top: 6px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--slate-600); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th { text-align: left; padding: 8px 10px; background: var(--slate-50); color: var(--slate-600); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em; border-bottom: 1px solid var(--slate-200); }
+    td { padding: 8px 10px; border-bottom: 1px solid var(--slate-100); font-variant-numeric: tabular-nums; }
+    td.num { text-align: right; }
+    tr:last-child td { border-bottom: none; }
+    .pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 600; }
+    .pill.ok { background: var(--emerald-light); color: #047857; }
+    .pill.surperf { background: var(--amber-light); color: #92400e; }
+    .pill.zero { background: var(--slate-100); color: var(--slate-500); }
+
+    /* Team prime */
+    .paliers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
+    .palier {
+      padding: 10px; border-radius: 8px; border: 1px solid var(--slate-200);
+      background: var(--slate-50); text-align: center;
+    }
+    .palier.done { border-color: var(--emerald); background: var(--emerald-light); }
+    .palier .seuil { font-size: 11px; color: var(--slate-500); font-weight: 500; }
+    .palier.done .seuil { color: #047857; }
+    .palier .prime { font-size: 16px; font-weight: 700; color: var(--slate-900); margin-top: 2px; }
+    .palier.done .prime { color: #047857; }
+    .palier .check { font-size: 14px; margin-top: 2px; }
+
+    .progress-wrap { margin-top: 12px; }
+    .track { height: 10px; background: var(--slate-100); border-radius: 999px; overflow: hidden; }
+    .fill { height: 100%; background: linear-gradient(90deg, var(--indigo), #8b5cf6); border-radius: 999px; transition: width 0.5s ease; }
+    .fill.done { background: linear-gradient(90deg, var(--emerald), #34d399); }
+    .progress-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--slate-500); margin-top: 4px; }
+
+    .footer { padding: 10px 16px; text-align: center; font-size: 11px; color: var(--slate-500); }
+
+    .state { display: flex; align-items: center; justify-content: center; height: 100vh; gap: 10px; color: var(--slate-500); }
+    .spinner { width: 16px; height: 16px; border: 2px solid var(--slate-200); border-top-color: var(--indigo); border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error { background: var(--rose-light); color: #9f1239; border: 1px solid #fecdd3; padding: 14px; border-radius: 10px; margin: 14px; }
+
+    @media (max-width: 680px) {
+      .kpis { grid-template-columns: repeat(2, 1fr); }
+      .paliers { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <div class="state"><div class="spinner"></div><span>Chargement de votre prime Q2…</span></div>
+  </div>
+
+  <script>
+    // ── Config commerciaux (règles fiche Q2 2026) ─────────────────────────────
+    const CONFIG = {
+      "33386465": {
+        name: "Hugo Rodrigues",
+        role: "AE CSE Junior",
+        seuilHT: 4166.67,
+        objectifsTTC: {
+          "2026-06": 5000,  "2026-07": 10000, "2026-08": 0,
+          "2026-09": 14000, "2026-10": 20000, "2026-11": 20000, "2026-12": 20000,
+        },
+      },
+      "33334703": {
+        name: "Johanna Eboko",
+        role: "AE CSE Confirmé",
+        seuilHT: 8333.33,
+        objectifsTTC: {
+          "2026-06": 10000, "2026-07": 12500, "2026-08": 0,
+          "2026-09": 17500, "2026-10": 25000, "2026-11": 25000, "2026-12": 25000,
+        },
+      },
+    };
+
+    const PALIERS_EQUIPE = [
+      { seuil: 50000,  prime: 500 },
+      { seuil: 100000, prime: 1000 },
+      { seuil: 150000, prime: 1500 },
+      { seuil: 200000, prime: 2000 },
+    ];
+
+    const TVA  = 1.20;
+    const MOIS = { "2026-06":"Juin","2026-07":"Juil.","2026-08":"Août","2026-09":"Sept.","2026-10":"Oct.","2026-11":"Nov.","2026-12":"Déc." };
+
+    // ── Params ────────────────────────────────────────────────────────────────
+    const P       = new URLSearchParams(location.search);
+    const OWNER   = P.get("owner_id") || "";
+    const TOKEN   = P.get("token") || "";
+    const BASE    = "https://yhtxrjegdeuwkcjvkfkt.supabase.co/functions/v1";
+    const API     = BASE + "/prime-dashboard";
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+    const fmtEur = (n) => n == null ? "–" : (+n).toLocaleString("fr-FR",{ style:"currency", currency:"EUR", maximumFractionDigits: 0 });
+    const esc    = (s) => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    const monthKey = (ms) => {
+      const d = new Date(+ms);
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+    };
+
+    // ── Calcul commissions ────────────────────────────────────────────────────
+    function compute(deals, config) {
+      const byMonth = {};
+      deals.forEach(d => {
+        const m = monthKey(d.closedate);
+        if (!byMonth[m]) byMonth[m] = { ca: 0, nb: 0 };
+        byMonth[m].ca += d.amount;
+        byMonth[m].nb += 1;
+      });
+
+      const months = Object.keys(config.objectifsTTC).sort();
+      const rows = months.map(m => {
+        const data = byMonth[m] || { ca: 0, nb: 0 };
+        const caHT       = data.ca / TVA;
+        const objectifHT = config.objectifsTTC[m] / TVA;
+        const base       = caHT * 0.09;
+        const surperf    = Math.max(0, caHT - config.seuilHT) * 0.02;
+        return {
+          mois: m, label: MOIS[m] || m,
+          caHT, objectifHT, base, surperf,
+          total: base + surperf, nbDeals: data.nb,
+        };
+      });
+
+      const totalHT     = rows.reduce((s,r) => s + r.caHT, 0);
+      const commBase    = rows.reduce((s,r) => s + r.base, 0);
+      const commSurperf = rows.reduce((s,r) => s + r.surperf, 0);
+      const nbDeals     = rows.reduce((s,r) => s + r.nbDeals, 0);
+
+      return { rows, totalHT, commBase, commSurperf, commTotal: commBase+commSurperf, nbDeals };
+    }
+
+    // ── Bar chart SVG ─────────────────────────────────────────────────────────
+    function renderChart(rows) {
+      const W = 720, H = 220, PL = 40, PR = 10, PT = 14, PB = 26;
+      const innerW = W - PL - PR, innerH = H - PT - PB;
+      const max = Math.max(1, ...rows.flatMap(r => [r.caHT, r.objectifHT]));
+      const yStep = Math.ceil(max / 4 / 1000) * 1000;
+      const yMax = yStep * 4;
+      const colW = innerW / rows.length;
+      const barW = Math.min(24, colW * 0.35);
+
+      let bars = "";
+      let labels = "";
+      rows.forEach((r, i) => {
+        const cx = PL + colW * i + colW / 2;
+        const hR = (r.caHT / yMax) * innerH;
+        const hO = (r.objectifHT / yMax) * innerH;
+        const yR = PT + innerH - hR;
+        const yO = PT + innerH - hO;
+        bars += `<rect class="bar-objectif" x="${cx - barW - 2}" y="${yO}" width="${barW}" height="${hO}" rx="2"/>`;
+        bars += `<rect class="bar-realise"  x="${cx + 2}"        y="${yR}" width="${barW}" height="${hR}" rx="2"/>`;
+        if (r.caHT > 0) bars += `<text class="val-label" x="${cx + 2 + barW/2}" y="${yR - 3}">${Math.round(r.caHT/1000)}k</text>`;
+        labels += `<text class="month-label" x="${cx}" y="${H - PB + 14}">${esc(r.label)}</text>`;
+      });
+
+      let gridLines = "";
+      for (let i = 0; i <= 4; i++) {
+        const y = PT + innerH - (innerH * i / 4);
+        const v = yStep * i;
+        gridLines += `<line class="grid-line" x1="${PL}" y1="${y}" x2="${W - PR}" y2="${y}"/>`;
+        gridLines += `<text class="axis-label" x="${PL - 6}" y="${y + 3}" text-anchor="end">${v/1000}k€</text>`;
+      }
+
+      return `
+        <svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+          ${gridLines}
+          ${bars}
+          ${labels}
+        </svg>
+        <div class="legend">
+          <span class="legend-item"><span class="legend-dot" style="background:var(--indigo)"></span>Réalisé HT</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#fbbf24;opacity:0.55"></span>Objectif HT</span>
+        </div>
+      `;
+    }
+
+    // ── Render main ───────────────────────────────────────────────────────────
+    function renderDashboard(config, stats, teamHT) {
+      const palierAtteint = [...PALIERS_EQUIPE].reverse().find(p => teamHT >= p.seuil);
+      const palierSuivant = PALIERS_EQUIPE.find(p => teamHT < p.seuil);
+      const progressMax = palierSuivant ? palierSuivant.seuil : 200000;
+      const progressPct = Math.min(100, Math.round((teamHT / progressMax) * 100));
+
+      const paliersHtml = PALIERS_EQUIPE.map(p => {
+        const done = teamHT >= p.seuil;
+        return `<div class="palier ${done ? "done" : ""}">
+          <div class="seuil">&gt; ${p.seuil/1000}k€</div>
+          <div class="prime">${fmtEur(p.prime)}</div>
+          <div class="check">${done ? "✓" : "·"}</div>
+        </div>`;
+      }).join("");
+
+      const rowsHtml = stats.rows.map(r => {
+        const atteint = r.objectifHT > 0 && r.caHT >= r.objectifHT;
+        const surperfPill = r.surperf > 0
+          ? `<span class="pill surperf">★ ${fmtEur(r.surperf)}</span>`
+          : `<span class="pill zero">${fmtEur(0)}</span>`;
+        return `<tr>
+          <td><strong>${esc(r.label)}</strong></td>
+          <td class="num">${r.nbDeals}</td>
+          <td class="num">${fmtEur(r.caHT)}</td>
+          <td class="num">${fmtEur(r.objectifHT)} ${atteint ? '<span class="pill ok">✓</span>' : ""}</td>
+          <td class="num">${fmtEur(r.base)}</td>
+          <td class="num">${surperfPill}</td>
+          <td class="num"><strong>${fmtEur(r.total)}</strong></td>
+        </tr>`;
+      }).join("");
+
+      document.getElementById("root").innerHTML = `
+        <div class="hero">
+          <h1>Prime Q2 2026 — ${esc(config.name)}</h1>
+          <div class="sub">${esc(config.role)} · Seuil sur-performance ${fmtEur(config.seuilHT)} HT/mois · ${stats.nbDeals} deal${stats.nbDeals>1?"s":""} clôturé${stats.nbDeals>1?"s":""}</div>
+          <div class="badge">Live HubSpot</div>
+        </div>
+
+        <div class="grid">
+          <div class="kpis">
+            <div class="kpi indigo">  <div class="lbl">CA HT réalisé Q2</div>      <div class="val">${fmtEur(stats.totalHT)}</div>     <div class="sub">${stats.nbDeals} deals closedwon</div></div>
+            <div class="kpi emerald"> <div class="lbl">Commission base (9%)</div>  <div class="val">${fmtEur(stats.commBase)}</div>    <div class="sub">sur tout le CA HT</div></div>
+            <div class="kpi amber">   <div class="lbl">Sur-performance (+2%)</div><div class="val">${fmtEur(stats.commSurperf)}</div> <div class="sub">au-delà du seuil mensuel</div></div>
+            <div class="kpi violet">  <div class="lbl">Total commission</div>     <div class="val">${fmtEur(stats.commTotal)}</div>   <div class="sub">hors prime d'équipe</div></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3>CA mensuel vs objectif</h3><span class="meta">en € HT</span></div>
+            <div class="card-body">${renderChart(stats.rows)}</div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3>Détail mensuel</h3><span class="meta">commissions par mois</span></div>
+            <div class="card-body" style="padding:0">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Mois</th><th class="num">Deals</th>
+                    <th class="num">CA HT</th><th class="num">Objectif HT</th>
+                    <th class="num">Base 9%</th><th class="num">Sur-perf +2%</th>
+                    <th class="num">Commission</th>
+                  </tr>
+                </thead>
+                <tbody>${rowsHtml}</tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <h3>Prime d'équipe collective Q2</h3>
+              <span class="meta">CA HT cumulé : ${fmtEur(teamHT)}</span>
+            </div>
+            <div class="card-body">
+              <div class="paliers">${paliersHtml}</div>
+              <div class="progress-wrap">
+                <div class="track"><div class="fill ${palierAtteint ? "done":""}" style="width:${progressPct}%"></div></div>
+                <div class="progress-meta">
+                  <span>${palierAtteint ? `Palier atteint : ${fmtEur(palierAtteint.prime)}` : "Aucun palier atteint"}</span>
+                  <span>${palierSuivant ? `Prochain : ${fmtEur(palierSuivant.seuil)} → ${fmtEur(palierSuivant.prime)}` : "Palier max atteint 🎉"}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer">
+            Calculé en direct depuis HubSpot (deals closedwon, Juin–Déc 2026) · Règles fiche objectifs Q2 2026 · Information interne, sans valeur contractuelle.
+          </div>
+        </div>
+      `;
+    }
+
+    function renderError(msg) {
+      document.getElementById("root").innerHTML = `<div class="error"><strong>Erreur :</strong> ${esc(msg)}</div>`;
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    (async () => {
+      const config = CONFIG[OWNER];
+      if (!config) {
+        renderError(`Aucune fiche de prime configurée pour l'owner ${OWNER || "(manquant)"}.`);
+        return;
+      }
+      if (!TOKEN) {
+        renderError("Token d'accès manquant dans l'URL.");
+        return;
+      }
+
+      try {
+        const res  = await fetch(`${API}?owner_id=${encodeURIComponent(OWNER)}`, {
+          headers: { Authorization: `Bearer ${TOKEN}` },
+        });
+        const json = await res.json();
+        if (!res.ok || !json.ok) throw new Error(json.error || `HTTP ${res.status}`);
+
+        const stats  = compute(json.deals, config);
+        const teamHT = json.team_total_ttc / TVA;
+        renderDashboard(config, stats, teamHT);
+      } catch (e) {
+        renderError(e.message || String(e));
+      }
+    })();
+  </script>
+</body>
+</html>
