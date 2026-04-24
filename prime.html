@@ -606,18 +606,21 @@
       },
       "78105232": {
         type: "teamLead", name: "Camille Lecorno", role: "Team Lead CSE",
-        periodLabel: "Avril–Déc 2026", sourceLabel: "CA équipe HT", commissionScope: "ventes équipe + individuelles",
+        periodLabel: "Janv.–Déc. 2026", sourceLabel: "CA équipe HT", commissionScope: "ventes équipe + individuelles",
         objectifsTTC: {
+          "2026-01": 0, "2026-02": 0, "2026-03": 0,
           "2026-04": 7500, "2026-05": 15000, "2026-06": 32900,
           "2026-07": 32500, "2026-08": 0, "2026-09": 52712,
           "2026-10": 62008, "2026-11": 60000, "2026-12": 109774,
         },
         objectifsPersoTTC: {
+          "2026-01": null, "2026-02": null, "2026-03": null,
           "2026-04": 7500, "2026-05": 15000, "2026-06": 16421,
           "2026-07": 10000, "2026-08": 0, "2026-09": 21212,
           "2026-10": 17008, "2026-11": 15000, "2026-12": 64774,
         },
         objectifsEquipeTTC: {
+          "2026-01": null, "2026-02": null, "2026-03": null,
           "2026-06": 15000, "2026-07": 22500, "2026-08": 0,
           "2026-09": 31500, "2026-10": 45000, "2026-11": 45000, "2026-12": 45000,
         },
@@ -637,7 +640,11 @@
     ];
 
     const TVA  = 1.20;
-    const MOIS = { "2026-04":"Avril","2026-05":"Mai","2026-06":"Juin","2026-07":"Juil.","2026-08":"Août","2026-09":"Sept.","2026-10":"Oct.","2026-11":"Nov.","2026-12":"Déc." };
+    const MOIS = {
+      "2026-01":"Janv.","2026-02":"Févr.","2026-03":"Mars",
+      "2026-04":"Avril","2026-05":"Mai","2026-06":"Juin","2026-07":"Juil.",
+      "2026-08":"Août","2026-09":"Sept.","2026-10":"Oct.","2026-11":"Nov.","2026-12":"Déc."
+    };
     const INDIV_PERIOD_LABEL = "Juin–Déc 2026";
     const TEAM_PERIOD_LABEL  = "Année 2026";
 
