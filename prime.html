@@ -490,6 +490,28 @@
     .team-text { font-size:12.5px; color:var(--slate-700); font-weight:500; line-height:1.5; position: relative; z-index: 1; }
     .team-text strong { color:var(--slate-900); font-weight:700; }
 
+    .q-tabs { display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin:-2px 0 16px; }
+    .q-tab {
+      appearance:none; border:1.5px solid rgba(226,232,240,0.8); background:rgba(255,255,255,0.6);
+      backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+      border-radius:14px; padding:10px 8px; cursor:pointer;
+      display:flex; flex-direction:column; align-items:center; gap:2px;
+      transition: all 0.25s cubic-bezier(0.22,1,0.36,1);
+      color:var(--slate-600); font-weight:700; font-size:12px;
+    }
+    .q-tab:hover { transform: translateY(-1px); border-color: rgba(99,102,241,0.45); }
+    .q-tab .q-range { font-size:10px; color:var(--slate-400); font-weight:600; text-transform:none; letter-spacing:0.01em; }
+    .q-tab .q-state { font-size:10px; color:var(--slate-500); font-weight:700; }
+    .q-tab.current {
+      background:linear-gradient(135deg, rgba(99,102,241,0.14), rgba(139,92,246,0.08));
+      border-color: rgba(99,102,241,0.5);
+      color:var(--slate-900);
+      box-shadow: 0 6px 18px -10px rgba(99,102,241,0.55);
+    }
+    .q-tab.unlocked .q-state { color:#047857; }
+    .q-tab.locked .q-state { color:var(--slate-400); }
+    .q-tab.future { opacity:0.75; }
+
     /* ══════════════ ACHIEVEMENTS ══════════════ */
     .achievements { display:grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap:10px; }
     .ach {
@@ -880,7 +902,13 @@
       "2026-08":"Août","2026-09":"Sept.","2026-10":"Oct.","2026-11":"Nov.","2026-12":"Déc."
     };
     const INDIV_PERIOD_LABEL = "Juin–Déc 2026";
-    const TEAM_PERIOD_LABEL  = "Année 2026";
+    const TEAM_PERIOD_LABEL  = "Trimestre en cours · 2026";
+    const QUARTERS = [
+      { key: 1, label: "Q1", range: "Janv.–Mars" },
+      { key: 2, label: "Q2", range: "Avr.–Juin" },
+      { key: 3, label: "Q3", range: "Juil.–Sept." },
+      { key: 4, label: "Q4", range: "Oct.–Déc." },
+    ];
 
     // ── Params ────────────────────────────────────────────────────────────────
     const P     = new URLSearchParams(location.search);
@@ -911,6 +939,25 @@
       if (!year || !month) return "";
       const date = new Date(year, month - 1 + delta, 1);
       return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+    }
+
+    function quarterFromMonthKey(key) {
+      const month = Number(String(key || "").slice(5, 7));
+      if (!month) return 0;
+      return Math.ceil(month / 3);
+    }
+    function currentQuarterKey() { return quarterFromMonthKey(NOW_KEY) || 1; }
+    function computeQuartersHT(teamMonthly = {}) {
+      const qs = Object.fromEntries(QUARTERS.map(q => [q.key, { ...q, ht: 0, ttc: 0, deals: 0 }]));
+      for (const [monthKey, data] of Object.entries(teamMonthly || {})) {
+        const q = quarterFromMonthKey(monthKey);
+        if (!qs[q]) continue;
+        const amountTTC = Number((data || {}).amount || 0);
+        qs[q].ttc += amountTTC;
+        qs[q].ht  += amountTTC / TVA;
+        qs[q].deals += Number((data || {}).count || 0);
+      }
+      return qs;
     }
 
     // ── Count-up (ease-out-expo) ──────────────────────────────────────────────
@@ -1083,17 +1130,18 @@
         const data = byMonth[m] || { ca: 0, nb: 0 };
         const caHT = data.ca / TVA;
         const objectiveTTC = config.objectifsTTC[m] == null ? null : Number(config.objectifsTTC[m]);
+        const hasObjective = objectiveTTC != null && objectiveTTC > 0;
         const objectifHT = objectiveTTC == null ? 0 : objectiveTTC / TVA;
         const directRate = config.directRateByMonth?.[m] ?? null;
+        const configuredThreshold = config.seuilHTByMonth?.[m] ?? config.seuilHT ?? null;
         const seuilHT = directRate != null
-          ? 0
-          : (config.seuilHTByMonth?.[m] ?? config.seuilHT ?? objectifHT);
+          ? null
+          : (configuredThreshold ?? (hasObjective ? objectifHT : null));
         const base = directRate != null ? caHT * directRate : caHT * baseRate;
-        const surperf = directRate != null ? 0 : Math.max(0, caHT - seuilHT) * surperfRate;
+        const surperf = (directRate != null || seuilHT == null) ? 0 : Math.max(0, caHT - seuilHT) * surperfRate;
         const isPast     = m < NOW_KEY;
         const isCurrent  = m === NOW_KEY;
         const isFuture   = m > NOW_KEY;
-        const hasObjective = objectiveTTC != null && objectiveTTC > 0;
         return {
           mois: m, label: MOIS[m] || m, isPast, isCurrent, isFuture,
           caHT, objectiveTTC, objectifHT, seuilHT, base, surperf,
@@ -1758,7 +1806,8 @@
         {
           title: "Lecture générale",
           items: [
-            { term: "Prime d'équipe collective", text: "C'est la prime commune liée au total des deals gagnés par toute l'équipe sur l'année 2026.", example: "Si l'équipe atteint 100 k€ HT signés sur 2026, le palier Argent est débloqué." },
+            { term: "Prime d'équipe collective", text: "Prime commune liée au CA HT signé par toute l'équipe, calculée trimestre par trimestre. Elle se remet à 0 à chaque nouveau trimestre (Q1 Janv.-Mars, Q2 Avr.-Juin, Q3 Juil.-Sept., Q4 Oct.-Déc.).", example: "Si l'équipe fait 60 k€ HT sur Q2, palier Bronze (500 €) débloqué pour Q2. Le Q3 repart de 0 k€ HT." },
+            { term: "Paliers d'équipe", text: "50 k€ HT → Bronze (500 €), 100 k€ HT → Argent (1 000 €), 150 k€ HT → Or (1 500 €), 200 k€ HT → Platine (2 000 €). Les seuils sont en HT (hors TVA 20%) et s'évaluent sur un seul trimestre.", example: "Un trimestre à 120 k€ HT équipe = palier Argent verrouillé, prime 1 000 €." },
             { term: "Prévisionnel", text: "Le prévisionnel ajoute au réalisé les deals encore ouverts pour montrer un atterrissage possible si le pipeline se concrétise.", example: "Exemple : 8 000 € signés + 5 000 € de pipeline = 13 000 € d'atterrissage." },
             { term: "Tableau de pilotage", text: "Il regroupe mois par mois les objectifs, le réalisé, le pipeline et le potentiel, pour voir où ça accélère ou où ça bloque.", example: "Tu peux repérer d'un coup d'oeil les mois déjà sécurisés, ceux en retard, et ceux encore dépendants du pipeline." },
           ],
@@ -1909,9 +1958,11 @@
       }
     }
 
-    function buildAiContext(config, stats, projection, teamHT, teamDealsCount, raw) {
-      const currentTier = TIERS.filter(t => teamHT >= t.seuil).slice(-1)[0] || null;
-      const nextTier = TIERS.find(t => teamHT < t.seuil) || null;
+    function buildAiContext(config, stats, projection, teamContext, raw) {
+      const { quartersByKey, currentKey, teamHT, teamTotalTTC, teamDealsCount } = teamContext;
+      const activeQ = quartersByKey[currentKey] || { ht: 0, deals: 0, label: "Q" + currentKey, range: "" };
+      const currentTier = TIERS.filter(t => activeQ.ht >= t.seuil).slice(-1)[0] || null;
+      const nextTier = TIERS.find(t => activeQ.ht < t.seuil) || null;
       const nextCalendarKey = shiftMonthKey(NOW_KEY, 1);
       const availableMonths = projection.rows.map(r => ({
         key: r.mois,
@@ -2067,10 +2118,33 @@
           objectif_total_ttc: Number(projection.objectiveTTC.toFixed(2)),
         },
         team_prime: {
-          total_ht: Number(teamHT.toFixed(2)),
-          deals_count: teamDealsCount,
-          current_tier: currentTier ? { name: currentTier.name, threshold: currentTier.seuil, prime: currentTier.prime } : null,
-          next_tier: nextTier ? { name: nextTier.name, threshold: nextTier.seuil, prime: nextTier.prime } : null,
+          reset_rule: "La prime d'equipe se remet a zero chaque trimestre. Les paliers (50k / 100k / 150k / 200k HT) sont verifies sur le CA HT du trimestre en cours, pas sur le cumul annuel.",
+          unit: "HT",
+          current_quarter: {
+            key: currentKey,
+            label: `Q${currentKey} (${activeQ.range})`,
+            total_ht: Number((activeQ.ht || 0).toFixed(2)),
+            deals_count: activeQ.deals || 0,
+            current_tier: currentTier ? { name: currentTier.name, threshold_ht: currentTier.seuil, prime: currentTier.prime } : null,
+            next_tier: nextTier ? { name: nextTier.name, threshold_ht: nextTier.seuil, prime: nextTier.prime, gap_ht: Number((nextTier.seuil - (activeQ.ht || 0)).toFixed(2)) } : null,
+          },
+          by_quarter: QUARTERS.map(q => {
+            const data = quartersByKey[q.key] || { ht: 0, deals: 0 };
+            const top = TIERS.filter(t => data.ht >= t.seuil).slice(-1)[0] || null;
+            return {
+              key: q.key,
+              label: `Q${q.key} (${q.range})`,
+              total_ht: Number(data.ht.toFixed(2)),
+              deals_count: data.deals,
+              tier_acquis: top ? { name: top.name, threshold_ht: top.seuil, prime: top.prime } : null,
+            };
+          }),
+          annual_context: {
+            cumul_ht: Number((teamHT || 0).toFixed(2)),
+            cumul_ttc: Number((teamTotalTTC || 0).toFixed(2)),
+            deals_count: teamDealsCount,
+            note: "Le cumul annuel est informatif, il n'entre pas dans le calcul de la prime.",
+          },
         },
         monthly,
         monthly_by_key: monthlyByKey,
@@ -2223,15 +2297,44 @@
     }
 
     // ── Message équipe ────────────────────────────────────────────────────────
-    function teamMessage(teamHT, topTier, nextTier) {
-      if (topTier && !nextTier)   return `Palier <strong>💎 Platine</strong> actuel : prime <strong>${fmtEur(topTier.prime)}</strong>.`;
-      if (topTier && nextTier)    return `Palier actuel : <strong>${topTier.emoji} ${esc(topTier.name)}</strong> · prime <strong>${fmtEur(topTier.prime)}</strong>. Plus que <strong>${fmtEur(nextTier.seuil - teamHT)}</strong> pour débloquer ${nextTier.emoji} ${esc(nextTier.name)} (${fmtEur(nextTier.prime)}).`;
-      if (nextTier)               return `Encore <strong>${fmtEur(nextTier.seuil - teamHT)}</strong> pour débloquer le premier palier ${nextTier.emoji} <strong>${esc(nextTier.name)}</strong> (${fmtEur(nextTier.prime)}).`;
-      return `Objectif équipe en cours.`;
+    function teamMessage(teamHT, topTier, nextTier, quarterLabel) {
+      const where = quarterLabel ? ` sur ${quarterLabel}` : "";
+      if (topTier && !nextTier)   return `Palier <strong>💎 Platine</strong> verrouillé${where} : prime <strong>${fmtEur(topTier.prime)}</strong>.`;
+      if (topTier && nextTier)    return `Palier actuel${where} : <strong>${topTier.emoji} ${esc(topTier.name)}</strong> · prime <strong>${fmtEur(topTier.prime)}</strong>. Plus que <strong>${fmtEur(nextTier.seuil - teamHT)}</strong> pour débloquer ${nextTier.emoji} ${esc(nextTier.name)} (${fmtEur(nextTier.prime)}).`;
+      if (nextTier)               return `Encore <strong>${fmtEur(nextTier.seuil - teamHT)}</strong>${where} pour débloquer le premier palier ${nextTier.emoji} <strong>${esc(nextTier.name)}</strong> (${fmtEur(nextTier.prime)}).`;
+      return `Trimestre en cours${where}. La prime d'équipe repart de 0 chaque trimestre.`;
     }
 
     // ── Tiers ─────────────────────────────────────────────────────────────────
-    function renderTiers(teamHT) {
+    function topTierFor(ht) { return TIERS.filter(t => ht >= t.seuil).slice(-1)[0] || null; }
+
+    function renderQuarterTabs(quartersByKey, activeKey, currentKey) {
+      return `<div class="q-tabs" role="tablist">` + QUARTERS.map(q => {
+        const data = quartersByKey[q.key] || { ht: 0, deals: 0 };
+        const top = topTierFor(data.ht);
+        const isActive = q.key === activeKey;
+        const isFuture = q.key > currentKey;
+        const state = top
+          ? `${top.emoji} ${top.name}`
+          : (isFuture ? "À venir" : (data.ht > 0 ? "Aucun palier" : "0 €"));
+        const cls = [
+          "q-tab",
+          isActive ? "current" : "",
+          top ? "unlocked" : "locked",
+          isFuture ? "future" : "",
+        ].filter(Boolean).join(" ");
+        return `<button type="button" class="${cls}" role="tab" aria-selected="${isActive}" data-quarter="${q.key}">
+          <span>${q.label}</span>
+          <span class="q-range">${esc(q.range)}</span>
+          <span class="q-state">${state}</span>
+        </button>`;
+      }).join("") + `</div>`;
+    }
+
+    function renderTiers(quartersByKey, activeKey) {
+      const currentKey = currentQuarterKey();
+      const active = quartersByKey[activeKey] || quartersByKey[currentKey] || { ht: 0, deals: 0, label: "Q" + activeKey, range: "" };
+      const teamHT = active.ht;
       const unlocked = TIERS.filter(t => teamHT >= t.seuil);
       const topTier  = unlocked[unlocked.length - 1] || null;
       const nextTier = TIERS.find(t => teamHT < t.seuil) || null;
@@ -2249,7 +2352,7 @@
         const isCurrent = done && topTier?.key === t.key;
         const isNext = !done && nextTier?.key === t.key;
         const detail = isCurrent
-          ? "Prime actuelle"
+          ? "Prime du trimestre"
           : (done ? "Palier atteint" : (isNext ? `Reste ${fmtEur(t.seuil - teamHT)}` : "À débloquer"));
         const stateLabel = done ? (isCurrent ? "✓ Actuel" : "✓ Atteint") : "🔒 Verrouillé";
         return `<div class="tier ${t.key} ${done ? "unlocked" : "locked"} ${isCurrent ? "current" : ""} ${isNext ? "next" : ""}">
@@ -2262,8 +2365,11 @@
         </div>`;
       }).join("");
 
+      const quarterLabel = `${active.label} (${active.range})`;
+
       return {
         html: `
+          ${renderQuarterTabs(quartersByKey, activeKey, currentKey)}
           <div class="tier-track-wrap" style="margin-top:14px">
             <div class="tier-track">
               <div class="tier-fill" data-w="${progressPct.toFixed(2)}">
@@ -2275,8 +2381,8 @@
           <div class="tiers">${tiersHtml}</div>
           <div class="tier-sub">
             <span>${topTier
-              ? `Prime actuelle : <strong>${topTier.emoji} ${esc(topTier.name)}</strong> · <strong>${fmtEur(topTier.prime)}</strong>`
-              : `Aucun palier atteint`}
+              ? `Prime ${esc(quarterLabel)} : <strong>${topTier.emoji} ${esc(topTier.name)}</strong> · <strong>${fmtEur(topTier.prime)}</strong>`
+              : `Aucun palier sur ${esc(quarterLabel)}`}
             </span>
             <span>${nextTier
               ? `Prochaine prime : ${nextTier.emoji} ${esc(nextTier.name)} · <strong>${fmtEur(nextTier.seuil - teamHT)}</strong> restants → ${fmtEur(nextTier.prime)}`
@@ -2284,17 +2390,32 @@
             </span>
           </div>
           <div class="team-msg">
-            <div class="team-text">${teamMessage(teamHT, topTier, nextTier)}</div>
+            <div class="team-text">${teamMessage(teamHT, topTier, nextTier, quarterLabel)}</div>
           </div>
         `,
         unlockedCount: unlocked.length,
-        topTier, nextTier,
+        topTier, nextTier, active, quarterLabel,
       };
     }
 
+    function bindQuarterTabs(containerSelector, quartersByKey, onSelect) {
+      const container = document.querySelector(containerSelector);
+      if (!container) return;
+      container.querySelectorAll(".q-tab").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const key = Number(btn.getAttribute("data-quarter"));
+          if (!key) return;
+          onSelect(key);
+        });
+      });
+    }
+
     // ── Render main ───────────────────────────────────────────────────────────
-    function renderDashboard(config, stats, projection, teamHT, teamDealsCount, rawData) {
-      const tiers = renderTiers(teamHT);
+    function renderDashboard(config, stats, projection, teamContext, rawData) {
+      const { quartersByKey, activeKey: _activeKey, currentKey, teamHT, teamDealsCount } = teamContext;
+      const activeKey = _activeKey || currentKey;
+      const tiers = renderTiers(quartersByKey, activeKey);
+      const activeQuarter = tiers.active;
       const pLabel = periodLabel(config);
       const metricLabel = config.sourceLabel || "CA HT";
       const basePct = Math.round((stats.baseRate || 0.09) * 100);
@@ -2423,18 +2544,18 @@
 
           ${renderSalesSimulator(config, projection)}
 
-          <div class="glass reveal" style="animation-delay:.72s">
+          <div class="glass reveal" id="team-prime-card" style="animation-delay:.72s">
             <div class="card-head">
-              <h3><span class="head-ico">🏆</span>Prime d'équipe collective 2026</h3>
-              <span class="meta">${TEAM_PERIOD_LABEL} · CA HubSpot cumulé : <strong>${fmtEur(teamHT)}</strong> · ${teamDealsCount} deals équipe</span>
+              <h3><span class="head-ico">🏆</span>Prime d'équipe collective — ${esc(tiers.quarterLabel)}</h3>
+              <span class="meta">Remise à zéro chaque trimestre · CA HT ${esc(activeQuarter.label)} : <strong>${fmtEur(activeQuarter.ht)}</strong> · ${activeQuarter.deals} deals · cumul année : ${fmtEur(teamHT)} (${teamDealsCount} deals)</span>
             </div>
-            <div class="card-body">${tiers.html}</div>
+            <div class="card-body" id="team-prime-body">${tiers.html}</div>
           </div>
 
           ${renderPrimeAiCard(config)}
 
           <div class="footer">
-            Calculé en direct depuis HubSpot · Commission ${pLabel} · Prévisionnel = deals en cours regroupés sur la date de signature prévue quand elle existe · Prime d'équipe = tous les closedwon 2026 · Information interne, sans valeur contractuelle.
+            Calculé en direct depuis HubSpot · Commission ${pLabel} · Prévisionnel = deals en cours regroupés sur la date de signature prévue quand elle existe · Prime d'équipe = tous les closedwon HubSpot, cumulés par trimestre en HT (remise à zéro chaque trimestre) · Information interne, sans valeur contractuelle.
           </div>
         </div>
         ${renderDefinitionsModal(config)}
@@ -2457,20 +2578,42 @@
       }, 250);
 
       // Confetti si au moins un palier d'équipe déverrouillé
-      const key = "prime-confetti-" + OWNER + "-" + tiers.unlockedCount;
+      const key = "prime-confetti-" + OWNER + "-" + activeKey + "-" + tiers.unlockedCount;
       if (tiers.unlockedCount > 0 && !sessionStorage.getItem(key)) {
         sessionStorage.setItem(key, "1");
         setTimeout(() => confetti({ burst: tiers.unlockedCount }), 1200);
       }
 
-      PRIME_AI_CONTEXT = buildAiContext(config, stats, projection, teamHT, teamDealsCount, rawData);
+      PRIME_AI_CONTEXT = buildAiContext(config, stats, projection, teamContext, rawData);
       bindSalesSimulator(stats, projection);
       bindPrimeAI(config);
       bindDefinitionsModal();
+      bindQuarterTabs("#team-prime-card", quartersByKey, (newKey) => {
+        rerenderTeamPrime(newKey, quartersByKey, config);
+      });
     }
 
-    function renderRdvDashboard(config, stats, projection, teamHT, teamDealsCount, rawData) {
-      const tiers = renderTiers(teamHT);
+    function rerenderTeamPrime(newKey, quartersByKey, config) {
+      const t = renderTiers(quartersByKey, newKey);
+      const body = document.getElementById("team-prime-body");
+      const head = document.querySelector("#team-prime-card .card-head");
+      if (!body || !head) return;
+      body.innerHTML = t.html;
+      const titleEl = head.querySelector("h3");
+      const metaEl = head.querySelector(".meta");
+      if (titleEl) titleEl.innerHTML = `<span class="head-ico">🏆</span>Prime d'équipe collective — ${esc(t.quarterLabel)}`;
+      if (metaEl) metaEl.innerHTML = `Remise à zéro chaque trimestre · CA HT ${esc(t.active.label)} : <strong>${fmtEur(t.active.ht)}</strong> · ${t.active.deals} deals`;
+      setTimeout(() => {
+        body.querySelectorAll(".tier-fill").forEach(el => { el.style.width = el.getAttribute("data-w") + "%"; });
+      }, 60);
+      bindQuarterTabs("#team-prime-card", quartersByKey, (k) => rerenderTeamPrime(k, quartersByKey, config));
+    }
+
+    function renderRdvDashboard(config, stats, projection, teamContext, rawData) {
+      const { quartersByKey, activeKey: _activeKey, currentKey, teamHT, teamDealsCount } = teamContext;
+      const activeKey = _activeKey || currentKey;
+      const tiers = renderTiers(quartersByKey, activeKey);
+      const activeQuarter = tiers.active;
       const pLabel = periodLabel(config);
       const rowsHtml = stats.rows.map((r, i) => {
         const objPill = r.atteint ? '<span class="pill ok">✓</span>' : (r.isFuture ? '<span class="pill future">à venir</span>' : '');
@@ -2580,18 +2723,18 @@
 
           ${renderRdvSimulator(config, projection)}
 
-          <div class="glass reveal" style="animation-delay:.72s">
+          <div class="glass reveal" id="team-prime-card" style="animation-delay:.72s">
             <div class="card-head">
-              <h3><span class="head-ico">🏆</span>Prime d'équipe collective 2026</h3>
-              <span class="meta">${TEAM_PERIOD_LABEL} · CA HubSpot cumulé : <strong>${fmtEur(teamHT)}</strong> · ${teamDealsCount} deals équipe</span>
+              <h3><span class="head-ico">🏆</span>Prime d'équipe collective — ${esc(tiers.quarterLabel)}</h3>
+              <span class="meta">Remise à zéro chaque trimestre · CA HT ${esc(activeQuarter.label)} : <strong>${fmtEur(activeQuarter.ht)}</strong> · ${activeQuarter.deals} deals · cumul année : ${fmtEur(teamHT)} (${teamDealsCount} deals)</span>
             </div>
-            <div class="card-body">${tiers.html}</div>
+            <div class="card-body" id="team-prime-body">${tiers.html}</div>
           </div>
 
           ${renderPrimeAiCard(config)}
 
           <div class="footer">
-            Calculé en direct depuis HubSpot · RDV = meetings créés par Lucas non annulés, regroupés par mois de création · Transactions = deals rattachés aux comptes ou contacts de ces meetings · Prévisionnel = deals encore ouverts rattachés à ces meetings · Prime d'équipe = tous les closedwon 2026 · Information interne, sans valeur contractuelle.
+            Calculé en direct depuis HubSpot · RDV = meetings créés par Lucas non annulés, regroupés par mois de création · Transactions = deals rattachés aux comptes ou contacts de ces meetings · Prévisionnel = deals encore ouverts rattachés à ces meetings · Prime d'équipe = tous les closedwon HubSpot, cumulés par trimestre en HT (remise à zéro chaque trimestre) · Information interne, sans valeur contractuelle.
           </div>
         </div>
         ${renderDefinitionsModal(config)}
@@ -2612,16 +2755,19 @@
         });
       }, 250);
 
-      const key = "prime-confetti-" + OWNER + "-" + tiers.unlockedCount;
+      const key = "prime-confetti-" + OWNER + "-" + activeKey + "-" + tiers.unlockedCount;
       if (tiers.unlockedCount > 0 && !sessionStorage.getItem(key)) {
         sessionStorage.setItem(key, "1");
         setTimeout(() => confetti({ burst: tiers.unlockedCount }), 1200);
       }
 
-      PRIME_AI_CONTEXT = buildAiContext(config, stats, projection, teamHT, teamDealsCount, rawData);
+      PRIME_AI_CONTEXT = buildAiContext(config, stats, projection, teamContext, rawData);
       bindRdvSimulator(config, projection);
       bindPrimeAI(config);
       bindDefinitionsModal();
+      bindQuarterTabs("#team-prime-card", quartersByKey, (newKey) => {
+        rerenderTeamPrime(newKey, quartersByKey, config);
+      });
     }
 
     function renderError(msg) {
@@ -2692,10 +2838,21 @@
         const projection     = config.type === "rdv"
           ? buildRdvProjection(config, stats, json.pipeline_deals || [])
           : buildSalesProjection(config, stats, json.pipeline_deals || []);
-        const teamHT         = json.team_total_amount ?? json.team_total_ttc ?? json.team_total ?? 0;
+        const teamTotalTTC   = json.team_total_amount ?? json.team_total_ttc ?? json.team_total ?? 0;
+        const teamHT         = teamTotalTTC / TVA;
         const teamDealsCount = json.team_deals_count || 0;
-        if (config.type === "rdv") renderRdvDashboard(config, stats, projection, teamHT, teamDealsCount, json);
-        else renderDashboard(config, stats, projection, teamHT, teamDealsCount, json);
+        const quartersByKey  = computeQuartersHT(json.team_monthly || {});
+        const currentKey     = currentQuarterKey();
+        const teamContext    = {
+          quartersByKey,
+          activeKey: currentKey,
+          currentKey,
+          teamHT,
+          teamTotalTTC,
+          teamDealsCount,
+        };
+        if (config.type === "rdv") renderRdvDashboard(config, stats, projection, teamContext, json);
+        else renderDashboard(config, stats, projection, teamContext, json);
       } catch (e) {
         renderError(e.message || String(e));
       }
