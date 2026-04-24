@@ -121,23 +121,6 @@
     }
     @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.4); } }
 
-    .rank-chip {
-      display:flex; flex-direction:column; align-items:center; gap:2px;
-      padding:12px 18px; min-width:130px;
-      background:rgba(255,255,255,0.15); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
-      border:1px solid rgba(255,255,255,0.32); border-radius:18px;
-      box-shadow:0 10px 30px -12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.4);
-      opacity:0; transform: scale(0.8) translateX(20px);
-      animation: chipPop 0.7s 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
-    }
-    @keyframes chipPop {
-      to { opacity: 1; transform: scale(1) translateX(0); }
-    }
-    .rank-chip .rank-emoji { font-size:28px; line-height:1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); animation: rankFloat 4s ease-in-out infinite; }
-    @keyframes rankFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-    .rank-chip .rank-lbl  { font-size:10px; font-weight:700; opacity:0.88; text-transform:uppercase; letter-spacing:0.08em; }
-    .rank-chip .rank-name { font-size:14px; font-weight:800; letter-spacing:-0.01em; }
-
     .grid { padding:16px; display:grid; gap:14px; }
 
     /* ══════════════ GLASS CARD ══════════════ */
@@ -888,18 +871,6 @@
     // ── Render main ───────────────────────────────────────────────────────────
     function renderDashboard(config, stats, teamHT, teamDealsCount) {
       const tiers = renderTiers(teamHT);
-      const topTier = tiers.topTier;
-      const rankChip = topTier
-        ? `<div class="rank-chip">
-            <span class="rank-emoji">${topTier.emoji}</span>
-            <span class="rank-lbl">Équipe</span>
-            <span class="rank-name">${esc(topTier.name)}</span>
-          </div>`
-        : `<div class="rank-chip">
-            <span class="rank-emoji">🎯</span>
-            <span class="rank-lbl">Équipe</span>
-            <span class="rank-name">En route</span>
-          </div>`;
 
       const rowsHtml = stats.rows.map((r, i) => {
         const surperfPill = r.surperf > 0
@@ -929,7 +900,6 @@
                 <div class="badge">Live HubSpot</div>
               </div>
             </div>
-            ${rankChip}
           </div>
         </div>
 
@@ -979,7 +949,7 @@
 
           <div class="glass reveal" style="animation-delay:.60s">
             <div class="card-head">
-              <h3><span class="head-ico">📆</span>Détail mensuel</h3>
+              <h3><span class="head-ico">🧾</span>Détail mensuel</h3>
               <span class="meta">commissions par mois</span>
             </div>
             <div class="card-body" style="padding:0">
