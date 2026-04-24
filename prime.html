@@ -1496,6 +1496,7 @@
 
     function renderProjectionSummary(config, stats, projection) {
       const isRdv = config.type === "rdv";
+      const salesPeriod = periodLabel(config);
       const items = isRdv
         ? [
             { label: "Variable acquise", value: projection.actualTotal, note: `${fmtEur(stats.totalPrimeRdv + stats.totalPrimeTransactions)} RDV + tx · ${fmtEur(projection.actualSignature)} signatures` },
@@ -1504,17 +1505,17 @@
             { label: "Variable potentielle", value: projection.potentialTotal, note: `+${fmtEur(projection.potentialTotal - projection.actualTotal)} vs acquis`, format: fmtEur },
           ]
         : [
-            { label: "Signé", value: projection.actualTTC, note: `${stats.nbDeals} deal${stats.nbDeals > 1 ? "s" : ""} gagné${stats.nbDeals > 1 ? "s" : ""}`, format: fmtEur },
-            { label: "Pipeline en cours", value: projection.pipelineTTC, note: `${projection.pipelineDeals} deal${projection.pipelineDeals > 1 ? "s" : ""} ouvert${projection.pipelineDeals > 1 ? "s" : ""}`, format: fmtEur },
-            { label: "Atterrissage", value: projection.landingTTC, note: `objectif ${fmtEur(projection.objectiveTTC)}`, format: fmtEur },
-            { label: "Prime potentielle", value: projection.potentialCommission, note: `+${fmtEur(projection.upsideCommission)} vs acquis`, format: fmtEur },
+            { label: "Signé période", value: projection.actualTTC, note: `${stats.nbDeals} deal${stats.nbDeals > 1 ? "s" : ""} gagné${stats.nbDeals > 1 ? "s" : ""} sur ${salesPeriod}`, format: fmtEur },
+            { label: "Pipeline période", value: projection.pipelineTTC, note: `${projection.pipelineDeals} deal${projection.pipelineDeals > 1 ? "s" : ""} ouvert${projection.pipelineDeals > 1 ? "s" : ""} sur ${salesPeriod}`, format: fmtEur },
+            { label: "Atterrissage période", value: projection.landingTTC, note: `objectif ${salesPeriod} : ${fmtEur(projection.objectiveTTC)}`, format: fmtEur },
+            { label: "Prime potentielle", value: projection.potentialCommission, note: `+${fmtEur(projection.upsideCommission)} vs acquis sur ${salesPeriod}`, format: fmtEur },
           ];
 
       return `
         <div class="glass reveal" style="animation-delay:.54s">
           <div class="card-head">
             <h3><span class="head-ico">🔭</span>Prévisionnel</h3>
-            <span class="meta">${isRdv ? "pipeline signatures" : "signé + deals en cours"}</span>
+            <span class="meta">${isRdv ? "pipeline signatures" : `signé + deals en cours · ${salesPeriod}`}</span>
           </div>
           <div class="card-body">
             <div class="metric-grid">
