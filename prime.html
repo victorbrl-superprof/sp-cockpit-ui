@@ -421,6 +421,7 @@
     .tier .prime { font-size:21px; font-weight:800; color:var(--slate-900); margin-top:5px; font-variant-numeric:tabular-nums; letter-spacing:-0.02em; }
     .tier .tier-detail { font-size:10.5px; color:var(--slate-500); font-weight:700; margin-top:5px; }
     .tier.unlocked .tier-detail { color:currentColor; }
+    .tier.current .tier-detail { color:#065f46; }
     .tier.next .tier-detail { color:#92400e; }
     .tier.bronze.unlocked  { color:var(--bronze);  border-color:var(--bronze);  background:linear-gradient(180deg, var(--bronze-light), #fff); }
     .tier.silver.unlocked  { color:var(--silver);  border-color:var(--silver);  background:linear-gradient(180deg, var(--silver-light), #fff); }
@@ -802,9 +803,9 @@
 
     // ── Message équipe ────────────────────────────────────────────────────────
     function teamMessage(teamHT, topTier, nextTier) {
-      if (topTier && !nextTier)   return `<strong>💎 Équipe en Platine !</strong> Vous avez explosé le palier max.`;
-      if (topTier && nextTier)    return `Palier <strong>${topTier.emoji} ${esc(topTier.name)}</strong> sécurisé. Plus que <strong>${fmtEur(nextTier.seuil - teamHT)}</strong> pour débloquer ${nextTier.emoji} ${esc(nextTier.name)} (+${fmtEur(nextTier.prime - topTier.prime)}).`;
-      if (nextTier)               return `Encore <strong>${fmtEur(nextTier.seuil - teamHT)}</strong> pour débloquer le premier palier ${nextTier.emoji} <strong>${esc(nextTier.name)}</strong> (${fmtEur(nextTier.prime)}). On y va !`;
+      if (topTier && !nextTier)   return `Palier <strong>💎 Platine</strong> actuel : prime <strong>${fmtEur(topTier.prime)}</strong>.`;
+      if (topTier && nextTier)    return `Palier actuel : <strong>${topTier.emoji} ${esc(topTier.name)}</strong> · prime <strong>${fmtEur(topTier.prime)}</strong>. Plus que <strong>${fmtEur(nextTier.seuil - teamHT)}</strong> pour débloquer ${nextTier.emoji} ${esc(nextTier.name)} (${fmtEur(nextTier.prime)}).`;
+      if (nextTier)               return `Encore <strong>${fmtEur(nextTier.seuil - teamHT)}</strong> pour débloquer le premier palier ${nextTier.emoji} <strong>${esc(nextTier.name)}</strong> (${fmtEur(nextTier.prime)}).`;
       return `Objectif équipe en cours.`;
     }
 
@@ -824,12 +825,14 @@
 
       const tiersHtml = TIERS.map(t => {
         const done = teamHT >= t.seuil;
+        const isCurrent = done && topTier?.key === t.key;
         const isNext = !done && nextTier?.key === t.key;
-        const detail = done
-          ? "Prime acquise"
-          : (isNext ? `Reste ${fmtEur(t.seuil - teamHT)}` : "À débloquer");
-        return `<div class="tier ${t.key} ${done ? "unlocked" : "locked"} ${isNext ? "next" : ""}">
-          <span class="tier-state ${done ? "unlocked" : "locked"}">${done ? "✓ Débloqué" : "🔒 Verrouillé"}</span>
+        const detail = isCurrent
+          ? "Prime actuelle"
+          : (done ? "Palier atteint" : (isNext ? `Reste ${fmtEur(t.seuil - teamHT)}` : "À débloquer"));
+        const stateLabel = done ? (isCurrent ? "✓ Actuel" : "✓ Atteint") : "🔒 Verrouillé";
+        return `<div class="tier ${t.key} ${done ? "unlocked" : "locked"} ${isCurrent ? "current" : ""} ${isNext ? "next" : ""}">
+          <span class="tier-state ${done ? "unlocked" : "locked"}">${stateLabel}</span>
           <span class="emoji">${t.emoji}</span>
           <div class="name">${esc(t.name)}</div>
           <div class="seuil">&gt; ${t.seuil/1000}k€ HT</div>
@@ -851,11 +854,11 @@
           <div class="tiers">${tiersHtml}</div>
           <div class="tier-sub">
             <span>${topTier
-              ? `Niveau actuel : <strong>${topTier.emoji} ${esc(topTier.name)}</strong> · prime <strong>${fmtEur(topTier.prime)}</strong>`
+              ? `Prime actuelle : <strong>${topTier.emoji} ${esc(topTier.name)}</strong> · <strong>${fmtEur(topTier.prime)}</strong>`
               : `Aucun palier atteint`}
             </span>
             <span>${nextTier
-              ? `Prochain : ${nextTier.emoji} ${esc(nextTier.name)} · <strong>${fmtEur(nextTier.seuil - teamHT)}</strong> → ${fmtEur(nextTier.prime)}`
+              ? `Prochaine prime : ${nextTier.emoji} ${esc(nextTier.name)} · <strong>${fmtEur(nextTier.seuil - teamHT)}</strong> restants → ${fmtEur(nextTier.prime)}`
               : `💎 Palier max atteint`}
             </span>
           </div>
