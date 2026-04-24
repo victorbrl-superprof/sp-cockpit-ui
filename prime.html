@@ -2365,7 +2365,7 @@
         </div>`;
       }).join("");
 
-      const quarterLabel = `${active.label} (${active.range})`;
+      const quarterLabel = `${active.label} · ${active.range}`;
 
       return {
         html: `
@@ -2546,7 +2546,7 @@
 
           <div class="glass reveal" id="team-prime-card" style="animation-delay:.72s">
             <div class="card-head">
-              <h3><span class="head-ico">🏆</span>Prime d'équipe collective — ${esc(tiers.quarterLabel)}</h3>
+              <h3><span class="head-ico">🏆</span>Prime d'équipe · ${esc(tiers.quarterLabel)}</h3>
               <span class="meta">Remise à zéro chaque trimestre · CA HT ${esc(activeQuarter.label)} : <strong>${fmtEur(activeQuarter.ht)}</strong> · ${activeQuarter.deals} deals · cumul année : ${fmtEur(teamHT)} (${teamDealsCount} deals)</span>
             </div>
             <div class="card-body" id="team-prime-body">${tiers.html}</div>
@@ -2601,7 +2601,7 @@
       body.innerHTML = t.html;
       const titleEl = head.querySelector("h3");
       const metaEl = head.querySelector(".meta");
-      if (titleEl) titleEl.innerHTML = `<span class="head-ico">🏆</span>Prime d'équipe collective — ${esc(t.quarterLabel)}`;
+      if (titleEl) titleEl.innerHTML = `<span class="head-ico">🏆</span>Prime d'équipe · ${esc(t.quarterLabel)}`;
       if (metaEl) metaEl.innerHTML = `Remise à zéro chaque trimestre · CA HT ${esc(t.active.label)} : <strong>${fmtEur(t.active.ht)}</strong> · ${t.active.deals} deals`;
       setTimeout(() => {
         body.querySelectorAll(".tier-fill").forEach(el => { el.style.width = el.getAttribute("data-w") + "%"; });
@@ -2725,7 +2725,7 @@
 
           <div class="glass reveal" id="team-prime-card" style="animation-delay:.72s">
             <div class="card-head">
-              <h3><span class="head-ico">🏆</span>Prime d'équipe collective — ${esc(tiers.quarterLabel)}</h3>
+              <h3><span class="head-ico">🏆</span>Prime d'équipe · ${esc(tiers.quarterLabel)}</h3>
               <span class="meta">Remise à zéro chaque trimestre · CA HT ${esc(activeQuarter.label)} : <strong>${fmtEur(activeQuarter.ht)}</strong> · ${activeQuarter.deals} deals · cumul année : ${fmtEur(teamHT)} (${teamDealsCount} deals)</span>
             </div>
             <div class="card-body" id="team-prime-body">${tiers.html}</div>
