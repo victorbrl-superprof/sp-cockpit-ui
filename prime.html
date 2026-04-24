@@ -4,136 +4,141 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <title>Prime Q2 2026 — Superprof</title>
+  <title>Prime 2026 — Superprof</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --indigo: #6366f1; --indigo-dark: #4f46e5; --indigo-light: #e0e7ff;
-      --emerald: #10b981; --emerald-light: #d1fae5;
-      --amber: #f59e0b; --amber-light: #fef3c7;
-      --rose: #f43f5e; --rose-light: #ffe4e6;
-      --violet: #8b5cf6;
-      --bronze: #cd7f32; --bronze-light: #fde6d0;
-      --silver: #94a3b8; --silver-light: #e5e7eb;
-      --gold:   #eab308; --gold-light: #fef9c3;
-      --platine:#06b6d4; --platine-light: #cffafe;
-      --slate-50:#f8fafc; --slate-100:#f1f5f9; --slate-200:#e2e8f0;
-      --slate-300:#cbd5e1;
-      --slate-400:#94a3b8; --slate-500:#64748b; --slate-600:#475569;
-      --slate-700:#334155; --slate-900:#0f172a;
-
-      --glass-bg:     rgba(255, 255, 255, 0.72);
-      --glass-border: rgba(255, 255, 255, 0.85);
-      --glass-shadow: 0 1px 0 0 rgba(255,255,255,0.6) inset, 0 10px 40px -18px rgba(15, 23, 42, 0.22), 0 2px 8px -4px rgba(15, 23, 42, 0.08);
-
-      --ring-indigo:  0 0 0 1px rgba(99,102,241,0.12), 0 8px 24px -12px rgba(99,102,241,0.35);
+      --indigo:#6366f1; --indigo-dark:#4f46e5; --indigo-light:#e0e7ff;
+      --emerald:#10b981; --emerald-light:#d1fae5;
+      --amber:#f59e0b;  --amber-light:#fef3c7;
+      --rose:#f43f5e;   --rose-light:#ffe4e6;
+      --violet:#8b5cf6;
+      --bronze:#cd7f32; --bronze-light:#fde6d0;
+      --silver:#94a3b8; --silver-light:#e5e7eb;
+      --gold:#eab308;   --gold-light:#fef9c3;
+      --platine:#06b6d4;--platine-light:#cffafe;
+      --slate-50:#f8fafc;--slate-100:#f1f5f9;--slate-200:#e2e8f0;--slate-300:#cbd5e1;
+      --slate-400:#94a3b8;--slate-500:#64748b;--slate-600:#475569;--slate-700:#334155;--slate-900:#0f172a;
+      --glass-bg:rgba(255,255,255,0.72);
+      --glass-border:rgba(255,255,255,0.85);
+      --glass-shadow:0 1px 0 0 rgba(255,255,255,0.6) inset, 0 10px 40px -18px rgba(15,23,42,0.22), 0 2px 8px -4px rgba(15,23,42,0.08);
     }
-    html, body { height: 100%; }
+    html, body { height: 100%; overflow-x: hidden; }
     body {
-      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      font-size: 13px;
-      color: var(--slate-900);
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-      letter-spacing: -0.005em;
-      position: relative;
+      font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      font-size:13px; color:var(--slate-900); line-height:1.5;
+      -webkit-font-smoothing:antialiased; letter-spacing:-0.005em;
+      position:relative; min-height:100vh;
       background:
-        radial-gradient(1000px 600px at 90% -10%, rgba(139, 92, 246, 0.22), transparent 60%),
-        radial-gradient(900px 600px at -10% 10%,  rgba(99, 102, 241, 0.20), transparent 55%),
-        radial-gradient(800px 500px at 50% 110%,  rgba(16, 185, 129, 0.12), transparent 60%),
-        linear-gradient(180deg, #eef2ff 0%, #f5f3ff 50%, #faf5ff 100%);
-      min-height: 100vh;
+        radial-gradient(1000px 600px at 90% -10%, rgba(139,92,246,0.22), transparent 60%),
+        radial-gradient(900px 600px at -10% 10%,  rgba(99,102,241,0.20), transparent 55%),
+        radial-gradient(800px 500px at 50% 110%,  rgba(16,185,129,0.12), transparent 60%),
+        linear-gradient(180deg,#eef2ff 0%, #f5f3ff 50%, #faf5ff 100%);
+      background-attachment: fixed;
+      animation: bgShift 18s ease-in-out infinite alternate;
     }
-    body::before {
-      content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-      background-image:
-        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.3) 0, transparent 0.5%),
-        radial-gradient(circle at 75% 65%, rgba(255,255,255,0.25) 0, transparent 0.4%);
-      background-size: 60px 60px, 80px 80px;
-      opacity: 0.25;
+    @keyframes bgShift {
+      0%   { background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%; }
+      100% { background-position: 4% -3%, -3% 4%, 2% -2%, 0% 0%; }
     }
-    #root { position: relative; z-index: 1; }
+
+    /* ── Particules ambient ────────────────────────────────────────────── */
+    #ambient {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    }
+    .orb {
+      position: absolute; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 60%);
+      filter: blur(2px); opacity: 0.35;
+      animation: float 18s ease-in-out infinite alternate;
+    }
+    @keyframes float {
+      0%   { transform: translate(0,0) scale(1); }
+      50%  { transform: translate(20px,-30px) scale(1.1); }
+      100% { transform: translate(-15px,18px) scale(0.95); }
+    }
 
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 999px; }
+    ::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.4); border-radius: 999px; }
+
+    #root { position: relative; z-index: 1; }
 
     /* ══════════════ HERO ══════════════ */
     .hero {
       position: relative;
-      padding: 26px 26px 28px;
-      color: white;
-      overflow: hidden;
+      padding: 28px 26px 30px;
+      color: white; overflow: hidden;
       border-radius: 0 0 28px 28px;
       background:
-        linear-gradient(135deg, rgba(79, 70, 229, 0.92) 0%, rgba(99, 102, 241, 0.92) 45%, rgba(139, 92, 246, 0.92) 100%),
+        linear-gradient(135deg, rgba(79,70,229,0.95) 0%, rgba(99,102,241,0.95) 45%, rgba(139,92,246,0.95) 100%),
         radial-gradient(800px 400px at 80% 20%, rgba(255,255,255,0.25) 0%, transparent 55%);
-      background-blend-mode: normal;
-      box-shadow: 0 30px 60px -30px rgba(79, 70, 229, 0.55);
+      box-shadow: 0 30px 60px -30px rgba(79,70,229,0.55);
     }
     .hero::before {
-      content: ""; position: absolute; inset: 0; pointer-events: none;
+      content:""; position:absolute; inset:0; pointer-events:none;
       background:
         radial-gradient(600px 300px at 85% 10%, rgba(255,255,255,0.20), transparent 55%),
-        radial-gradient(500px 260px at 5%  95%, rgba(255,255,255,0.12), transparent 55%);
+        radial-gradient(500px 260px at 5% 95%, rgba(255,255,255,0.12), transparent 55%);
     }
     .hero::after {
-      content: ""; position: absolute; inset: -30%; pointer-events: none;
-      background: conic-gradient(from 0deg at 70% 30%, rgba(255,255,255,0.06), transparent 25%, rgba(255,255,255,0.1) 50%, transparent 75%, rgba(255,255,255,0.06));
-      animation: hero-spin 30s linear infinite;
-      opacity: 0.35;
+      content:""; position:absolute; inset:-30%; pointer-events:none;
+      background:conic-gradient(from 0deg at 70% 30%, rgba(255,255,255,0.06), transparent 25%, rgba(255,255,255,0.1) 50%, transparent 75%, rgba(255,255,255,0.06));
+      animation:hero-spin 30s linear infinite;
+      opacity:0.35;
     }
     @keyframes hero-spin { to { transform: rotate(1turn); } }
 
-    .hero-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; position: relative; z-index: 1; }
-    .hero-title { display: flex; align-items: center; gap: 14px; }
-    .leon-avatar {
-      width: 48px; height: 48px; border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #fde68a, #f59e0b 55%, #b45309);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 26px;
-      box-shadow: 0 10px 22px -8px rgba(0,0,0,0.35), inset 0 -6px 12px rgba(180, 83, 9, 0.45), inset 0 6px 12px rgba(255, 237, 213, 0.7);
-      flex-shrink: 0;
-      animation: leon-float 4s ease-in-out infinite;
-    }
-    @keyframes leon-float {
-      0%, 100% { transform: translateY(0) rotate(-3deg); }
-      50%      { transform: translateY(-3px) rotate(3deg); }
-    }
+    .hero-head { display:flex; justify-content:space-between; align-items:center; gap:16px; position:relative; z-index:1; }
+    .hero-title { display:flex; align-items:center; gap:14px; }
+
     .hero h1 {
-      font-size: 22px; font-weight: 800; letter-spacing: -0.025em;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      font-size:24px; font-weight:800; letter-spacing:-0.025em;
+      text-shadow:0 1px 2px rgba(0,0,0,0.1);
+      opacity: 0; animation: heroFadeIn 0.7s 0.2s cubic-bezier(0.22,1,0.36,1) forwards;
     }
-    .hero .sub { font-size: 12px; opacity: 0.88; margin-top: 3px; font-weight: 500; }
+    @keyframes heroFadeIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero .sub {
+      font-size:12px; opacity:0; margin-top:3px; font-weight:500;
+      animation: heroFadeIn 0.7s 0.35s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
     .hero .badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(255,255,255,0.18); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-      padding: 5px 11px; border-radius: 999px; font-size: 11px; font-weight: 600;
-      margin-top: 10px;
-      border: 1px solid rgba(255,255,255,0.25);
+      display:inline-flex; align-items:center; gap:6px;
+      background:rgba(255,255,255,0.18); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+      padding:5px 11px; border-radius:999px; font-size:11px; font-weight:600;
+      margin-top:10px; border:1px solid rgba(255,255,255,0.25);
+      opacity:0; animation: heroFadeIn 0.7s 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
     }
     .hero .badge::before {
-      content: ""; width: 6px; height: 6px; background: #34d399; border-radius: 50%;
-      box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.25);
-      animation: pulse 2s ease-in-out infinite;
+      content:""; width:6px; height:6px; background:#34d399; border-radius:50%;
+      box-shadow:0 0 0 3px rgba(52,211,153,0.25);
+      animation:pulse 2s ease-in-out infinite;
     }
-    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.35); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.4); } }
 
     .rank-chip {
-      display: flex; flex-direction: column; align-items: center; gap: 2px;
-      padding: 10px 16px; min-width: 120px;
-      background: rgba(255,255,255,0.15); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(255,255,255,0.32);
-      border-radius: 16px;
-      box-shadow: 0 10px 30px -12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.4);
+      display:flex; flex-direction:column; align-items:center; gap:2px;
+      padding:12px 18px; min-width:130px;
+      background:rgba(255,255,255,0.15); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+      border:1px solid rgba(255,255,255,0.32); border-radius:18px;
+      box-shadow:0 10px 30px -12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.4);
+      opacity:0; transform: scale(0.8) translateX(20px);
+      animation: chipPop 0.7s 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
     }
-    .rank-chip .rank-emoji { font-size: 24px; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
-    .rank-chip .rank-lbl   { font-size: 10px; font-weight: 700; opacity: 0.88; text-transform: uppercase; letter-spacing: 0.08em; }
-    .rank-chip .rank-name  { font-size: 14px; font-weight: 800; letter-spacing: -0.01em; }
+    @keyframes chipPop {
+      to { opacity: 1; transform: scale(1) translateX(0); }
+    }
+    .rank-chip .rank-emoji { font-size:28px; line-height:1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); animation: rankFloat 4s ease-in-out infinite; }
+    @keyframes rankFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+    .rank-chip .rank-lbl  { font-size:10px; font-weight:700; opacity:0.88; text-transform:uppercase; letter-spacing:0.08em; }
+    .rank-chip .rank-name { font-size:14px; font-weight:800; letter-spacing:-0.01em; }
 
-    .grid { padding: 16px; display: grid; gap: 14px; }
+    .grid { padding:16px; display:grid; gap:14px; }
 
     /* ══════════════ GLASS CARD ══════════════ */
     .glass {
@@ -143,324 +148,464 @@
       border: 1px solid var(--glass-border);
       border-radius: 18px;
       box-shadow: var(--glass-shadow);
-      overflow: hidden;
-      position: relative;
+      overflow: hidden; position: relative;
     }
     .glass::before {
-      content: ""; position: absolute; inset: 0; pointer-events: none;
-      border-radius: inherit;
-      background: linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 45%);
-      opacity: 0.6;
+      content:""; position:absolute; inset:0; pointer-events:none;
+      border-radius:inherit;
+      background:linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 45%);
+      opacity:0.6;
+    }
+
+    /* ── Card entrance with stagger ──────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px) scale(0.97);
+      animation: revealUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes revealUp {
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     /* ══════════════ KPIs ══════════════ */
-    .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .kpis { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; }
     .kpi {
-      padding: 16px 16px 14px;
-      position: relative; overflow: hidden;
-      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
-      animation: cardIn 0.55s ease-out both;
+      padding:16px 16px 14px;
+      position:relative; overflow:hidden;
+      transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease;
     }
-    .kpi:hover { transform: translateY(-3px); box-shadow: 0 20px 40px -20px rgba(99,102,241,0.45), var(--glass-shadow); }
-    .kpi:nth-child(1) { animation-delay: 0.05s; }
-    .kpi:nth-child(2) { animation-delay: 0.13s; }
-    .kpi:nth-child(3) { animation-delay: 0.21s; }
-    .kpi:nth-child(4) { animation-delay: 0.29s; }
-
+    .kpi:hover { transform: translateY(-4px) scale(1.01); box-shadow: 0 22px 44px -22px var(--accent-color, rgba(99,102,241,0.5)), var(--glass-shadow); }
     .kpi .accent {
-      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      position:absolute; top:0; left:0; right:0; height:3px;
       background: linear-gradient(90deg, currentColor, transparent);
       opacity: 0.9;
     }
-    .kpi.indigo  { color: var(--indigo); }
-    .kpi.emerald { color: var(--emerald); }
-    .kpi.amber   { color: var(--amber); }
-    .kpi.violet  { color: var(--violet); }
+    .kpi .glow {
+      position:absolute; pointer-events:none;
+      width:200px; height:200px; border-radius:50%;
+      background: radial-gradient(circle, currentColor, transparent 65%);
+      opacity: 0.08; top: -80px; right: -80px;
+      filter: blur(20px);
+    }
+    .kpi.indigo  { color: var(--indigo);  --accent-color: rgba(99,102,241,0.5); }
+    .kpi.emerald { color: var(--emerald); --accent-color: rgba(16,185,129,0.5); }
+    .kpi.amber   { color: var(--amber);   --accent-color: rgba(245,158,11,0.5); }
+    .kpi.violet  { color: var(--violet);  --accent-color: rgba(139,92,246,0.5); }
 
     .kpi .lbl {
-      font-size: 11px; color: var(--slate-500); font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.06em;
-      display: flex; align-items: center; gap: 6px;
+      font-size:11px; color:var(--slate-500); font-weight:600;
+      text-transform:uppercase; letter-spacing:0.06em;
+      display:flex; align-items:center; gap:6px;
     }
-    .kpi .lbl .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .kpi .lbl .dot {
+      width:6px; height:6px; border-radius:50%; background:currentColor;
+      box-shadow: 0 0 0 4px currentColor;
+      box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 20%, transparent);
+    }
     .kpi .val {
-      font-size: 26px; font-weight: 800; margin-top: 6px;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: -0.03em;
+      font-size:28px; font-weight:800; margin-top:6px;
+      font-variant-numeric:tabular-nums; letter-spacing:-0.03em;
       background: linear-gradient(180deg, var(--slate-900), var(--slate-700));
       -webkit-background-clip: text; background-clip: text;
-      color: transparent;
-      line-height: 1.1;
+      color: transparent; line-height: 1.1;
     }
-    .kpi .sub { font-size: 11px; color: var(--slate-500); margin-top: 4px; font-weight: 500; }
+    .kpi .sub { font-size:11px; color:var(--slate-500); margin-top:4px; font-weight:500; }
 
-    @keyframes cardIn {
-      from { opacity: 0; transform: translateY(14px) scale(0.98); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    /* ══════════════ CARDS ══════════════ */
-    .card { animation: cardIn 0.55s ease-out both; }
-    .card:nth-of-type(1) { animation-delay: 0.34s; }
-    .card:nth-of-type(2) { animation-delay: 0.42s; }
-    .card:nth-of-type(3) { animation-delay: 0.50s; }
-    .card:nth-of-type(4) { animation-delay: 0.58s; }
+    /* ══════════════ CARD HEAD ══════════════ */
     .card-head {
-      padding: 14px 18px;
-      border-bottom: 1px solid rgba(226, 232, 240, 0.7);
-      display: flex; align-items: center; justify-content: space-between; gap: 12px;
-      position: relative;
+      padding:14px 18px;
+      border-bottom:1px solid rgba(226,232,240,0.7);
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      position:relative;
     }
     .card-head h3 {
-      font-size: 13px; font-weight: 700; color: var(--slate-900);
-      display: flex; align-items: center; gap: 8px;
-      letter-spacing: -0.01em;
+      font-size:13px; font-weight:700; color:var(--slate-900);
+      display:flex; align-items:center; gap:8px;
+      letter-spacing:-0.01em;
     }
     .card-head h3 .head-ico {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 24px; height: 24px; border-radius: 8px;
+      display:inline-flex; align-items:center; justify-content:center;
+      width:26px; height:26px; border-radius:9px;
       background: linear-gradient(135deg, var(--indigo-light), white);
-      border: 1px solid rgba(99, 102, 241, 0.15);
-      font-size: 13px;
+      border: 1px solid rgba(99,102,241,0.15);
+      font-size:14px;
     }
-    .card-head .meta { font-size: 11px; color: var(--slate-500); font-weight: 500; }
-    .card-head .meta strong { color: var(--slate-900); font-weight: 700; }
-    .card-body { padding: 16px 18px; }
+    .card-head .meta { font-size:11px; color:var(--slate-500); font-weight:500; }
+    .card-head .meta strong { color:var(--slate-900); font-weight:700; }
+    .card-body { padding:16px 18px; }
 
-    /* ══════════════ CHART ══════════════ */
-    .chart-wrap { width: 100%; }
-    .chart { width: 100%; height: 240px; display: block; }
-    .chart .axis-label  { fill: var(--slate-500); font-size: 10px; font-weight: 500; }
-    .chart .grid-line   { stroke: var(--slate-200); stroke-width: 1; stroke-dasharray: 3 3; opacity: 0.6; }
-    .chart .grid-line.base { stroke-dasharray: none; stroke: var(--slate-300); opacity: 0.8; }
-    .chart .month-label { fill: var(--slate-600); font-size: 10px; font-weight: 600; text-anchor: middle; }
-    .chart .val-label   { fill: var(--indigo-dark); font-size: 9px; text-anchor: middle; font-weight: 700; }
-    .chart .crown       { font-size: 14px; text-anchor: middle; }
+    /* ══════════════ CHART (TRACK + FILL CENTRÉ) ══════════════ */
+    .chart-wrap {
+      width:100%;
+      display:flex;
+      justify-content:center;
+      overflow-x:auto;
+      overflow-y:hidden;
+      padding:2px 0 4px;
+    }
+    .chart {
+      width:min(100%, 760px);
+      height:auto;
+      aspect-ratio:720 / 260;
+      display:block;
+      overflow:visible;
+      margin:0 auto;
+      flex:0 0 auto;
+    }
+    .chart .axis-label { fill:var(--slate-500); font-size:10px; font-weight:500; }
+    .chart .grid-line  { stroke:var(--slate-200); stroke-width:1; stroke-dasharray:3 3; opacity:0.6; }
+    .chart .grid-line.base { stroke-dasharray:none; stroke:var(--slate-300); opacity:0.8; }
+    .chart .month-label { fill:var(--slate-600); font-size:11px; font-weight:700; text-anchor:middle; }
+    .chart .month-label.future { fill: var(--slate-400); font-weight: 500; }
+    .chart .val-label   { fill:var(--indigo-dark); font-size:9.5px; text-anchor:middle; font-weight:800; }
+    .chart .obj-label   { fill:var(--amber); font-size:9px; text-anchor:middle; font-weight:600; opacity:0.7; }
+    .chart .crown       { font-size:15px; text-anchor:middle; }
+    .chart .track       { fill: rgba(245,158,11,0.18); }
+    .chart .track-stroke{ fill: none; stroke: rgba(245,158,11,0.35); stroke-width: 1.5; stroke-dasharray: 3 3; }
 
     @keyframes barGrow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
-    .chart rect.bar {
+    .chart rect.fill {
       transform-origin: bottom;
       transform-box: fill-box;
-      animation: barGrow 0.75s cubic-bezier(0.33, 1.4, 0.5, 1) both;
-      filter: drop-shadow(0 2px 3px rgba(15, 23, 42, 0.08));
+      animation: barGrow 0.85s cubic-bezier(0.33, 1.4, 0.5, 1) both;
+      filter: drop-shadow(0 3px 4px rgba(79,70,229,0.25));
     }
-    .legend { display: flex; gap: 16px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--slate-600); font-weight: 600; }
-    .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+    .legend { display:flex; gap:18px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+    .legend-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--slate-600); font-weight:600; }
+    .legend-dot { width:11px; height:11px; border-radius:3px; }
 
     /* ══════════════ TABLE ══════════════ */
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
-    col.col-mois { width: 14%; }
-    col.col-num  { width: 12.28%; }
+    .table-wrap { overflow-x:auto; }
+    table { width:100%; min-width:760px; border-collapse:collapse; font-size:12px; table-layout:fixed; }
+    col.col-mois { width:14%; }
+    col.col-num  { width:12.28%; }
     th, td {
-      padding: 11px 14px;
-      font-variant-numeric: tabular-nums;
-      white-space: nowrap;
+      padding:11px 14px;
+      font-variant-numeric:tabular-nums; white-space:nowrap;
     }
     th {
-      background: linear-gradient(180deg, rgba(248, 250, 252, 0.9), rgba(241, 245, 249, 0.85));
-      color: var(--slate-600);
-      font-weight: 700; font-size: 10.5px;
-      text-transform: uppercase; letter-spacing: 0.06em;
-      border-bottom: 1px solid var(--slate-200);
-      text-align: left;
+      background:linear-gradient(180deg, rgba(248,250,252,0.9), rgba(241,245,249,0.85));
+      color:var(--slate-600); font-weight:700; font-size:10.5px;
+      text-transform:uppercase; letter-spacing:0.06em;
+      border-bottom:1px solid var(--slate-200); text-align:left;
     }
-    th.num, td.num { text-align: right; }
-    td { border-bottom: 1px solid rgba(241, 245, 249, 0.8); color: var(--slate-700); }
-    tr:last-child td { border-bottom: none; }
-    tbody tr { transition: background 0.2s; }
-    tbody tr:hover { background: rgba(241, 245, 249, 0.6); }
-    tr.best-month td { background: linear-gradient(90deg, rgba(254, 243, 199, 0.5), transparent 80%); }
-    tr.best-month td:first-child { position: relative; }
-    td strong { color: var(--slate-900); font-weight: 700; }
+    th.num, td.num { text-align:right; }
+    td { border-bottom:1px solid rgba(241,245,249,0.8); color:var(--slate-700); }
+    tr:last-child td { border-bottom:none; }
+    tbody tr { transition:background 0.2s; }
+    tbody tr:hover { background:rgba(241,245,249,0.6); }
+    tr.best-month td { background:linear-gradient(90deg, rgba(254,243,199,0.5), transparent 80%); }
+    td strong { color:var(--slate-900); font-weight:700; }
 
     .pill {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 3px 9px; border-radius: 999px;
-      font-size: 10.5px; font-weight: 700;
-      white-space: nowrap;
+      display:inline-flex; align-items:center; gap:4px;
+      padding:3px 9px; border-radius:999px;
+      font-size:10.5px; font-weight:700; white-space:nowrap;
     }
-    .pill.ok     { background: var(--emerald-light); color: #047857; }
-    .pill.surperf{ background: var(--amber-light);   color: #92400e; box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.2); }
-    .pill.zero   { background: rgba(241, 245, 249, 0.7); color: var(--slate-500); }
-    .pill.future { background: rgba(226, 232, 240, 0.6); color: var(--slate-500); font-style: italic; }
+    .pill.ok      { background:var(--emerald-light); color:#047857; }
+    .pill.surperf { background:var(--amber-light);   color:#92400e; box-shadow:0 0 0 1px rgba(245,158,11,0.2); }
+    .pill.zero    { background:rgba(241,245,249,0.7); color:var(--slate-500); }
+    .pill.future  { background:rgba(226,232,240,0.6); color:var(--slate-500); font-style:italic; }
 
-    /* ══════════════ TIERS ══════════════ */
-    .tier-track-wrap { padding: 8px 4px 6px; }
+    /* ══════════════ TIERS / PROGRESS ══════════════ */
+    .tier-track-wrap { padding:8px 4px 6px; position: relative; }
     .tier-track {
-      position: relative; height: 16px;
-      background: linear-gradient(180deg, rgba(226, 232, 240, 0.8), rgba(241, 245, 249, 0.8));
-      border-radius: 999px; overflow: visible;
-      box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.06);
+      position:relative; height:18px;
+      background:linear-gradient(180deg, rgba(226,232,240,0.8), rgba(241,245,249,0.8));
+      border-radius:999px; overflow:visible;
+      box-shadow: inset 0 2px 4px rgba(15,23,42,0.06);
     }
     .tier-fill {
-      position: absolute; top: 0; left: 0; bottom: 0;
-      background:
-        linear-gradient(90deg, #cd7f32 0%, #94a3b8 30%, #eab308 60%, #06b6d4 100%);
+      position:absolute; top:0; left:0; bottom:0; width:0%;
+      background: linear-gradient(90deg, #cd7f32 0%, #94a3b8 30%, #eab308 60%, #06b6d4 100%);
       background-size: 200% 100%;
-      border-radius: 999px;
-      width: 0%;
-      transition: width 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+      border-radius:999px;
+      transition: width 1.6s cubic-bezier(0.22, 1, 0.36, 1);
       box-shadow:
-        0 0 20px 2px rgba(99, 102, 241, 0.45),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+        0 0 24px 3px rgba(99,102,241,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.6),
+        inset 0 -2px 4px rgba(0,0,0,0.1);
       animation: shimmer-fill 4s linear infinite;
     }
     @keyframes shimmer-fill { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
     .tier-fill::after {
-      content: ""; position: absolute; inset: 0; border-radius: inherit;
-      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.45) 50%, transparent 100%);
+      content:""; position:absolute; inset:0; border-radius:inherit;
+      background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.55) 50%, transparent 100%);
       background-size: 200% 100%;
       animation: liquid-shine 2.5s linear infinite;
     }
     @keyframes liquid-shine { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .tier-fill .head-bubble {
+      position: absolute; right: -3px; top: 50%;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 4px 10px rgba(15,23,42,0.2), inset 0 -2px 4px rgba(99,102,241,0.2);
+      transform: translateY(-50%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+    }
 
     .tier-notch {
-      position: absolute; top: 50%;
-      width: 2px; height: 22px;
-      background: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      border-radius: 2px;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.1);
+      position:absolute; top:50%;
+      width:2px; height:24px;
+      background:rgba(255,255,255,0.95);
+      border:1px solid rgba(148,163,184,0.5);
+      border-radius:2px;
+      transform:translate(-50%,-50%);
+      box-shadow:0 1px 2px rgba(15,23,42,0.1);
+    }
+    .tier-notch-lbl {
+      position: absolute; top: -22px;
+      transform: translateX(-50%);
+      font-size: 9px; font-weight: 700; color: var(--slate-500);
+      white-space: nowrap;
     }
 
-    .tiers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 22px; }
+    .tiers { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-top:34px; }
     .tier {
-      position: relative;
-      padding: 18px 12px 14px; border-radius: 18px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.55));
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1.5px solid rgba(226, 232, 240, 0.8);
-      text-align: center;
+      position:relative;
+      padding:18px 12px 14px; border-radius:18px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.55));
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border:1.5px solid rgba(226,232,240,0.8);
+      text-align:center;
       transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-      overflow: hidden;
-      box-shadow: 0 4px 14px -8px rgba(15, 23, 42, 0.15);
+      overflow:hidden;
+      box-shadow: 0 4px 14px -8px rgba(15,23,42,0.15);
+      opacity: 0;
+      transform: translateY(16px) scale(0.92);
+      animation: tierIn 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
     }
-    .tier.locked   { opacity: 0.5; filter: grayscale(0.65); }
-    .tier.locked .emoji { filter: grayscale(1); }
+    .tier:nth-child(1) { animation-delay: 0.85s; }
+    .tier:nth-child(2) { animation-delay: 0.95s; }
+    .tier:nth-child(3) { animation-delay: 1.05s; }
+    .tier:nth-child(4) { animation-delay: 1.15s; }
+    @keyframes tierIn {
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .tier-state {
+      position:absolute; top:8px; right:9px;
+      display:inline-flex; align-items:center; gap:4px;
+      padding:3px 7px; border-radius:999px;
+      font-size:9.5px; line-height:1; font-weight:800;
+      letter-spacing:0.04em; text-transform:uppercase;
+      backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+      z-index:2;
+    }
+    .tier-state.unlocked {
+      color:#047857;
+      background:rgba(209,250,229,0.86);
+      border:1px solid rgba(16,185,129,0.34);
+      box-shadow:0 4px 10px -7px rgba(16,185,129,0.75);
+    }
+    .tier-state.locked {
+      color:var(--slate-500);
+      background:rgba(248,250,252,0.86);
+      border:1px solid rgba(148,163,184,0.34);
+    }
+    .tier.locked   { opacity: 0.82; filter: saturate(0.65); }
+    .tier.locked .emoji { filter: grayscale(1); opacity: 0.48; }
+    .tier.locked .prime { color:var(--slate-500); }
+    .tier.next {
+      opacity:1;
+      border-color:rgba(245,158,11,0.45);
+      box-shadow:0 16px 34px -24px rgba(245,158,11,0.7), 0 4px 14px -8px rgba(15,23,42,0.15);
+    }
     .tier.unlocked {
       transform: translateY(-3px);
-      box-shadow: 0 20px 40px -16px currentColor, 0 4px 14px -8px rgba(15,23,42,0.15), inset 0 1px 0 rgba(255,255,255,0.6);
-      animation: pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    @keyframes pop {
-      0%   { transform: translateY(-3px) scale(0.9); }
-      60%  { transform: translateY(-6px) scale(1.05); }
-      100% { transform: translateY(-3px) scale(1); }
+      box-shadow: 0 22px 44px -18px currentColor, 0 4px 14px -8px rgba(15,23,42,0.15), inset 0 1px 0 rgba(255,255,255,0.6);
     }
     .tier.unlocked::after {
-      content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.7) 50%, transparent 70%);
+      content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+      background:linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.7) 50%, transparent 70%);
       background-size: 220% 100%;
       animation: shine 3.2s ease-in-out infinite;
     }
     @keyframes shine { 0% { background-position: 220% 0; } 100% { background-position: -220% 0; } }
 
     .tier .emoji {
-      font-size: 34px; line-height: 1; margin-bottom: 4px; display: block;
-      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.15));
+      font-size:36px; line-height:1; margin-bottom:4px; display:block;
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.18));
       transition: transform 0.3s;
     }
     .tier.unlocked .emoji { animation: bob 2s ease-in-out infinite; }
-    @keyframes bob { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(-7deg); } }
-    .tier .name  {
-      font-size: 11px; font-weight: 800; text-transform: uppercase;
-      letter-spacing: 0.08em; color: var(--slate-500);
-    }
-    .tier .seuil { font-size: 11px; color: var(--slate-500); font-weight: 600; margin-top: 3px; }
-    .tier .prime {
-      font-size: 20px; font-weight: 800; color: var(--slate-900); margin-top: 5px;
-      font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
-    }
-    .tier.bronze.unlocked   { color: var(--bronze);  border-color: var(--bronze);  background: linear-gradient(180deg, var(--bronze-light), #fff); }
-    .tier.silver.unlocked   { color: var(--silver);  border-color: var(--silver);  background: linear-gradient(180deg, var(--silver-light), #fff); }
-    .tier.gold.unlocked     { color: var(--gold);    border-color: var(--gold);    background: linear-gradient(180deg, var(--gold-light),   #fff); }
-    .tier.platine.unlocked  { color: var(--platine); border-color: var(--platine); background: linear-gradient(180deg, var(--platine-light),#fff); }
-    .tier.unlocked .name    { color: currentColor; }
-    .tier.unlocked .prime   { color: var(--slate-900); }
+    @keyframes bob { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-6px) rotate(-8deg); } }
+    .tier .name  { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.08em; color:var(--slate-500); }
+    .tier .seuil { font-size:11px; color:var(--slate-500); font-weight:600; margin-top:3px; }
+    .tier .prime { font-size:21px; font-weight:800; color:var(--slate-900); margin-top:5px; font-variant-numeric:tabular-nums; letter-spacing:-0.02em; }
+    .tier .tier-detail { font-size:10.5px; color:var(--slate-500); font-weight:700; margin-top:5px; }
+    .tier.unlocked .tier-detail { color:currentColor; }
+    .tier.next .tier-detail { color:#92400e; }
+    .tier.bronze.unlocked  { color:var(--bronze);  border-color:var(--bronze);  background:linear-gradient(180deg, var(--bronze-light), #fff); }
+    .tier.silver.unlocked  { color:var(--silver);  border-color:var(--silver);  background:linear-gradient(180deg, var(--silver-light), #fff); }
+    .tier.gold.unlocked    { color:var(--gold);    border-color:var(--gold);    background:linear-gradient(180deg, var(--gold-light),   #fff); }
+    .tier.platine.unlocked { color:var(--platine); border-color:var(--platine); background:linear-gradient(180deg, var(--platine-light),#fff); }
+    .tier.unlocked .name   { color: currentColor; }
 
     .tier-sub {
-      display: flex; justify-content: space-between; align-items: center; gap: 12px;
-      margin-top: 18px; padding: 14px 16px; border-radius: 14px;
-      background: linear-gradient(135deg, rgba(241, 245, 249, 0.85), rgba(248, 250, 252, 0.7));
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(226, 232, 240, 0.8);
-      font-size: 12px; color: var(--slate-600); font-weight: 500;
+      display:flex; justify-content:space-between; align-items:center; gap:12px;
+      margin-top:18px; padding:14px 16px; border-radius:14px;
+      background:linear-gradient(135deg, rgba(241,245,249,0.85), rgba(248,250,252,0.7));
+      backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+      border:1px solid rgba(226,232,240,0.8);
+      font-size:12px; color:var(--slate-600); font-weight:500;
     }
-    .tier-sub strong { color: var(--slate-900); font-weight: 700; }
+    .tier-sub strong { color:var(--slate-900); font-weight:700; }
 
-    .leon-msg {
-      display: flex; align-items: center; gap: 10px;
-      margin-top: 14px; padding: 12px 14px 12px 12px;
-      background: linear-gradient(135deg, rgba(254, 243, 199, 0.6), rgba(253, 230, 138, 0.35));
-      border: 1px solid rgba(245, 158, 11, 0.25);
-      border-radius: 14px;
-      position: relative;
+    .team-msg {
+      display:flex; align-items:center; gap:12px;
+      margin-top:14px; padding:14px;
+      background:linear-gradient(135deg, rgba(254,243,199,0.65), rgba(253,230,138,0.4));
+      border:1px solid rgba(245,158,11,0.3);
+      border-radius:14px;
+      position:relative; overflow: hidden;
     }
-    .leon-msg .leon-mini {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #fde68a, #f59e0b 55%, #b45309);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px; flex-shrink: 0;
-      box-shadow: 0 6px 14px -4px rgba(180, 83, 9, 0.4), inset 0 -4px 8px rgba(180, 83, 9, 0.35), inset 0 4px 8px rgba(255, 237, 213, 0.6);
+    .team-msg::before {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+      transform: translateX(-100%);
+      animation: teamSweep 4.5s 1.6s ease-in-out infinite;
     }
-    .leon-msg .leon-text { font-size: 12px; color: var(--slate-700); font-weight: 500; line-height: 1.45; }
-    .leon-msg .leon-text strong { color: var(--slate-900); font-weight: 700; }
+    @keyframes teamSweep {
+      0%   { transform: translateX(-100%); }
+      40%  { transform: translateX(100%); }
+      100% { transform: translateX(100%); }
+    }
+    .team-text { font-size:12.5px; color:var(--slate-700); font-weight:500; line-height:1.5; position: relative; z-index: 1; }
+    .team-text strong { color:var(--slate-900); font-weight:700; }
 
     /* ══════════════ ACHIEVEMENTS ══════════════ */
-    .achievements { display: flex; flex-wrap: wrap; gap: 8px; }
+    .achievements { display:grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap:10px; }
     .ach {
-      display: flex; align-items: center; gap: 7px;
-      padding: 8px 12px; border-radius: 999px;
-      background: rgba(241, 245, 249, 0.7);
-      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-      border: 1px solid rgba(226, 232, 240, 0.7);
-      font-size: 11px; font-weight: 700; color: var(--slate-500);
-      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      display:flex; align-items:center; gap:10px;
+      padding:12px 14px; border-radius:14px;
+      background:rgba(241,245,249,0.55);
+      backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+      border:1px solid rgba(226,232,240,0.6);
+      transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
+      position: relative;
+      opacity: 0;
+      transform: translateY(8px) scale(0.96);
+      animation: achIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
     }
-    .ach.earned {
-      background: linear-gradient(135deg, rgba(209, 250, 229, 0.85), rgba(236, 253, 245, 0.7));
-      border-color: rgba(16, 185, 129, 0.4);
-      color: #065f46;
-      box-shadow: 0 6px 14px -8px rgba(16, 185, 129, 0.4);
+    .ach:nth-child(1) { animation-delay: 0.65s; }
+    .ach:nth-child(2) { animation-delay: 0.72s; }
+    .ach:nth-child(3) { animation-delay: 0.79s; }
+    .ach:nth-child(4) { animation-delay: 0.86s; }
+    .ach:nth-child(5) { animation-delay: 0.93s; }
+    .ach:nth-child(6) { animation-delay: 1.00s; }
+    .ach:nth-child(7) { animation-delay: 1.07s; }
+    .ach:nth-child(8) { animation-delay: 1.14s; }
+    @keyframes achIn { to { opacity: 1; transform: translateY(0) scale(1); } }
+
+    .ach .ach-em {
+      width: 36px; height: 36px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(226,232,240,0.6), rgba(241,245,249,0.4));
+      filter: grayscale(1); opacity: 0.4;
+      position: relative;
+      transition: all 0.4s;
     }
-    .ach.earned.fire  { background: linear-gradient(135deg, rgba(254, 243, 199, 0.9), rgba(255, 247, 237, 0.75)); border-color: rgba(245, 158, 11, 0.4); color: #9a3412; box-shadow: 0 6px 14px -8px rgba(245, 158, 11, 0.4); }
-    .ach.earned.best  { background: linear-gradient(135deg, rgba(254, 249, 195, 0.9), rgba(254, 252, 232, 0.75)); border-color: rgba(234, 179, 8, 0.4);   color: #713f12; box-shadow: 0 6px 14px -8px rgba(234, 179, 8, 0.4); }
-    .ach.earned.streak{ background: linear-gradient(135deg, rgba(224, 231, 255, 0.9), rgba(238, 242, 255, 0.75)); border-color: rgba(99, 102, 241, 0.4); color: #3730a3; box-shadow: 0 6px 14px -8px rgba(99, 102, 241, 0.4); }
-    .ach .em { font-size: 14px; }
+    .ach .ach-info { flex: 1; min-width: 0; }
+    .ach .ach-name { font-size: 11.5px; font-weight: 700; color: var(--slate-500); line-height: 1.3; }
+    .ach .ach-prog {
+      font-size: 10px; color: var(--slate-400); font-weight: 600; margin-top: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+    .ach .ach-bar {
+      margin-top: 6px; height: 4px; background: rgba(226,232,240,0.6); border-radius: 999px; overflow: hidden;
+    }
+    .ach .ach-bar-fill {
+      height: 100%; background: var(--slate-300); border-radius: 999px;
+      transition: width 1.2s 0.3s cubic-bezier(0.22,1,0.36,1);
+      width: 0%;
+    }
+
+    /* Earned states */
+    .ach.earned { background: linear-gradient(135deg, rgba(209,250,229,0.85), rgba(236,253,245,0.65)); border-color: rgba(16,185,129,0.4); box-shadow: 0 8px 20px -10px rgba(16,185,129,0.45); }
+    .ach.earned .ach-em { background: linear-gradient(135deg, var(--emerald-light), #ecfdf5); filter: none; opacity: 1; box-shadow: 0 4px 10px -2px rgba(16,185,129,0.4), inset 0 1px 0 rgba(255,255,255,0.6); }
+    .ach.earned .ach-em::after {
+      content: "✓"; position: absolute; top: -3px; right: -3px;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--emerald); color: white; font-size: 10px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 4px rgba(16,185,129,0.4);
+    }
+    .ach.earned .ach-name { color: #065f46; }
+    .ach.earned .ach-prog { color: var(--emerald); }
+    .ach.earned .ach-bar-fill { background: linear-gradient(90deg, var(--emerald), #34d399); }
+
+    .ach.earned.fire   { background: linear-gradient(135deg, rgba(254,243,199,0.85), rgba(255,247,237,0.65)); border-color: rgba(245,158,11,0.4); box-shadow: 0 8px 20px -10px rgba(245,158,11,0.45); }
+    .ach.earned.fire .ach-em { background: linear-gradient(135deg, var(--amber-light), #fff7ed); }
+    .ach.earned.fire .ach-em::after { background: var(--amber); }
+    .ach.earned.fire .ach-name, .ach.earned.fire .ach-prog { color: #9a3412; }
+    .ach.earned.fire .ach-bar-fill { background: linear-gradient(90deg, var(--amber), #fbbf24); }
+
+    .ach.earned.gold   { background: linear-gradient(135deg, rgba(254,249,195,0.85), rgba(254,252,232,0.65)); border-color: rgba(234,179,8,0.4);   box-shadow: 0 8px 20px -10px rgba(234,179,8,0.45); }
+    .ach.earned.gold .ach-em { background: linear-gradient(135deg, var(--gold-light), #fefce8); }
+    .ach.earned.gold .ach-em::after { background: var(--gold); }
+    .ach.earned.gold .ach-name, .ach.earned.gold .ach-prog { color: #713f12; }
+    .ach.earned.gold .ach-bar-fill { background: linear-gradient(90deg, var(--gold), #fde047); }
+
+    .ach.earned.streak { background: linear-gradient(135deg, rgba(224,231,255,0.85), rgba(238,242,255,0.65)); border-color: rgba(99,102,241,0.4); box-shadow: 0 8px 20px -10px rgba(99,102,241,0.45); }
+    .ach.earned.streak .ach-em { background: linear-gradient(135deg, var(--indigo-light), #eef2ff); }
+    .ach.earned.streak .ach-em::after { background: var(--indigo); }
+    .ach.earned.streak .ach-name, .ach.earned.streak .ach-prog { color: #3730a3; }
+    .ach.earned.streak .ach-bar-fill { background: linear-gradient(90deg, var(--indigo), #818cf8); }
+
+    .ach.earned .ach-em { animation: achPop 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+    @keyframes achPop {
+      0%   { transform: scale(0.6) rotate(-10deg); }
+      60%  { transform: scale(1.15) rotate(5deg); }
+      100% { transform: scale(1) rotate(0); }
+    }
+    .ach.locked .ach-em::before {
+      content: "🔒"; position: absolute; font-size: 14px;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      filter: none;
+    }
+    .ach.locked .ach-em > span { opacity: 0.25; }
 
     /* ══════════════ FOOTER / STATE ══════════════ */
-    .footer { padding: 14px 20px 20px; text-align: center; font-size: 11px; color: var(--slate-500); font-weight: 500; }
-    .footer a { color: var(--indigo); }
+    .footer { padding:14px 20px 24px; text-align:center; font-size:11px; color:var(--slate-500); font-weight:500; }
 
-    .state { display: flex; align-items: center; justify-content: center; height: 100vh; gap: 10px; color: var(--slate-500); }
-    .spinner { width: 18px; height: 18px; border: 2px solid var(--slate-200); border-top-color: var(--indigo); border-radius: 50%; animation: spin 0.7s linear infinite; }
+    .state { display:flex; align-items:center; justify-content:center; height:100vh; gap:10px; color:var(--slate-500); }
+    .spinner { width:18px; height:18px; border:2px solid var(--slate-200); border-top-color:var(--indigo); border-radius:50%; animation:spin 0.7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .error { background: var(--rose-light); color: #9f1239; border: 1px solid #fecdd3; padding: 14px; border-radius: 10px; margin: 14px; }
+    .error { background:var(--rose-light); color:#9f1239; border:1px solid #fecdd3; padding:14px; border-radius:10px; margin:14px; }
 
-    /* ══════════════ CONFETTI ══════════════ */
-    #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 9999; }
+    #confetti { position:fixed; inset:0; pointer-events:none; z-index:9999; }
 
     @media (max-width: 820px) {
-      .kpis  { grid-template-columns: repeat(2, 1fr); }
-      .tiers { grid-template-columns: repeat(2, 1fr); }
+      .kpis  { grid-template-columns:repeat(2, 1fr); }
+      .tiers { grid-template-columns:repeat(2, 1fr); }
       .hero h1 { font-size: 18px; }
+    }
+    @media (max-width: 520px) {
+      .chart-wrap { justify-content:flex-start; }
+      .chart { width:620px; max-width:none; }
     }
   </style>
 </head>
 <body>
+  <div id="ambient">
+    <div class="orb" style="width:240px; height:240px; top:8%;  left:5%;  background: radial-gradient(circle, rgba(99,102,241,0.4), transparent 60%); animation-duration: 22s;"></div>
+    <div class="orb" style="width:180px; height:180px; top:38%; right:8%; background: radial-gradient(circle, rgba(139,92,246,0.4), transparent 60%); animation-duration: 26s; animation-delay: -4s;"></div>
+    <div class="orb" style="width:200px; height:200px; bottom:10%; left:20%; background: radial-gradient(circle, rgba(16,185,129,0.3), transparent 60%); animation-duration: 24s; animation-delay: -8s;"></div>
+    <div class="orb" style="width:150px; height:150px; top:60%; left:55%; background: radial-gradient(circle, rgba(245,158,11,0.25), transparent 60%); animation-duration: 28s; animation-delay: -2s;"></div>
+  </div>
+
   <div id="root">
-    <div class="state"><div class="spinner"></div><span>Chargement de votre prime Q2…</span></div>
+    <div class="state"><div class="spinner"></div><span>Chargement de votre prime 2026…</span></div>
   </div>
   <canvas id="confetti"></canvas>
 
   <script>
-    // ── Config commerciaux (règles fiche Q2 2026) ─────────────────────────────
+    // ── Config commerciaux (règles fiches Q2 2026) ────────────────────────────
     const CONFIG = {
       "33386465": {
         name: "Hugo Rodrigues", role: "AE CSE Junior", seuilHT: 4166.67,
@@ -469,6 +614,7 @@
       },
       "33334703": {
         name: "Johanna Eboko", role: "AE CSE Confirmé", seuilHT: 8333.33,
+        // Source : fiche objectifs Q2 2026 — Mois 1 = 10k TTC, Mois 2 (×0.5) = 12.5k, Sept = 17.5k, Oct/Nov/Déc = 25k
         objectifsTTC: { "2026-06": 10000, "2026-07": 12500, "2026-08": 0,
                         "2026-09": 17500, "2026-10": 25000, "2026-11": 25000, "2026-12": 25000 },
       },
@@ -483,27 +629,31 @@
 
     const TVA  = 1.20;
     const MOIS = { "2026-06":"Juin","2026-07":"Juil.","2026-08":"Août","2026-09":"Sept.","2026-10":"Oct.","2026-11":"Nov.","2026-12":"Déc." };
+    const INDIV_PERIOD_LABEL = "Juin–Déc 2026";
+    const TEAM_PERIOD_LABEL  = "Année 2026";
 
     // ── Params ────────────────────────────────────────────────────────────────
-    const P      = new URLSearchParams(location.search);
-    const OWNER  = P.get("owner_id") || "";
-    const TOKEN  = P.get("token")    || "";
-    const BASE   = "https://yhtxrjegdeuwkcjvkfkt.supabase.co/functions/v1";
-    const API    = BASE + "/prime-dashboard";
+    const P     = new URLSearchParams(location.search);
+    const OWNER = P.get("owner_id") || "";
+    const TOKEN = P.get("token")    || "";
+    const BASE  = "https://yhtxrjegdeuwkcjvkfkt.supabase.co/functions/v1";
+    const API   = BASE + "/prime-dashboard";
 
     // ── Helpers ───────────────────────────────────────────────────────────────
-    const fmtEur  = (n) => n == null ? "–" : (+n).toLocaleString("fr-FR",{ style:"currency", currency:"EUR", maximumFractionDigits: 0 });
-    const esc     = (s) => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    const fmtEur = (n) => n == null ? "–" : (+n).toLocaleString("fr-FR",{ style:"currency", currency:"EUR", maximumFractionDigits: 0 });
+    const fmtNum = (n) => n == null ? "–" : (+n).toLocaleString("fr-FR",{ maximumFractionDigits: 0 });
+    const esc    = (s) => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
     const monthKey = (ms) => { const d = new Date(+ms); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; };
     const MS_NOW = Date.now();
+    const NOW_KEY = monthKey(MS_NOW);
 
-    // ── Count-up ──────────────────────────────────────────────────────────────
-    function countUp(el, to, duration = 1200, formatter = fmtEur) {
+    // ── Count-up (ease-out-expo) ──────────────────────────────────────────────
+    function countUp(el, to, duration = 1400, formatter = fmtEur) {
       if (to === 0) { el.textContent = formatter(0); return; }
       const start = performance.now();
       const tick = (now) => {
         const t = Math.min(1, (now - start) / duration);
-        const eased = 1 - Math.pow(1 - t, 4);
+        const eased = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
         el.textContent = formatter(to * eased);
         if (t < 1) requestAnimationFrame(tick);
         else      el.textContent = formatter(to);
@@ -527,9 +677,11 @@
         const objectifHT = config.objectifsTTC[m] / TVA;
         const base       = caHT * 0.09;
         const surperf    = Math.max(0, caHT - config.seuilHT) * 0.02;
-        const isPast     = Date.parse(m + "-01") <= MS_NOW;
+        const isPast     = m < NOW_KEY;
+        const isCurrent  = m === NOW_KEY;
+        const isFuture   = m > NOW_KEY;
         return {
-          mois: m, label: MOIS[m] || m, isPast,
+          mois: m, label: MOIS[m] || m, isPast, isCurrent, isFuture,
           caHT, objectifHT, base, surperf,
           total: base + surperf, nbDeals: data.nb,
           atteint: objectifHT > 0 && caHT >= objectifHT,
@@ -558,41 +710,49 @@
       };
     }
 
-    // ── Bar chart SVG ─────────────────────────────────────────────────────────
-    // Paire objectif + réalisé CENTRÉE sous le label du mois.
+    // ── Bar chart SVG : track + fill CENTRÉS ──────────────────────────────────
     function renderChart(rows, bestIdx) {
-      const W = 720, H = 240, PL = 44, PR = 12, PT = 16, PB = 30;
+      const W = 720, H = 260, PL = 44, PR = 12, PT = 22, PB = 32;
       const innerW = W - PL - PR, innerH = H - PT - PB;
       const max = Math.max(1, ...rows.flatMap(r => [r.caHT, r.objectifHT]));
       const yStep = Math.ceil(max / 4 / 1000) * 1000 || 1000;
       const yMax  = yStep * 4;
       const colW  = innerW / rows.length;
-      const barW  = Math.min(22, colW * 0.32);
-      const gap   = 4;
-      const pairW = barW * 2 + gap;
+      const barW  = Math.min(36, colW * 0.55);
 
       let bars = "", labels = "", crowns = "";
       rows.forEach((r, i) => {
-        const cx = PL + colW * i + colW / 2;         // centre de la colonne
-        const xO = cx - pairW / 2;                    // objectif à gauche de la paire
-        const xR = xO + barW + gap;                   // réalisé à droite
-        const hR = (r.caHT / yMax)        * innerH;
-        const hO = (r.objectifHT / yMax)  * innerH;
-        const yR = PT + innerH - hR;
+        const cx = PL + colW * i + colW / 2;          // centre colonne
+        const x  = cx - barW / 2;                      // bar centrée
+        const hO = (r.objectifHT / yMax) * innerH;
+        const hR = (r.caHT       / yMax) * innerH;
         const yO = PT + innerH - hO;
-        const dO = (i * 0.04).toFixed(2);
-        const dR = (0.1 + i * 0.04).toFixed(2);
+        const yR = PT + innerH - hR;
+        const dR = (0.15 + i * 0.05).toFixed(2);
+
+        // 1) Track (objectif) : rectangle plein semi-transparent + contour pointillé
         if (r.objectifHT > 0) {
-          bars += `<rect class="bar" x="${xO}" y="${yO}" width="${barW}" height="${hO}" rx="3" fill="url(#bar-objectif-grad)" opacity="0.75" style="animation-delay:${dO}s"/>`;
+          bars += `<rect class="track"        x="${x}" y="${yO}" width="${barW}" height="${hO}" rx="6"/>`;
+          bars += `<rect class="track-stroke" x="${x}" y="${yO}" width="${barW}" height="${hO}" rx="6"/>`;
         }
+
+        // 2) Fill (réalisé) : barre pleine animée centrée à l'intérieur
         if (r.caHT > 0) {
-          bars += `<rect class="bar" x="${xR}" y="${yR}" width="${barW}" height="${hR}" rx="3" fill="url(#bar-realise-grad)" style="animation-delay:${dR}s"/>`;
-          bars += `<text class="val-label" x="${xR + barW/2}" y="${yR - 4}">${Math.round(r.caHT/1000)}k</text>`;
+          bars += `<rect class="fill" x="${x}" y="${yR}" width="${barW}" height="${hR}" rx="6" fill="url(#fill-grad)" style="animation-delay:${dR}s"/>`;
+          bars += `<text class="val-label" x="${cx}" y="${yR - 6}">${Math.round(r.caHT/1000)}k</text>`;
         }
-        if (i === bestIdx && r.caHT > 0) crowns += `<text class="crown" x="${cx}" y="${yR - 18}">👑</text>`;
-        labels += `<text class="month-label" x="${cx}" y="${H - PB + 16}">${esc(r.label)}</text>`;
+
+        // 3) Couronne meilleur mois
+        if (i === bestIdx && r.caHT > 0) {
+          crowns += `<text class="crown" x="${cx}" y="${yR - 22}">👑</text>`;
+        }
+
+        // 4) Label mois (centré)
+        const cls = r.isFuture ? "month-label future" : "month-label";
+        labels += `<text class="${cls}" x="${cx}" y="${H - PB + 18}">${esc(r.label)}</text>`;
       });
 
+      // grilles + labels axes
       let gridLines = "";
       for (let i = 0; i <= 4; i++) {
         const y = PT + innerH - (innerH * i / 4);
@@ -605,13 +765,10 @@
         <div class="chart-wrap">
           <svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
             <defs>
-              <linearGradient id="bar-realise-grad" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fill-grad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%"  stop-color="#a5b4fc"/>
+                <stop offset="60%" stop-color="#6366f1"/>
                 <stop offset="100%" stop-color="#4f46e5"/>
-              </linearGradient>
-              <linearGradient id="bar-objectif-grad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%"  stop-color="#fcd34d"/>
-                <stop offset="100%" stop-color="#f59e0b"/>
               </linearGradient>
             </defs>
             ${gridLines}
@@ -622,35 +779,50 @@
         </div>
         <div class="legend">
           <span class="legend-item"><span class="legend-dot" style="background:linear-gradient(180deg,#a5b4fc,#4f46e5)"></span>Réalisé HT</span>
-          <span class="legend-item"><span class="legend-dot" style="background:linear-gradient(180deg,#fcd34d,#f59e0b);opacity:0.75"></span>Objectif HT</span>
+          <span class="legend-item"><span class="legend-dot" style="background:rgba(245,158,11,0.18); border:1px dashed rgba(245,158,11,0.5)"></span>Objectif HT</span>
           <span class="legend-item">👑 Meilleur mois</span>
         </div>
       `;
     }
 
-    // ── Achievements ─────────────────────────────────────────────────────────
+    // ── Achievements (avec 3 états : locked / in-progress / earned) ──────────
     function renderAchievements(stats) {
-      const e = (b) => b ? "earned" : "";
-      return `
-        <div class="achievements">
-          <span class="ach ${e(stats.nbDeals >= 1)}"><span class="em">🎯</span>1ᵉʳ deal signé</span>
-          <span class="ach ${e(stats.nbDeals >= 10)}"><span class="em">🎖️</span>10 deals signés</span>
-          <span class="ach ${stats.commSurperf > 0 ? "earned fire" : ""}"><span class="em">🔥</span>Sur-perf déclenchée</span>
-          <span class="ach ${stats.bestIdx >= 0 ? "earned best" : ""}"><span class="em">🏆</span>Meilleur mois</span>
-          <span class="ach ${stats.streak >= 2 ? "earned streak" : ""}"><span class="em">📈</span>Streak x2 objectifs</span>
-          <span class="ach ${stats.streak >= 3 ? "earned streak" : ""}"><span class="em">🚀</span>Streak x3 objectifs</span>
-          <span class="ach ${e(stats.commTotal >= 3000)}"><span class="em">💶</span>+3 000€ commission</span>
-          <span class="ach ${e(stats.commTotal >= 8000)}"><span class="em">👑</span>+8 000€ commission</span>
-        </div>
-      `;
+      const list = [
+        { em: "🎯", name: "Premier deal signé",      cur: stats.nbDeals,    target: 1,    cls: "" },
+        { em: "🎖️", name: "10 deals signés",          cur: stats.nbDeals,    target: 10,   cls: "" },
+        { em: "🔥", name: "Sur-perf déclenchée",     cur: stats.commSurperf > 0 ? 1 : 0, target: 1, cls: "fire" },
+        { em: "🏆", name: "Meilleur mois identifié", cur: stats.bestIdx >= 0 ? 1 : 0,    target: 1, cls: "gold" },
+        { em: "📈", name: "Streak ×2 objectifs",     cur: stats.streak,     target: 2,    cls: "streak" },
+        { em: "🚀", name: "Streak ×3 objectifs",     cur: stats.streak,     target: 3,    cls: "streak" },
+        { em: "💶", name: "+3 000€ commission",      cur: stats.commTotal,  target: 3000,  cls: "", money: true },
+        { em: "👑", name: "+8 000€ commission",      cur: stats.commTotal,  target: 8000,  cls: "gold", money: true },
+      ];
+
+      return `<div class="achievements">${list.map(a => {
+        const earned = a.cur >= a.target;
+        const pct    = Math.min(100, (a.cur / a.target) * 100);
+        const fmtVal = a.money ? fmtEur : fmtNum;
+        const progLbl = earned
+          ? `Débloqué`
+          : `${fmtVal(a.cur)} / ${fmtVal(a.target)}`;
+        return `
+          <div class="ach ${earned ? "earned " + a.cls : "locked"}">
+            <div class="ach-em"><span>${a.em}</span></div>
+            <div class="ach-info">
+              <div class="ach-name">${esc(a.name)}</div>
+              <div class="ach-prog">${progLbl}</div>
+              <div class="ach-bar"><div class="ach-bar-fill" data-w="${pct.toFixed(1)}"></div></div>
+            </div>
+          </div>`;
+      }).join("")}</div>`;
     }
 
-    // ── Leon message ──────────────────────────────────────────────────────────
-    function leonMessage(teamHT, topTier, nextTier) {
-      if (topTier && !nextTier)   return `<strong>💎 Équipe en Platine !</strong> Vous avez explosé le palier max. Léon vous tire son chapeau.`;
+    // ── Message équipe ────────────────────────────────────────────────────────
+    function teamMessage(teamHT, topTier, nextTier) {
+      if (topTier && !nextTier)   return `<strong>💎 Équipe en Platine !</strong> Vous avez explosé le palier max.`;
       if (topTier && nextTier)    return `Palier <strong>${topTier.emoji} ${esc(topTier.name)}</strong> sécurisé. Plus que <strong>${fmtEur(nextTier.seuil - teamHT)}</strong> pour débloquer ${nextTier.emoji} ${esc(nextTier.name)} (+${fmtEur(nextTier.prime - topTier.prime)}).`;
       if (nextTier)               return `Encore <strong>${fmtEur(nextTier.seuil - teamHT)}</strong> pour débloquer le premier palier ${nextTier.emoji} <strong>${esc(nextTier.name)}</strong> (${fmtEur(nextTier.prime)}). On y va !`;
-      return `Léon veille.`;
+      return `Objectif équipe en cours.`;
     }
 
     // ── Tiers ─────────────────────────────────────────────────────────────────
@@ -664,24 +836,32 @@
 
       const notches = TIERS.map(t => {
         const pct = (t.seuil / progressMax) * 100;
-        return `<div class="tier-notch" style="left:${pct}%"></div>`;
+        return `<div class="tier-notch" style="left:${pct}%"><div class="tier-notch-lbl">${t.seuil/1000}k</div></div>`;
       }).join("");
 
       const tiersHtml = TIERS.map(t => {
         const done = teamHT >= t.seuil;
-        return `<div class="tier ${t.key} ${done ? "unlocked" : "locked"}">
+        const isNext = !done && nextTier?.key === t.key;
+        const detail = done
+          ? "Prime acquise"
+          : (isNext ? `Reste ${fmtEur(t.seuil - teamHT)}` : "À débloquer");
+        return `<div class="tier ${t.key} ${done ? "unlocked" : "locked"} ${isNext ? "next" : ""}">
+          <span class="tier-state ${done ? "unlocked" : "locked"}">${done ? "✓ Débloqué" : "🔒 Verrouillé"}</span>
           <span class="emoji">${t.emoji}</span>
           <div class="name">${esc(t.name)}</div>
           <div class="seuil">&gt; ${t.seuil/1000}k€ HT</div>
           <div class="prime">${fmtEur(t.prime)}</div>
+          <div class="tier-detail">${esc(detail)}</div>
         </div>`;
       }).join("");
 
       return {
         html: `
-          <div class="tier-track-wrap">
+          <div class="tier-track-wrap" style="margin-top:14px">
             <div class="tier-track">
-              <div class="tier-fill" data-w="${progressPct.toFixed(2)}"></div>
+              <div class="tier-fill" data-w="${progressPct.toFixed(2)}">
+                ${topTier ? `<div class="head-bubble">${topTier.emoji}</div>` : ""}
+              </div>
               ${notches}
             </div>
           </div>
@@ -696,9 +876,8 @@
               : `💎 Palier max atteint`}
             </span>
           </div>
-          <div class="leon-msg">
-            <div class="leon-mini">🦁</div>
-            <div class="leon-text">${leonMessage(teamHT, topTier, nextTier)}</div>
+          <div class="team-msg">
+            <div class="team-text">${teamMessage(teamHT, topTier, nextTier)}</div>
           </div>
         `,
         unlockedCount: unlocked.length,
@@ -744,10 +923,9 @@
         <div class="hero">
           <div class="hero-head">
             <div class="hero-title">
-              <div class="leon-avatar">🦁</div>
               <div>
-                <h1>Prime Q2 2026 — ${esc(config.name)}</h1>
-                <div class="sub">${esc(config.role)} · Seuil sur-performance ${fmtEur(config.seuilHT)} HT/mois · ${stats.nbDeals} deal${stats.nbDeals>1?"s":""} clôturé${stats.nbDeals>1?"s":""}</div>
+                <h1>Prime 2026 — ${esc(config.name)}</h1>
+                <div class="sub">${esc(config.role)} · Commission ${INDIV_PERIOD_LABEL} · seuil sur-performance ${fmtEur(config.seuilHT)} HT/mois · ${stats.nbDeals} deal${stats.nbDeals>1?"s":""} clôturé${stats.nbDeals>1?"s":""}</div>
                 <div class="badge">Live HubSpot</div>
               </div>
             </div>
@@ -757,33 +935,33 @@
 
         <div class="grid">
           <div class="kpis">
-            <div class="kpi glass indigo">
-              <span class="accent"></span>
-              <div class="lbl"><span class="dot"></span>CA HT réalisé Q2</div>
+            <div class="kpi glass indigo  reveal" style="animation-delay:.05s">
+              <span class="accent"></span><span class="glow"></span>
+              <div class="lbl"><span class="dot"></span>CA HT ${INDIV_PERIOD_LABEL}</div>
               <div class="val" data-countup="${stats.totalHT}">${fmtEur(0)}</div>
               <div class="sub">${stats.nbDeals} deals closedwon</div>
             </div>
-            <div class="kpi glass emerald">
-              <span class="accent"></span>
+            <div class="kpi glass emerald reveal" style="animation-delay:.13s">
+              <span class="accent"></span><span class="glow"></span>
               <div class="lbl"><span class="dot"></span>Commission base (9%)</div>
               <div class="val" data-countup="${stats.commBase}">${fmtEur(0)}</div>
               <div class="sub">sur tout le CA HT</div>
             </div>
-            <div class="kpi glass amber">
-              <span class="accent"></span>
+            <div class="kpi glass amber   reveal" style="animation-delay:.21s">
+              <span class="accent"></span><span class="glow"></span>
               <div class="lbl"><span class="dot"></span>Sur-performance (+2%)</div>
               <div class="val" data-countup="${stats.commSurperf}">${fmtEur(0)}</div>
               <div class="sub">au-delà du seuil mensuel</div>
             </div>
-            <div class="kpi glass violet">
-              <span class="accent"></span>
+            <div class="kpi glass violet  reveal" style="animation-delay:.29s">
+              <span class="accent"></span><span class="glow"></span>
               <div class="lbl"><span class="dot"></span>Total commission</div>
               <div class="val" data-countup="${stats.commTotal}">${fmtEur(0)}</div>
               <div class="sub">hors prime d'équipe</div>
             </div>
           </div>
 
-          <div class="card glass">
+          <div class="glass reveal" style="animation-delay:.40s">
             <div class="card-head">
               <h3><span class="head-ico">🏅</span>Trophées de la saison</h3>
               <span class="meta">objectifs personnels</span>
@@ -791,15 +969,15 @@
             <div class="card-body">${renderAchievements(stats)}</div>
           </div>
 
-          <div class="card glass">
+          <div class="glass reveal" style="animation-delay:.50s">
             <div class="card-head">
               <h3><span class="head-ico">📊</span>CA mensuel vs objectif</h3>
-              <span class="meta">en € HT</span>
+              <span class="meta">commission ${INDIV_PERIOD_LABEL} · objectif = barre claire pointillée · réalisé = barre pleine</span>
             </div>
             <div class="card-body">${renderChart(stats.rows, stats.bestIdx)}</div>
           </div>
 
-          <div class="card glass">
+          <div class="glass reveal" style="animation-delay:.60s">
             <div class="card-head">
               <h3><span class="head-ico">📆</span>Détail mensuel</h3>
               <span class="meta">commissions par mois</span>
@@ -829,16 +1007,16 @@
             </div>
           </div>
 
-          <div class="card glass">
+          <div class="glass reveal" style="animation-delay:.72s">
             <div class="card-head">
-              <h3><span class="head-ico">🏆</span>Prime d'équipe collective Q2</h3>
-              <span class="meta">CA HT cumulé : <strong>${fmtEur(teamHT)}</strong> · ${teamDealsCount} deals équipe</span>
+              <h3><span class="head-ico">🏆</span>Prime d'équipe collective 2026</h3>
+              <span class="meta">${TEAM_PERIOD_LABEL} · CA HT cumulé : <strong>${fmtEur(teamHT)}</strong> · ${teamDealsCount} deals équipe</span>
             </div>
             <div class="card-body">${tiers.html}</div>
           </div>
 
           <div class="footer">
-            Calculé en direct depuis HubSpot · CA équipe = tous les deals closedwon Juin–Déc 2026 · Règles fiche objectifs Q2 2026 · Information interne, sans valeur contractuelle.
+            Calculé en direct depuis HubSpot · Commission individuelle Juin–Déc · Prime d'équipe = tous les closedwon 2026 · Information interne, sans valeur contractuelle.
           </div>
         </div>
       `;
@@ -849,18 +1027,21 @@
         countUp(el, v);
       });
 
-      // Fill de la barre de progression après léger délai
+      // Bar progression équipe + petits progress bars dans achievements
       setTimeout(() => {
         document.querySelectorAll(".tier-fill").forEach(el => {
           el.style.width = el.getAttribute("data-w") + "%";
         });
-      }, 200);
+        document.querySelectorAll(".ach-bar-fill").forEach(el => {
+          el.style.width = el.getAttribute("data-w") + "%";
+        });
+      }, 250);
 
       // Confetti si au moins un palier d'équipe déverrouillé
       const key = "prime-confetti-" + OWNER + "-" + tiers.unlockedCount;
       if (tiers.unlockedCount > 0 && !sessionStorage.getItem(key)) {
         sessionStorage.setItem(key, "1");
-        setTimeout(() => confetti({ burst: tiers.unlockedCount }), 500);
+        setTimeout(() => confetti({ burst: tiers.unlockedCount }), 1200);
       }
     }
 
@@ -880,18 +1061,18 @@
       const bursts = Math.min(burst, 4);
       for (let b = 0; b < bursts; b++) {
         setTimeout(() => {
-          for (let i = 0; i < 120; i++) {
+          for (let i = 0; i < 130; i++) {
             parts.push({
               x: innerWidth * (0.3 + Math.random() * 0.4),
               y: innerHeight * 0.2,
-              vx: (Math.random() - 0.5) * 12,
+              vx: (Math.random() - 0.5) * 13,
               vy: -Math.random() * 14 - 4,
               g:  0.35 + Math.random() * 0.15,
               size: 5 + Math.random() * 4,
               rot: Math.random() * Math.PI * 2,
               vr:  (Math.random() - 0.5) * 0.35,
               color: colors[(Math.random() * colors.length) | 0],
-              life: 140 + Math.random() * 40,
+              life: 150 + Math.random() * 40,
             });
           }
         }, b * 350);
