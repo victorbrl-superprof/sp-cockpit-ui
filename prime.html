@@ -1010,7 +1010,7 @@
           <div class="glass reveal" style="animation-delay:.72s">
             <div class="card-head">
               <h3><span class="head-ico">🏆</span>Prime d'équipe collective 2026</h3>
-              <span class="meta">${TEAM_PERIOD_LABEL} · CA HT cumulé : <strong>${fmtEur(teamHT)}</strong> · ${teamDealsCount} deals équipe</span>
+              <span class="meta">${TEAM_PERIOD_LABEL} · CA HubSpot cumulé : <strong>${fmtEur(teamHT)}</strong> · ${teamDealsCount} deals équipe</span>
             </div>
             <div class="card-body">${tiers.html}</div>
           </div>
@@ -1107,7 +1107,7 @@
         if (!res.ok || !json.ok) throw new Error(json.error || `HTTP ${res.status}`);
 
         const stats          = compute(json.deals, config);
-        const teamHT         = (json.team_total_ttc || 0) / TVA;
+        const teamHT         = json.team_total_amount ?? json.team_total_ttc ?? json.team_total ?? 0;
         const teamDealsCount = json.team_deals_count || 0;
         renderDashboard(config, stats, teamHT, teamDealsCount);
       } catch (e) {
