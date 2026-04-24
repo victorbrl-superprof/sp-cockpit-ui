@@ -119,6 +119,17 @@
       box-shadow:0 0 0 3px rgba(52,211,153,0.25);
       animation:pulse 2s ease-in-out infinite;
     }
+    .hero-actions { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .hero-action {
+      appearance:none; border:1px solid rgba(255,255,255,0.28);
+      background:rgba(255,255,255,0.14);
+      color:white; cursor:pointer; font:inherit; font-weight:700; font-size:11px;
+      border-radius:999px; padding:7px 12px;
+      backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+      box-shadow:0 6px 16px -14px rgba(15,23,42,0.45);
+      transition:transform .18s ease, background .18s ease, border-color .18s ease;
+    }
+    .hero-action:hover { transform:translateY(-1px); background:rgba(255,255,255,0.2); }
     @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.4); } }
 
     .grid { padding:16px; display:grid; gap:14px; }
@@ -686,6 +697,58 @@
       border:1px solid var(--slate-200);
     }
 
+    /* ══════════════ DEFINITIONS MODAL ══════════════ */
+    .modal-backdrop[hidden] { display:none; }
+    .modal-backdrop {
+      position:fixed; inset:0; z-index:10000;
+      background:rgba(15,23,42,0.48);
+      display:flex; align-items:center; justify-content:center;
+      padding:20px;
+      backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    }
+    .modal {
+      width:min(860px, 100%);
+      max-height:min(84vh, 880px);
+      overflow:auto;
+      background:rgba(255,255,255,0.96);
+      border:1px solid rgba(226,232,240,0.96);
+      border-radius:18px;
+      box-shadow:0 30px 80px -30px rgba(15,23,42,0.55);
+    }
+    .modal-head {
+      position:sticky; top:0; z-index:1;
+      display:flex; align-items:flex-start; justify-content:space-between; gap:14px;
+      padding:18px 20px 14px;
+      background:rgba(255,255,255,0.95);
+      border-bottom:1px solid rgba(226,232,240,0.9);
+      backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    }
+    .modal-head h3 { font-size:18px; font-weight:800; color:var(--slate-900); }
+    .modal-head p { margin-top:4px; font-size:12px; color:var(--slate-500); }
+    .modal-close {
+      appearance:none; border:none; cursor:pointer;
+      width:34px; height:34px; flex:0 0 auto;
+      border-radius:10px;
+      background:rgba(241,245,249,0.95);
+      color:var(--slate-600);
+      font-size:20px; line-height:1;
+    }
+    .modal-body { padding:18px 20px 22px; display:grid; gap:16px; }
+    .def-group {
+      border:1px solid rgba(226,232,240,0.9);
+      background:rgba(248,250,252,0.82);
+      border-radius:16px;
+      padding:14px 16px;
+    }
+    .def-group h4 {
+      font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.06em;
+      color:var(--slate-500); margin-bottom:10px;
+    }
+    .def-list { display:grid; gap:10px; }
+    .def-item { display:grid; gap:3px; }
+    .def-term { font-size:13px; font-weight:700; color:var(--slate-900); }
+    .def-text { font-size:12px; color:var(--slate-600); line-height:1.55; }
+
     /* ══════════════ FOOTER / STATE ══════════════ */
     .footer { padding:14px 20px 24px; text-align:center; font-size:11px; color:var(--slate-500); font-weight:500; }
 
@@ -706,6 +769,9 @@
       .chart-wrap { justify-content:flex-start; }
       .chart { width:620px; max-width:none; }
       .metric-grid, .sim-results, .sim-controls { grid-template-columns:1fr; }
+      .hero-actions { width:100%; }
+      .hero-action { width:100%; justify-content:center; }
+      .modal-backdrop { padding:12px; }
     }
   </style>
 </head>
@@ -793,6 +859,7 @@
     // ── Helpers ───────────────────────────────────────────────────────────────
     const fmtEur = (n) => n == null ? "–" : (+n).toLocaleString("fr-FR",{ style:"currency", currency:"EUR", maximumFractionDigits: 0 });
     const fmtNum = (n) => n == null ? "–" : (+n).toLocaleString("fr-FR",{ maximumFractionDigits: 0 });
+    const fmtSignedEur = (n) => n == null ? "–" : `${Number(n) >= 0 ? "+" : "−"}${fmtEur(Math.abs(Number(n)))}`;
     const esc    = (s) => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
     const monthKey = (ms) => { const d = new Date(+ms); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; };
     const monthKeyFromDate = (value) => { const d = new Date(value); return Number.isNaN(d.getTime()) ? "" : `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; };
@@ -802,6 +869,7 @@
     let PRIME_AI_CONTEXT = null;
     let primeSuggestionIdx = 0;
     let primeSuggestionTimer = null;
+    let LAST_FOCUS_BEFORE_MODAL = null;
 
     // ── Count-up (ease-out-expo) ──────────────────────────────────────────────
     function countUp(el, to, duration = 1400, formatter = fmtEur) {
@@ -1500,8 +1568,8 @@
               <div class="sim-results">
                 <div class="sim-result"><span>Atterrissage simulé</span><strong id="sim-sales-landing">${fmtEur(0)}</strong></div>
                 <div class="sim-result"><span>Commission du mois</span><strong id="sim-sales-commission">${fmtEur(0)}</strong></div>
-                <div class="sim-result"><span>Upside vs acquis</span><strong id="sim-sales-upside">${fmtEur(0)}</strong></div>
-                <div class="sim-result"><span>Écart objectif</span><strong id="sim-sales-gap">${fmtEur(0)}</strong></div>
+                <div class="sim-result"><span>Gain simulé vs acquis</span><strong id="sim-sales-upside">${fmtSignedEur(0)}</strong></div>
+                <div class="sim-result"><span>Écart vs objectif</span><strong id="sim-sales-gap">${fmtSignedEur(0)}</strong></div>
               </div>
               <div class="sim-help">On ajoute ton montant saisi au signé et au pipeline déjà visibles sur le dashboard, puis on recalcule la prime du mois avec les mêmes règles.</div>
             </div>
@@ -1606,6 +1674,156 @@
         </div>`;
     }
 
+    function getDefinitionGroups(config) {
+      const common = [
+        {
+          title: "Lecture générale",
+          items: [
+            { term: "Prime d'équipe collective", text: "C'est la prime commune liée au total des deals gagnés par toute l'équipe sur l'année 2026." },
+            { term: "Prévisionnel", text: "Le prévisionnel ajoute au réalisé les deals encore ouverts pour montrer un atterrissage possible si le pipeline se concrétise." },
+            { term: "Tableau de pilotage", text: "Il regroupe mois par mois les objectifs, le réalisé, le pipeline et le potentiel, pour voir où ça accélère ou où ça bloque." },
+          ],
+        },
+      ];
+
+      if (config.type === "rdv") {
+        return common.concat([
+          {
+            title: "Lucas - Réel",
+            items: [
+              { term: "RDV créés", text: "Meetings créés par Lucas, non annulés, dont le titre contient Presentation ou Présentation, regroupés par mois de création du meeting." },
+              { term: "Transactions ouvertes", text: "Deals rattachés aux comptes ou contacts des meetings Lucas et encore suivis dans le pipeline." },
+              { term: "Deals en cours", text: "Sous-ensemble du pipeline encore ouvert, réparti sur le mois de signature prévu quand il existe." },
+              { term: "Prime RDV + tx acquise", text: "Part déjà acquise hors signatures : prime RDV mensuelle + prime liée aux transactions ouvertes." },
+              { term: "5% signatures acquises", text: "Commission déjà touchée sur les deals signés éligibles, calculée à 5% du montant HT." },
+              { term: "Variable acquise totale", text: "Somme de la prime RDV, de la prime transaction et du 5% signatures déjà acquis." },
+              { term: "5% potentiel pipeline", text: "Commission théorique à 5% HT si les deals encore ouverts se signent." },
+              { term: "Variable potentielle totale", text: "Variable acquise + potentiel supplémentaire provenant du pipeline encore ouvert." },
+            ],
+          },
+          {
+            title: "Lucas - Simulateur",
+            items: [
+              { term: "5% signatures", text: "Montant simulé du 5% HT sur la signature que tu saisis dans le simulateur." },
+              { term: "Variable simulée", text: "Total simulé du mois avec les chiffres saisis : prime RDV + prime transaction + 5% signatures." },
+              { term: "Pace du mois", text: "Pourcentage d'atteinte de l'objectif RDV mensuel. Exemple : 22 RDV sur 40 = 55%." },
+            ],
+          },
+        ]);
+      }
+
+      return common.concat([
+        {
+          title: "Commercial / Team Lead - Réel",
+          items: [
+            { term: "Signé", text: "Montant déjà gagné et signé à date sur la période affichée." },
+            { term: "Pipeline en cours", text: "Montant des deals encore ouverts, rangés sur le mois de signature prévue quand HubSpot en donne une." },
+            { term: "Atterrissage", text: "Projection du mois ou de la période : signé à date + pipeline encore ouvert." },
+            { term: "Prime acquise", text: "Commission déjà générée sur le réalisé à date selon les règles du profil affiché." },
+            { term: "Prime potentielle", text: "Commission que donnerait l'atterrissage si le pipeline se signe." },
+            { term: "Reste à l'objectif", text: "Montant encore manquant pour atteindre l'objectif mensuel affiché dans le tableau." },
+          ],
+        },
+        {
+          title: "Simulateur",
+          items: [
+            { term: "Atterrissage simulé", text: "Montant projeté du mois après ajout de ta simulation : signé actuel + pipeline déjà visible + montant que tu saisis." },
+            { term: "Commission du mois", text: "Commission recalculée sur ce mois simulé, avec les mêmes règles que le dashboard réel." },
+            { term: "Gain simulé vs acquis", text: "Supplément de commission obtenu par rapport à la commission déjà acquise du mois." },
+            { term: "Écart vs objectif", text: "Différence entre l'atterrissage simulé et l'objectif du mois. Valeur positive = au-dessus de l'objectif, valeur négative = en dessous." },
+          ],
+        },
+      ]);
+    }
+
+    function renderDefinitionsModal(config) {
+      const groups = getDefinitionGroups(config);
+      return `
+        <div id="definitions-modal-backdrop" class="modal-backdrop" hidden aria-hidden="true">
+          <div class="modal" role="dialog" aria-modal="true" aria-labelledby="definitions-modal-title">
+            <div class="modal-head">
+              <div>
+                <h3 id="definitions-modal-title">Définitions du dashboard</h3>
+                <p>${esc(config.name)} · explication des indicateurs, du prévisionnel et du simulateur</p>
+              </div>
+              <button id="definitions-modal-close" class="modal-close" type="button" aria-label="Fermer les définitions">×</button>
+            </div>
+            <div class="modal-body">
+              ${groups.map(group => `
+                <section class="def-group">
+                  <h4>${esc(group.title)}</h4>
+                  <div class="def-list">
+                    ${group.items.map(item => `
+                      <div class="def-item">
+                        <div class="def-term">${esc(item.term)}</div>
+                        <div class="def-text">${esc(item.text)}</div>
+                      </div>
+                    `).join("")}
+                  </div>
+                </section>
+              `).join("")}
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function bindDefinitionsModal() {
+      const backdrop = document.getElementById("definitions-modal-backdrop");
+      const closeBtn = document.getElementById("definitions-modal-close");
+      if (!backdrop || !closeBtn) return;
+      backdrop.onclick = (event) => {
+        if (event.target === backdrop) closeDefinitionsModal();
+      };
+      closeBtn.onclick = () => closeDefinitionsModal();
+      if (!window.__primeDefinitionsKeydownBound) {
+        document.addEventListener("keydown", (event) => {
+          const activeBackdrop = document.getElementById("definitions-modal-backdrop");
+          if (!activeBackdrop || activeBackdrop.hidden) return;
+          if (event.key === "Escape") {
+            event.preventDefault();
+            closeDefinitionsModal();
+            return;
+          }
+          if (event.key !== "Tab") return;
+          const focusables = [...activeBackdrop.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')]
+            .filter((el) => !el.hasAttribute("disabled"));
+          if (!focusables.length) return;
+          const first = focusables[0];
+          const last = focusables[focusables.length - 1];
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+          }
+        });
+        window.__primeDefinitionsKeydownBound = true;
+      }
+    }
+
+    function openDefinitionsModal() {
+      const backdrop = document.getElementById("definitions-modal-backdrop");
+      const closeBtn = document.getElementById("definitions-modal-close");
+      if (!backdrop || !closeBtn) return;
+      LAST_FOCUS_BEFORE_MODAL = document.activeElement;
+      backdrop.hidden = false;
+      backdrop.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      closeBtn.focus();
+    }
+
+    function closeDefinitionsModal() {
+      const backdrop = document.getElementById("definitions-modal-backdrop");
+      if (!backdrop) return;
+      backdrop.hidden = true;
+      backdrop.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      if (LAST_FOCUS_BEFORE_MODAL && typeof LAST_FOCUS_BEFORE_MODAL.focus === "function") {
+        LAST_FOCUS_BEFORE_MODAL.focus();
+      }
+    }
+
     function buildAiContext(config, stats, projection, teamHT, teamDealsCount, raw) {
       const currentTier = TIERS.filter(t => teamHT >= t.seuil).slice(-1)[0] || null;
       const nextTier = TIERS.find(t => teamHT < t.seuil) || null;
@@ -1700,8 +1918,8 @@
         document.getElementById("sim-sales-objective").value = fmtEur(row.objectiveTTC);
         document.getElementById("sim-sales-landing").textContent = fmtEur(simLandingTTC);
         document.getElementById("sim-sales-commission").textContent = fmtEur(simCommission);
-        document.getElementById("sim-sales-upside").textContent = fmtEur(simCommission - row.actualCommission);
-        document.getElementById("sim-sales-gap").textContent = fmtEur(simLandingTTC - row.objectiveTTC);
+        document.getElementById("sim-sales-upside").textContent = fmtSignedEur(simCommission - row.actualCommission);
+        document.getElementById("sim-sales-gap").textContent = fmtSignedEur(simLandingTTC - row.objectiveTTC);
       };
       monthEl.addEventListener("change", sync);
       amountEl.addEventListener("input", sync);
@@ -1922,7 +2140,10 @@
               <div>
                 <h1>Prime 2026 — ${esc(config.name)}</h1>
                 <div class="sub">${esc(config.role)} · Commission ${pLabel} · ${thresholdText} · ${stats.nbDeals} deal${stats.nbDeals>1?"s":""} clôturé${stats.nbDeals>1?"s":""}</div>
-                <div class="badge">Live HubSpot</div>
+                <div class="hero-actions">
+                  <div class="badge">Live HubSpot</div>
+                  <button class="hero-action" type="button" aria-haspopup="dialog" aria-controls="definitions-modal-backdrop" onclick="openDefinitionsModal()">Définitions</button>
+                </div>
               </div>
             </div>
           </div>
@@ -2022,6 +2243,7 @@
             Calculé en direct depuis HubSpot · Commission ${pLabel} · Prévisionnel = deals en cours regroupés sur la date de signature prévue quand elle existe · Prime d'équipe = tous les closedwon 2026 · Information interne, sans valeur contractuelle.
           </div>
         </div>
+        ${renderDefinitionsModal(config)}
       `;
 
       // Count-ups
@@ -2050,6 +2272,7 @@
       PRIME_AI_CONTEXT = buildAiContext(config, stats, projection, teamHT, teamDealsCount, rawData);
       bindSalesSimulator(stats, projection);
       bindPrimeAI(config);
+      bindDefinitionsModal();
     }
 
     function renderRdvDashboard(config, stats, projection, teamHT, teamDealsCount, rawData) {
@@ -2076,7 +2299,10 @@
               <div>
                 <h1>Prime 2026 — ${esc(config.name)}</h1>
                 <div class="sub">${esc(config.role)} · ${pLabel} · objectif ${fmtNum(config.rdvTarget)} RDV/mois · 5% HT si signature</div>
-                <div class="badge">Live HubSpot</div>
+                <div class="hero-actions">
+                  <div class="badge">Live HubSpot</div>
+                  <button class="hero-action" type="button" aria-haspopup="dialog" aria-controls="definitions-modal-backdrop" onclick="openDefinitionsModal()">Définitions</button>
+                </div>
               </div>
             </div>
           </div>
@@ -2174,6 +2400,7 @@
             Calculé en direct depuis HubSpot · RDV = meetings créés par Lucas non annulés, regroupés par mois de création · Transactions = deals rattachés aux comptes ou contacts de ces meetings · Prévisionnel = deals encore ouverts rattachés à ces meetings · Prime d'équipe = tous les closedwon 2026 · Information interne, sans valeur contractuelle.
           </div>
         </div>
+        ${renderDefinitionsModal(config)}
       `;
 
       document.querySelectorAll("[data-countup]").forEach(el => {
@@ -2200,6 +2427,7 @@
       PRIME_AI_CONTEXT = buildAiContext(config, stats, projection, teamHT, teamDealsCount, rawData);
       bindRdvSimulator(config, projection);
       bindPrimeAI(config);
+      bindDefinitionsModal();
     }
 
     function renderError(msg) {
