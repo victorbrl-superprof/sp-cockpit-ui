@@ -1355,7 +1355,7 @@
       const isRdv = config.type === "rdv";
       const items = isRdv
         ? [
-            { label: "Variable acquise", value: projection.actualTotal, note: `${fmtEur(projection.actualSignature)} déjà générés sur signatures` },
+            { label: "Variable acquise", value: projection.actualTotal, note: `${fmtEur(stats.totalPrimeRdv + stats.totalPrimeTransactions)} RDV + tx · ${fmtEur(projection.actualSignature)} signatures` },
             { label: "Pipeline en cours", value: projection.pipelineHT, note: `${projection.pipelineDeals} deal${projection.pipelineDeals > 1 ? "s" : ""} encore ouverts`, format: fmtEur },
             { label: "5% potentiel", value: projection.potentialSignature, note: `si le pipeline se signe`, format: fmtEur },
             { label: "Variable potentielle", value: projection.potentialTotal, note: `+${fmtEur(projection.potentialTotal - projection.actualTotal)} vs acquis`, format: fmtEur },
@@ -1461,10 +1461,11 @@
                   ${renderMatrixRow("RDV créés", rows.map(r => r.rdv), fmtNum, { rowClass: "row-soft" })}
                   ${renderMatrixRow("Transactions ouvertes", rows.map(r => r.transactions), fmtNum)}
                   ${renderMatrixRow("Deals en cours", rows.map(r => r.pipelineDeals), fmtNum)}
+                  ${renderMatrixRow("Prime RDV + tx acquise", rows.map(r => r.actualTotal - r.actualSignature), fmtEur)}
                   ${renderMatrixRow("5% signatures acquises", rows.map(r => r.actualSignature), fmtEur, { rowClass: "row-soft" })}
                   ${renderMatrixRow("5% potentiel pipeline", rows.map(r => r.potentialSignature), fmtEur)}
-                  ${renderMatrixRow("Variable acquise", rows.map(r => r.actualTotal), fmtEur)}
-                  ${renderMatrixRow("Variable potentielle", rows.map(r => r.potentialTotal), fmtEur, { rowClass: "row-emph" })}
+                  ${renderMatrixRow("Variable acquise totale", rows.map(r => r.actualTotal), fmtEur, { rowClass: "row-soft" })}
+                  ${renderMatrixRow("Variable potentielle totale", rows.map(r => r.potentialTotal), fmtEur, { rowClass: "row-emph" })}
                 </tbody>
               </table>
             </div>
@@ -2007,8 +2008,6 @@
 
           ${renderSalesSimulator(config, projection)}
 
-          ${renderPrimeAiCard(config)}
-
           <div class="glass reveal" style="animation-delay:.72s">
             <div class="card-head">
               <h3><span class="head-ico">🏆</span>Prime d'équipe collective 2026</h3>
@@ -2016,6 +2015,8 @@
             </div>
             <div class="card-body">${tiers.html}</div>
           </div>
+
+          ${renderPrimeAiCard(config)}
 
           <div class="footer">
             Calculé en direct depuis HubSpot · Commission ${pLabel} · Prévisionnel = deals en cours regroupés sur la date de signature prévue quand elle existe · Prime d'équipe = tous les closedwon 2026 · Information interne, sans valeur contractuelle.
@@ -2159,8 +2160,6 @@
 
           ${renderRdvSimulator(config, projection)}
 
-          ${renderPrimeAiCard(config)}
-
           <div class="glass reveal" style="animation-delay:.72s">
             <div class="card-head">
               <h3><span class="head-ico">🏆</span>Prime d'équipe collective 2026</h3>
@@ -2168,6 +2167,8 @@
             </div>
             <div class="card-body">${tiers.html}</div>
           </div>
+
+          ${renderPrimeAiCard(config)}
 
           <div class="footer">
             Calculé en direct depuis HubSpot · RDV = meetings créés par Lucas non annulés, regroupés par mois de création · Transactions = deals rattachés aux comptes ou contacts de ces meetings · Prévisionnel = deals encore ouverts rattachés à ces meetings · Prime d'équipe = tous les closedwon 2026 · Information interne, sans valeur contractuelle.
