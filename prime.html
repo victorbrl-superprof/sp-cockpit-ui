@@ -554,6 +554,138 @@
     }
     .ach.locked .ach-em > span { opacity: 0.25; }
 
+    /* ══════════════ FORECAST / SIMULATOR / AI ══════════════ */
+    .metric-grid { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px; }
+    .metric-card {
+      padding:14px; border-radius:14px;
+      background:rgba(248,250,252,0.72);
+      border:1px solid rgba(226,232,240,0.9);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
+    }
+    .metric-eyebrow {
+      font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;
+      color:var(--slate-500);
+    }
+    .metric-value {
+      margin-top:6px; font-size:22px; font-weight:800; line-height:1.1;
+      color:var(--slate-900); font-variant-numeric:tabular-nums;
+    }
+    .metric-note { margin-top:4px; font-size:11px; color:var(--slate-500); }
+
+    .matrix-table { min-width:980px; }
+    .matrix-table th:first-child,
+    .matrix-table td:first-child { position:sticky; left:0; z-index:1; background:rgba(255,255,255,0.88); }
+    .matrix-table th:first-child { z-index:2; }
+    .row-label {
+      font-weight:700; color:var(--slate-900);
+      white-space:normal; line-height:1.35;
+    }
+    .cell-sub {
+      display:block; margin-top:3px;
+      font-size:10px; color:var(--slate-400); font-weight:600;
+    }
+    tr.row-emph td { background:linear-gradient(90deg, rgba(224,231,255,0.32), transparent 85%); }
+    tr.row-soft td { background:rgba(248,250,252,0.42); }
+
+    .sim-shell { display:grid; gap:14px; }
+    .sim-controls { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px; }
+    .field { display:grid; gap:6px; }
+    .field label {
+      font-size:11px; font-weight:700; color:var(--slate-600);
+      text-transform:uppercase; letter-spacing:0.05em;
+    }
+    .field input,
+    .field select,
+    .ai-box textarea {
+      width:100%;
+      border:1px solid rgba(203,213,225,0.95);
+      background:rgba(255,255,255,0.9);
+      border-radius:12px;
+      padding:11px 12px;
+      font:inherit;
+      color:var(--slate-900);
+      outline:none;
+      transition:border-color .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+    .field input:focus,
+    .field select:focus,
+    .ai-box textarea:focus {
+      border-color:rgba(99,102,241,0.55);
+      box-shadow:0 0 0 4px rgba(99,102,241,0.12);
+      background:white;
+    }
+    .sim-results { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px; }
+    .sim-result {
+      padding:14px; border-radius:14px;
+      background:linear-gradient(180deg, rgba(241,245,249,0.8), rgba(248,250,252,0.72));
+      border:1px solid rgba(226,232,240,0.9);
+    }
+    .sim-result span {
+      display:block; font-size:10px; font-weight:700; text-transform:uppercase;
+      letter-spacing:0.06em; color:var(--slate-500);
+    }
+    .sim-result strong {
+      display:block; margin-top:6px;
+      font-size:22px; line-height:1.1; font-weight:800;
+      color:var(--slate-900); font-variant-numeric:tabular-nums;
+    }
+    .sim-help { font-size:11px; color:var(--slate-500); line-height:1.5; }
+
+    .ai-desc { font-size:11.5px; color:var(--slate-400); margin-bottom:5px; line-height:1.4; }
+    .ai-input-wrap { position:relative; }
+    #ai-question {
+      display:block; width:100%;
+      border:1.5px solid var(--slate-200); border-radius:10px;
+      padding:11px 13px; font-family:inherit; font-size:12px;
+      resize:none; background:var(--slate-50); color:var(--slate-900);
+      outline:none; min-height:46px;
+      transition:border-color .15s, box-shadow .15s;
+    }
+    #ai-question:focus { border-color:var(--indigo); box-shadow:0 0 0 3px rgba(99,102,241,.12); background:white; }
+    #ai-placeholder {
+      position:absolute; top:12px; left:13px; right:13px;
+      pointer-events:none; font-size:12px; color:var(--slate-400);
+      transition:opacity .4s ease; white-space:nowrap;
+      overflow:hidden; text-overflow:ellipsis;
+    }
+    .ai-footer { display:flex; align-items:center; gap:10px; margin-top:5px; flex-wrap:wrap; }
+    #ai-btn {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:7px 20px;
+      background:linear-gradient(135deg,#7c3aed,#6366f1);
+      color:white; border:none; border-radius:9px;
+      font-size:12.5px; font-weight:700; cursor:pointer;
+      box-shadow:0 2px 8px rgba(99,102,241,.35);
+      transition:opacity .15s, transform .15s, box-shadow .15s;
+    }
+    #ai-btn:hover:not(:disabled) { opacity:.9; transform:translateY(-1px); box-shadow:0 4px 14px rgba(99,102,241,.45); }
+    #ai-btn:active:not(:disabled) { transform:translateY(0); }
+    #ai-btn:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+    .ai-hint { font-size:11px; color:var(--slate-400); }
+    kbd { font-size:10px; background:var(--slate-100); border:1px solid var(--slate-200); border-radius:4px; padding:1px 5px; font-family:inherit; }
+    #ai-spinner { font-size:11px; color:var(--slate-400); display:none; }
+    #ai-result { margin-top:14px; display:none; }
+    .ai-quote { font-size:11px; color:var(--slate-400); font-style:italic; margin-bottom:10px; padding-left:10px; border-left:2px solid var(--indigo-light); }
+    .ai-text-result {
+      padding:10px 12px; background:var(--slate-50); border-radius:8px;
+      font-size:11.5px; color:var(--slate-700); white-space:pre-wrap;
+      border:1px solid var(--slate-200); line-height:1.6;
+    }
+    .csv-btn {
+      display:inline-flex; align-items:center; gap:5px; margin-top:10px; padding:5px 12px;
+      background:var(--slate-100); border:1px solid var(--slate-200); border-radius:7px;
+      color:var(--slate-600); font-size:11px; font-weight:600; cursor:pointer; font-family:inherit; transition:background .15s;
+    }
+    .csv-btn:hover { background:var(--slate-200); }
+    details { margin-top:10px; }
+    summary { font-size:11px; color:var(--slate-400); cursor:pointer; user-select:none; }
+    summary::-webkit-details-marker { display:none; }
+    pre {
+      margin-top:8px; padding:10px 12px; background:var(--slate-50); border-radius:8px;
+      font-size:10.5px; color:var(--slate-600); overflow-x:auto; white-space:pre-wrap; word-break:break-word;
+      border:1px solid var(--slate-200);
+    }
+
     /* ══════════════ FOOTER / STATE ══════════════ */
     .footer { padding:14px 20px 24px; text-align:center; font-size:11px; color:var(--slate-500); font-weight:500; }
 
@@ -567,11 +699,13 @@
     @media (max-width: 820px) {
       .kpis  { grid-template-columns:repeat(2, 1fr); }
       .tiers { grid-template-columns:repeat(2, 1fr); }
+      .metric-grid, .sim-results, .sim-controls { grid-template-columns:repeat(2, 1fr); }
       .hero h1 { font-size: 18px; }
     }
     @media (max-width: 520px) {
       .chart-wrap { justify-content:flex-start; }
       .chart { width:620px; max-width:none; }
+      .metric-grid, .sim-results, .sim-controls { grid-template-columns:1fr; }
     }
   </style>
 </head>
@@ -654,6 +788,7 @@
     const TOKEN = P.get("token")    || "";
     const BASE  = "https://yhtxrjegdeuwkcjvkfkt.supabase.co/functions/v1";
     const API   = BASE + "/prime-dashboard";
+    const PRIME_AI_API = BASE + "/prime-ai-query";
 
     // ── Helpers ───────────────────────────────────────────────────────────────
     const fmtEur = (n) => n == null ? "–" : (+n).toLocaleString("fr-FR",{ style:"currency", currency:"EUR", maximumFractionDigits: 0 });
@@ -664,6 +799,9 @@
     const periodLabel = (config) => config.periodLabel || INDIV_PERIOD_LABEL;
     const MS_NOW = Date.now();
     const NOW_KEY = monthKey(MS_NOW);
+    let PRIME_AI_CONTEXT = null;
+    let primeSuggestionIdx = 0;
+    let primeSuggestionTimer = null;
 
     // ── Count-up (ease-out-expo) ──────────────────────────────────────────────
     function countUp(el, to, duration = 1400, formatter = fmtEur) {
@@ -696,6 +834,106 @@
         m,
         { ca: Number(v.amount || 0), nb: Number(v.count || 0) },
       ]));
+    }
+
+    function dealForecastMonth(deal) {
+      return monthKeyFromDate(deal.closedate || deal.createdate);
+    }
+
+    function monthlyPipelineFromDeals(deals = []) {
+      const byMonth = {};
+      deals.forEach(d => {
+        const m = dealForecastMonth(d);
+        if (!m) return;
+        if (!byMonth[m]) byMonth[m] = { ttc: 0, ht: 0, count: 0 };
+        const amount = Number(d.amount || 0);
+        byMonth[m].ttc += amount;
+        byMonth[m].ht += amount / TVA;
+        byMonth[m].count += 1;
+      });
+      return byMonth;
+    }
+
+    function calcCommission(caHT, seuilHT, baseRate = 0.09, surperfRate = 0.02) {
+      const base = caHT * baseRate;
+      const surperf = Math.max(0, caHT - seuilHT) * surperfRate;
+      return { base, surperf, total: base + surperf };
+    }
+
+    function buildSalesProjection(config, stats, pipelineDeals = []) {
+      const pipelineByMonth = monthlyPipelineFromDeals(pipelineDeals);
+      const rows = stats.rows.map(r => {
+        const pipeline = pipelineByMonth[r.mois] || { ttc: 0, ht: 0, count: 0 };
+        const landingHT = r.caHT + pipeline.ht;
+        const landingTTC = r.caHT * TVA + pipeline.ttc;
+        const sim = calcCommission(landingHT, r.seuilHT, stats.baseRate, stats.surperfRate);
+        return {
+          mois: r.mois,
+          label: r.label,
+          objectiveTTC: config.objectifsTTC?.[r.mois] ?? 0,
+          objectiveHT: r.objectifHT,
+          persoTTC: config.objectifsPersoTTC?.[r.mois] ?? null,
+          equipeTTC: config.objectifsEquipeTTC?.[r.mois] ?? null,
+          actualTTC: r.caHT * TVA,
+          actualHT: r.caHT,
+          actualDeals: r.nbDeals,
+          seuilHT: r.seuilHT,
+          actualCommission: r.total,
+          pipelineTTC: pipeline.ttc,
+          pipelineHT: pipeline.ht,
+          pipelineDeals: pipeline.count,
+          landingTTC,
+          landingHT,
+          potentialCommission: sim.total,
+          upsideCommission: Math.max(0, sim.total - r.total),
+          gapToObjectiveTTC: Math.max(0, (config.objectifsTTC?.[r.mois] ?? 0) - (r.caHT * TVA)),
+        };
+      });
+
+      return {
+        rows,
+        actualTTC: rows.reduce((s, r) => s + r.actualTTC, 0),
+        pipelineTTC: rows.reduce((s, r) => s + r.pipelineTTC, 0),
+        landingTTC: rows.reduce((s, r) => s + r.landingTTC, 0),
+        actualCommission: rows.reduce((s, r) => s + r.actualCommission, 0),
+        potentialCommission: rows.reduce((s, r) => s + r.potentialCommission, 0),
+        upsideCommission: rows.reduce((s, r) => s + r.upsideCommission, 0),
+        pipelineDeals: rows.reduce((s, r) => s + r.pipelineDeals, 0),
+        objectiveTTC: rows.reduce((s, r) => s + r.objectiveTTC, 0),
+      };
+    }
+
+    function buildRdvProjection(config, stats, pipelineDeals = []) {
+      const pipelineByMonth = monthlyPipelineFromDeals(pipelineDeals);
+      const rows = stats.rows.map(r => {
+        const pipeline = pipelineByMonth[r.mois] || { ttc: 0, ht: 0, count: 0 };
+        const potentialSignature = pipeline.ht * (config.closingRate || 0.05);
+        return {
+          mois: r.mois,
+          label: r.label,
+          rdvTarget: r.target,
+          rdv: r.rdv,
+          transactions: r.transactions,
+          signedDeals: r.signedDeals,
+          signedHT: r.signedHT,
+          actualSignature: r.commissionSignature,
+          actualTotal: r.total,
+          pipelineDeals: pipeline.count,
+          pipelineHT: pipeline.ht,
+          potentialSignature,
+          potentialTotal: r.total + potentialSignature,
+        };
+      });
+
+      return {
+        rows,
+        actualSignature: rows.reduce((s, r) => s + r.actualSignature, 0),
+        potentialSignature: rows.reduce((s, r) => s + r.potentialSignature, 0),
+        actualTotal: rows.reduce((s, r) => s + r.actualTotal, 0),
+        potentialTotal: rows.reduce((s, r) => s + r.potentialTotal, 0),
+        pipelineDeals: rows.reduce((s, r) => s + r.pipelineDeals, 0),
+        pipelineHT: rows.reduce((s, r) => s + r.pipelineHT, 0),
+      };
     }
 
     // ── Calcul commissions CA ────────────────────────────────────────────────
@@ -1042,10 +1280,12 @@
     }
 
     function renderRdvAchievements(stats) {
+      const monthlyPeak = Math.max(...stats.rows.map(r => r.rdv));
+      const monthlyTarget = stats.rows[0]?.target || 0;
       const list = [
         { em: "📍", name: "Premier RDV pris", cur: stats.totalRdv, target: 1, cls: "" },
         { em: "🎯", name: "25 RDV pris", cur: stats.totalRdv, target: 25, cls: "streak" },
-        { em: "🏆", name: "Objectif mensuel 50", cur: Math.max(...stats.rows.map(r => r.rdv)), target: 50, cls: "gold" },
+        { em: "🏆", name: `Objectif mensuel ${fmtNum(monthlyTarget)}`, cur: monthlyPeak, target: monthlyTarget, cls: "gold" },
         { em: "🧾", name: "11 transactions", cur: stats.totalTransactions, target: 11, cls: "" },
         { em: "💶", name: "21 transactions", cur: stats.totalTransactions, target: 21, cls: "fire" },
         { em: "✅", name: "Signature générée", cur: stats.signedDeals, target: 1, cls: "gold" },
@@ -1096,6 +1336,483 @@
             </div>
           </div>
         </div>`;
+    }
+
+    function sumValues(values = []) {
+      return values.reduce((sum, value) => sum + (value == null ? 0 : Number(value)), 0);
+    }
+
+    function renderMatrixRow(label, values, formatter, options = {}) {
+      const total = options.total ?? sumValues(values);
+      return `<tr class="${options.rowClass || ""}">
+        <td class="row-label">${esc(label)}${options.sub ? `<span class="cell-sub">${esc(options.sub)}</span>` : ""}</td>
+        ${values.map(value => `<td class="num">${formatter(value)}</td>`).join("")}
+        <td class="num"><strong>${formatter(total)}</strong></td>
+      </tr>`;
+    }
+
+    function renderProjectionSummary(config, stats, projection) {
+      const isRdv = config.type === "rdv";
+      const items = isRdv
+        ? [
+            { label: "Variable acquise", value: projection.actualTotal, note: `${fmtEur(projection.actualSignature)} déjà générés sur signatures` },
+            { label: "Pipeline en cours", value: projection.pipelineHT, note: `${projection.pipelineDeals} deal${projection.pipelineDeals > 1 ? "s" : ""} encore ouverts`, format: fmtEur },
+            { label: "5% potentiel", value: projection.potentialSignature, note: `si le pipeline se signe`, format: fmtEur },
+            { label: "Variable potentielle", value: projection.potentialTotal, note: `+${fmtEur(projection.potentialTotal - projection.actualTotal)} vs acquis`, format: fmtEur },
+          ]
+        : [
+            { label: "Signé", value: projection.actualTTC, note: `${stats.nbDeals} deal${stats.nbDeals > 1 ? "s" : ""} gagné${stats.nbDeals > 1 ? "s" : ""}`, format: fmtEur },
+            { label: "Pipeline en cours", value: projection.pipelineTTC, note: `${projection.pipelineDeals} deal${projection.pipelineDeals > 1 ? "s" : ""} ouvert${projection.pipelineDeals > 1 ? "s" : ""}`, format: fmtEur },
+            { label: "Atterrissage", value: projection.landingTTC, note: `objectif ${fmtEur(projection.objectiveTTC)}`, format: fmtEur },
+            { label: "Prime potentielle", value: projection.potentialCommission, note: `+${fmtEur(projection.upsideCommission)} vs acquis`, format: fmtEur },
+          ];
+
+      return `
+        <div class="glass reveal" style="animation-delay:.54s">
+          <div class="card-head">
+            <h3><span class="head-ico">🔭</span>Prévisionnel</h3>
+            <span class="meta">${isRdv ? "pipeline signatures" : "signé + deals en cours"}</span>
+          </div>
+          <div class="card-body">
+            <div class="metric-grid">
+              ${items.map(item => `
+                <div class="metric-card">
+                  <div class="metric-eyebrow">${esc(item.label)}</div>
+                  <div class="metric-value">${(item.format || fmtEur)(item.value)}</div>
+                  <div class="metric-note">${item.note}</div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderSalesPilotTable(config, projection) {
+      const rows = projection.rows;
+      const headers = rows.map(r => `<th class="num">${esc(r.label)}</th>`).join("");
+      const objectiveRow = renderMatrixRow("Objectif mensuel (TTC)", rows.map(r => r.objectiveTTC), fmtEur);
+      const signedRow = renderMatrixRow("Signé à date (TTC)", rows.map(r => r.actualTTC), fmtEur, { rowClass: "row-soft" });
+      const pipelineRow = renderMatrixRow("Pipeline en cours (TTC)", rows.map(r => r.pipelineTTC), fmtEur);
+      const landingRow = renderMatrixRow("Atterrissage potentiel (TTC)", rows.map(r => r.landingTTC), fmtEur, { rowClass: "row-emph" });
+      const acquiredRow = renderMatrixRow("Prime acquise", rows.map(r => r.actualCommission), fmtEur, { rowClass: "row-soft" });
+      const potentialRow = renderMatrixRow("Prime potentielle", rows.map(r => r.potentialCommission), fmtEur, { rowClass: "row-emph" });
+      const gapRow = renderMatrixRow("Reste à l'objectif", rows.map(r => r.gapToObjectiveTTC), fmtEur);
+
+      const extraTeamLeadRows = config.type === "teamLead"
+        ? [
+            renderMatrixRow("Objectif ventes indiv. (TTC)", rows.map(r => r.persoTTC), fmtEur),
+            renderMatrixRow("Objectif équipe AE CSE (TTC)", rows.map(r => r.equipeTTC), fmtEur),
+          ].join("")
+        : "";
+
+      return `
+        <div class="glass reveal" style="animation-delay:.58s">
+          <div class="card-head">
+            <h3><span class="head-ico">🗂️</span>Tableau de pilotage</h3>
+            <span class="meta">prévisionnel regroupé par mois de signature prévue</span>
+          </div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table class="matrix-table">
+                <thead>
+                  <tr>
+                    <th>Indicateur</th>
+                    ${headers}
+                    <th class="num">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${extraTeamLeadRows}
+                  ${objectiveRow}
+                  ${signedRow}
+                  ${pipelineRow}
+                  ${landingRow}
+                  ${acquiredRow}
+                  ${potentialRow}
+                  ${gapRow}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderRdvPilotTable(projection) {
+      const rows = projection.rows;
+      const headers = rows.map(r => `<th class="num">${esc(r.label)}</th>`).join("");
+      return `
+        <div class="glass reveal" style="animation-delay:.58s">
+          <div class="card-head">
+            <h3><span class="head-ico">🗂️</span>Tableau de pilotage</h3>
+            <span class="meta">RDV réels + potentiel de signature issu des deals encore ouverts</span>
+          </div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table class="matrix-table">
+                <thead>
+                  <tr>
+                    <th>Indicateur</th>
+                    ${headers}
+                    <th class="num">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${renderMatrixRow("Objectif RDV", rows.map(r => r.rdvTarget), fmtNum)}
+                  ${renderMatrixRow("RDV créés", rows.map(r => r.rdv), fmtNum, { rowClass: "row-soft" })}
+                  ${renderMatrixRow("Transactions ouvertes", rows.map(r => r.transactions), fmtNum)}
+                  ${renderMatrixRow("Deals en cours", rows.map(r => r.pipelineDeals), fmtNum)}
+                  ${renderMatrixRow("5% signatures acquises", rows.map(r => r.actualSignature), fmtEur, { rowClass: "row-soft" })}
+                  ${renderMatrixRow("5% potentiel pipeline", rows.map(r => r.potentialSignature), fmtEur)}
+                  ${renderMatrixRow("Variable acquise", rows.map(r => r.actualTotal), fmtEur)}
+                  ${renderMatrixRow("Variable potentielle", rows.map(r => r.potentialTotal), fmtEur, { rowClass: "row-emph" })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderSalesSimulator(config, projection) {
+      const options = projection.rows.map(r => `<option value="${esc(r.mois)}">${esc(r.label)}</option>`).join("");
+      return `
+        <div class="glass reveal" style="animation-delay:.68s">
+          <div class="card-head">
+            <h3><span class="head-ico">🧮</span>Simulateur de prime</h3>
+            <span class="meta">le calcul part du signé actuel + du pipeline déjà remonté</span>
+          </div>
+          <div class="card-body">
+            <div class="sim-shell">
+              <div class="sim-controls">
+                <div class="field">
+                  <label for="sim-month">Mois</label>
+                  <select id="sim-month">${options}</select>
+                </div>
+                <div class="field">
+                  <label for="sim-extra-ttc">Ajout signé TTC</label>
+                  <input id="sim-extra-ttc" type="number" min="0" step="500" value="0" />
+                </div>
+                <div class="field">
+                  <label for="sim-sales-objective">Objectif TTC</label>
+                  <input id="sim-sales-objective" type="text" value="${fmtEur(0)}" readonly />
+                </div>
+              </div>
+              <div class="sim-results">
+                <div class="sim-result"><span>Atterrissage simulé</span><strong id="sim-sales-landing">${fmtEur(0)}</strong></div>
+                <div class="sim-result"><span>Commission du mois</span><strong id="sim-sales-commission">${fmtEur(0)}</strong></div>
+                <div class="sim-result"><span>Upside vs acquis</span><strong id="sim-sales-upside">${fmtEur(0)}</strong></div>
+                <div class="sim-result"><span>Écart objectif</span><strong id="sim-sales-gap">${fmtEur(0)}</strong></div>
+              </div>
+              <div class="sim-help">On ajoute ton montant saisi au signé et au pipeline déjà visibles sur le dashboard, puis on recalcule la prime du mois avec les mêmes règles.</div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderRdvSimulator(config, projection) {
+      const options = projection.rows.map(r => `<option value="${esc(r.mois)}">${esc(r.label)}</option>`).join("");
+      return `
+        <div class="glass reveal" style="animation-delay:.68s">
+          <div class="card-head">
+            <h3><span class="head-ico">🧮</span>Simulateur de prime</h3>
+            <span class="meta">simulation mensuelle Lucas : RDV, transactions et signatures HT</span>
+          </div>
+          <div class="card-body">
+            <div class="sim-shell">
+              <div class="sim-controls">
+                <div class="field">
+                  <label for="sim-rdv-month">Mois</label>
+                  <select id="sim-rdv-month">${options}</select>
+                </div>
+                <div class="field">
+                  <label for="sim-rdv-count">RDV</label>
+                  <input id="sim-rdv-count" type="number" min="0" step="1" value="0" />
+                </div>
+                <div class="field">
+                  <label for="sim-tx-count">Transactions ouvertes</label>
+                  <input id="sim-tx-count" type="number" min="0" step="1" value="0" />
+                </div>
+              </div>
+              <div class="sim-controls">
+                <div class="field">
+                  <label for="sim-signed-ht">Montant signé HT</label>
+                  <input id="sim-signed-ht" type="number" min="0" step="500" value="0" />
+                </div>
+                <div class="field">
+                  <label for="sim-rdv-prime">Prime RDV</label>
+                  <input id="sim-rdv-prime" type="text" value="${fmtEur(0)}" readonly />
+                </div>
+                <div class="field">
+                  <label for="sim-tx-prime">Prime transactions</label>
+                  <input id="sim-tx-prime" type="text" value="${fmtEur(0)}" readonly />
+                </div>
+              </div>
+              <div class="sim-results">
+                <div class="sim-result"><span>5% signatures</span><strong id="sim-signature-prime">${fmtEur(0)}</strong></div>
+                <div class="sim-result"><span>Variable simulée</span><strong id="sim-rdv-total">${fmtEur(0)}</strong></div>
+                <div class="sim-result"><span>Objectif RDV</span><strong id="sim-rdv-target">${fmtNum(config.rdvTarget)}</strong></div>
+                <div class="sim-result"><span>Pace du mois</span><strong id="sim-rdv-attainment">0%</strong></div>
+              </div>
+              <div class="sim-help">Tu peux partir des chiffres réels du mois et pousser la simulation avec plus de RDV, plus de transactions ou plus de signature HT.</div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function primeAiSuggestions(config) {
+      if (config.type === "rdv") {
+        return [
+          "Pourquoi Lucas est à 16 RDV en avril ?",
+          "Quel est le potentiel de prime avec les deals encore ouverts ?",
+          "Quel mois Lucas a le plus de potentiel de signature ?",
+        ];
+      }
+      if (config.type === "teamLead") {
+        return [
+          "Quel mois est le plus en retard sur l'objectif ?",
+          "Combien peut rapporter le pipeline actuel ?",
+          "Que manque-t-il pour atteindre le prochain palier équipe ?",
+        ];
+      }
+      return [
+        "Quel mois est le plus proche de l'objectif ?",
+        "Quel est le potentiel de commission avec le pipeline actuel ?",
+        "Sur quel mois il faut concentrer les signatures ?",
+      ];
+    }
+
+    function renderPrimeAiCard(config) {
+      return `
+        <div class="glass reveal" style="animation-delay:.76s">
+          <div class="card-head">
+            <h3><span class="head-ico">✦</span>Assistant IA prime</h3>
+            <span class="meta">questions sur les chiffres, les paliers et le pipeline</span>
+          </div>
+          <div class="card-body">
+            <div>
+              <p class="ai-desc">Posez une question en langage naturel sur la prime, les objectifs, le pipeline ou les paliers de ${esc(config.name)}.</p>
+              <div class="ai-input-wrap">
+                <textarea id="ai-question" rows="3" placeholder=" "></textarea>
+                <span id="ai-placeholder">ex : ${esc(primeAiSuggestions(config)[0])}…</span>
+              </div>
+              <div class="ai-footer">
+                <button id="ai-btn" type="button">✦ Analyser</button>
+                <span id="ai-spinner">⏳ Analyse en cours…</span>
+                <span class="ai-hint">⌘↵ pour envoyer</span>
+              </div>
+              <div id="ai-result"></div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function buildAiContext(config, stats, projection, teamHT, teamDealsCount, raw) {
+      const currentTier = TIERS.filter(t => teamHT >= t.seuil).slice(-1)[0] || null;
+      const nextTier = TIERS.find(t => teamHT < t.seuil) || null;
+      const monthly = projection.rows.map(r => config.type === "rdv" ? ({
+        mois: r.mois,
+        label: r.label,
+        objectif_rdv: r.rdvTarget,
+        rdv: r.rdv,
+        transactions_ouvertes: r.transactions,
+        deals_en_cours: r.pipelineDeals,
+        potentiel_signature_ht: Math.round(r.pipelineHT),
+        commission_signature_acquise: Number(r.actualSignature.toFixed(2)),
+        commission_signature_potentielle: Number(r.potentialSignature.toFixed(2)),
+        variable_acquise: Number(r.actualTotal.toFixed(2)),
+        variable_potentielle: Number(r.potentialTotal.toFixed(2)),
+      }) : ({
+        mois: r.mois,
+        label: r.label,
+        objectif_ttc: r.objectiveTTC,
+        signe_ttc: Number(r.actualTTC.toFixed(2)),
+        pipeline_ttc: Number(r.pipelineTTC.toFixed(2)),
+        atterrissage_ttc: Number(r.landingTTC.toFixed(2)),
+        prime_acquise: Number(r.actualCommission.toFixed(2)),
+        prime_potentielle: Number(r.potentialCommission.toFixed(2)),
+        reste_objectif_ttc: Number(r.gapToObjectiveTTC.toFixed(2)),
+      }));
+
+      return {
+        generated_at: new Date().toISOString(),
+        profile: {
+          owner_id: OWNER,
+          name: config.name,
+          role: config.role,
+          type: config.type,
+          period: periodLabel(config),
+        },
+        rules: config.type === "rdv" ? {
+          rdv: "Un RDV est compté si le meeting a ete cree par Lucas, n'est pas annule, contient Presentation ou Présentation dans le titre, et est regroupe sur le mois de creation du meeting.",
+          transactions: "Les transactions ouvertes correspondent aux deals rattaches aux comptes ou contacts de ces meetings.",
+          signatures: "La prime signature correspond a 5% du montant HT des deals signes eligibles.",
+        } : {
+          commission: "Commission = 9% du CA HT signe + 2% de sur-performance au-dela du seuil mensuel.",
+          projection: "Le previsionnel ajoute les deals en cours, regroupes sur la date de signature prevue quand elle existe, sinon sur la date de creation.",
+        },
+        summary: config.type === "rdv" ? {
+          rdv_total: stats.totalRdv,
+          transactions_total: stats.totalTransactions,
+          variable_acquise: Number(projection.actualTotal.toFixed(2)),
+          variable_potentielle: Number(projection.potentialTotal.toFixed(2)),
+          pipeline_deals: projection.pipelineDeals,
+          pipeline_ht: Number(projection.pipelineHT.toFixed(2)),
+        } : {
+          ca_signe_ttc: Number(projection.actualTTC.toFixed(2)),
+          pipeline_ttc: Number(projection.pipelineTTC.toFixed(2)),
+          atterrissage_ttc: Number(projection.landingTTC.toFixed(2)),
+          commission_acquise: Number(projection.actualCommission.toFixed(2)),
+          commission_potentielle: Number(projection.potentialCommission.toFixed(2)),
+          pipeline_deals: projection.pipelineDeals,
+        },
+        team_prime: {
+          total_ht: Number(teamHT.toFixed(2)),
+          deals_count: teamDealsCount,
+          current_tier: currentTier ? { name: currentTier.name, threshold: currentTier.seuil, prime: currentTier.prime } : null,
+          next_tier: nextTier ? { name: nextTier.name, threshold: nextTier.seuil, prime: nextTier.prime } : null,
+        },
+        monthly,
+        signed_deals: (raw.deals || []).slice(0, 30).map(d => ({
+          name: d.name,
+          amount_ttc: d.amount,
+          closedate: d.closedate,
+        })),
+        pipeline_deals: (raw.pipeline_deals || []).slice(0, 30).map(d => ({
+          name: d.name,
+          amount_ttc: d.amount,
+          stage: d.stage,
+          createdate: d.createdate,
+          closedate: d.closedate,
+        })),
+      };
+    }
+
+    function bindSalesSimulator(stats, projection) {
+      const monthEl = document.getElementById("sim-month");
+      const amountEl = document.getElementById("sim-extra-ttc");
+      if (!monthEl || !amountEl) return;
+      const sync = () => {
+        const row = projection.rows.find(r => r.mois === monthEl.value) || projection.rows[0];
+        const extraTTC = Math.max(0, parseFloat(amountEl.value || "0") || 0);
+        const simLandingHT = row.landingHT + (extraTTC / TVA);
+        const simLandingTTC = row.landingTTC + extraTTC;
+        const simCommission = calcCommission(simLandingHT, row.seuilHT, stats.baseRate, stats.surperfRate).total;
+        document.getElementById("sim-sales-objective").value = fmtEur(row.objectiveTTC);
+        document.getElementById("sim-sales-landing").textContent = fmtEur(simLandingTTC);
+        document.getElementById("sim-sales-commission").textContent = fmtEur(simCommission);
+        document.getElementById("sim-sales-upside").textContent = fmtEur(simCommission - row.actualCommission);
+        document.getElementById("sim-sales-gap").textContent = fmtEur(simLandingTTC - row.objectiveTTC);
+      };
+      monthEl.addEventListener("change", sync);
+      amountEl.addEventListener("input", sync);
+      sync();
+    }
+
+    function bindRdvSimulator(config, projection) {
+      const monthEl = document.getElementById("sim-rdv-month");
+      const rdvEl = document.getElementById("sim-rdv-count");
+      const txEl = document.getElementById("sim-tx-count");
+      const signedEl = document.getElementById("sim-signed-ht");
+      if (!monthEl || !rdvEl || !txEl || !signedEl) return;
+
+      const fillMonth = () => {
+        const row = projection.rows.find(r => r.mois === monthEl.value) || projection.rows[0];
+        rdvEl.value = String(row.rdv);
+        txEl.value = String(row.transactions);
+        signedEl.value = String(Math.round(row.signedHT + row.pipelineHT));
+        sync();
+      };
+
+      const sync = () => {
+        const rdv = Math.max(0, parseFloat(rdvEl.value || "0") || 0);
+        const tx = Math.max(0, parseFloat(txEl.value || "0") || 0);
+        const signedHT = Math.max(0, parseFloat(signedEl.value || "0") || 0);
+        const primeRdv = rdvPrime(rdv, config.rdvTarget);
+        const unitPrime = transactionUnitPrime(tx);
+        const primeTx = tx * unitPrime;
+        const signaturePrime = signedHT * (config.closingRate || 0.05);
+        const total = primeRdv + primeTx + signaturePrime;
+        document.getElementById("sim-rdv-prime").value = fmtEur(primeRdv);
+        document.getElementById("sim-tx-prime").value = fmtEur(primeTx);
+        document.getElementById("sim-signature-prime").textContent = fmtEur(signaturePrime);
+        document.getElementById("sim-rdv-total").textContent = fmtEur(total);
+        document.getElementById("sim-rdv-target").textContent = fmtNum(config.rdvTarget);
+        document.getElementById("sim-rdv-attainment").textContent = `${Math.round((rdv / Math.max(1, config.rdvTarget)) * 100)}%`;
+      };
+
+      monthEl.addEventListener("change", fillMonth);
+      rdvEl.addEventListener("input", sync);
+      txEl.addEventListener("input", sync);
+      signedEl.addEventListener("input", sync);
+      fillMonth();
+    }
+
+    function bindPrimeAI(config) {
+      const q = document.getElementById("ai-question");
+      const ph = document.getElementById("ai-placeholder");
+      const btn = document.getElementById("ai-btn");
+      if (!q || !btn) return;
+      q.addEventListener("focus", () => { if (ph) ph.style.opacity = "0"; });
+      q.addEventListener("blur", () => { if (ph && !q.value) ph.style.opacity = "1"; });
+      q.addEventListener("input", () => { if (ph) ph.style.opacity = q.value ? "0" : "1"; });
+      q.addEventListener("keydown", e => {
+        if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+          e.preventDefault();
+          handlePrimeAI(config);
+        }
+      });
+      btn.addEventListener("click", () => handlePrimeAI(config));
+      if (primeSuggestionTimer) clearInterval(primeSuggestionTimer);
+      const suggestions = primeAiSuggestions(config);
+      primeSuggestionTimer = setInterval(() => {
+        if (document.activeElement === q || q.value || !ph) return;
+        ph.style.opacity = "0";
+        setTimeout(() => {
+          primeSuggestionIdx = (primeSuggestionIdx + 1) % suggestions.length;
+          ph.textContent = `ex : ${suggestions[primeSuggestionIdx]}…`;
+          ph.style.opacity = "1";
+        }, 400);
+      }, 3000);
+    }
+
+    async function handlePrimeAI(config) {
+      const q = document.getElementById("ai-question");
+      const btn = document.getElementById("ai-btn");
+      const spinner = document.getElementById("ai-spinner");
+      const answer = document.getElementById("ai-result");
+      const question = q?.value?.trim() || "";
+      if (!question || !btn || !spinner || !answer) return;
+
+      btn.disabled = true;
+      spinner.style.display = "inline";
+      answer.style.display = "none";
+      answer.innerHTML = "";
+
+      try {
+        const res = await fetch(PRIME_AI_API, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${TOKEN}`,
+          },
+          body: JSON.stringify({
+            question,
+            context: PRIME_AI_CONTEXT || { profile: { name: config.name, role: config.role } },
+          }),
+        });
+        const json = await res.json();
+        if (!res.ok || !json.ok) throw new Error(json.error || `HTTP ${res.status}`);
+        let html = "";
+        if (json.question) html += `<p class="ai-quote">&ldquo;${esc(json.question)}&rdquo;</p>`;
+        html += `<div class="ai-text-result">${esc(json.answer || "Aucune réponse.")}</div>`;
+        answer.innerHTML = html;
+        answer.style.display = "block";
+      } catch (e) {
+        answer.innerHTML = `<p style="font-size:12px;color:var(--rose);margin-top:8px">⚠ ${esc(e.message || e)}</p>`;
+        answer.style.display = "block";
+      } finally {
+        btn.disabled = false;
+        spinner.style.display = "none";
+      }
     }
 
     // ── Message équipe ────────────────────────────────────────────────────────
@@ -1169,7 +1886,7 @@
     }
 
     // ── Render main ───────────────────────────────────────────────────────────
-    function renderDashboard(config, stats, teamHT, teamDealsCount) {
+    function renderDashboard(config, stats, projection, teamHT, teamDealsCount, rawData) {
       const tiers = renderTiers(teamHT);
       const pLabel = periodLabel(config);
       const metricLabel = config.sourceLabel || "CA HT";
@@ -1254,7 +1971,9 @@
             <div class="card-body">${renderChart(stats.rows, stats.bestIdx)}</div>
           </div>
 
-          ${renderTeamLeadBreakdown(config)}
+          ${renderProjectionSummary(config, stats, projection)}
+
+          ${renderSalesPilotTable(config, projection)}
 
           <div class="glass reveal" style="animation-delay:.60s">
             <div class="card-head">
@@ -1286,6 +2005,10 @@
             </div>
           </div>
 
+          ${renderSalesSimulator(config, projection)}
+
+          ${renderPrimeAiCard(config)}
+
           <div class="glass reveal" style="animation-delay:.72s">
             <div class="card-head">
               <h3><span class="head-ico">🏆</span>Prime d'équipe collective 2026</h3>
@@ -1295,7 +2018,7 @@
           </div>
 
           <div class="footer">
-            Calculé en direct depuis HubSpot · Commission ${pLabel} · Prime d'équipe = tous les closedwon 2026 · Information interne, sans valeur contractuelle.
+            Calculé en direct depuis HubSpot · Commission ${pLabel} · Prévisionnel = deals en cours regroupés sur la date de signature prévue quand elle existe · Prime d'équipe = tous les closedwon 2026 · Information interne, sans valeur contractuelle.
           </div>
         </div>
       `;
@@ -1322,9 +2045,13 @@
         sessionStorage.setItem(key, "1");
         setTimeout(() => confetti({ burst: tiers.unlockedCount }), 1200);
       }
+
+      PRIME_AI_CONTEXT = buildAiContext(config, stats, projection, teamHT, teamDealsCount, rawData);
+      bindSalesSimulator(stats, projection);
+      bindPrimeAI(config);
     }
 
-    function renderRdvDashboard(config, stats, teamHT, teamDealsCount) {
+    function renderRdvDashboard(config, stats, projection, teamHT, teamDealsCount, rawData) {
       const tiers = renderTiers(teamHT);
       const pLabel = periodLabel(config);
       const rowsHtml = stats.rows.map((r, i) => {
@@ -1398,6 +2125,10 @@
             <div class="card-body">${renderCountChart(stats.rows, stats.bestIdx, config.rdvTarget)}</div>
           </div>
 
+          ${renderProjectionSummary(config, stats, projection)}
+
+          ${renderRdvPilotTable(projection)}
+
           ${renderRdvRules(config.rdvTarget)}
 
           <div class="glass reveal" style="animation-delay:.60s">
@@ -1426,6 +2157,10 @@
             </div>
           </div>
 
+          ${renderRdvSimulator(config, projection)}
+
+          ${renderPrimeAiCard(config)}
+
           <div class="glass reveal" style="animation-delay:.72s">
             <div class="card-head">
               <h3><span class="head-ico">🏆</span>Prime d'équipe collective 2026</h3>
@@ -1435,7 +2170,7 @@
           </div>
 
           <div class="footer">
-            Calculé en direct depuis HubSpot · RDV = meetings créés par Lucas non annulés, regroupés par mois de création · Transactions = deals rattachés aux comptes ou contacts de ces meetings · Prime d'équipe = tous les closedwon 2026 · Information interne, sans valeur contractuelle.
+            Calculé en direct depuis HubSpot · RDV = meetings créés par Lucas non annulés, regroupés par mois de création · Transactions = deals rattachés aux comptes ou contacts de ces meetings · Prévisionnel = deals encore ouverts rattachés à ces meetings · Prime d'équipe = tous les closedwon 2026 · Information interne, sans valeur contractuelle.
           </div>
         </div>
       `;
@@ -1460,6 +2195,10 @@
         sessionStorage.setItem(key, "1");
         setTimeout(() => confetti({ burst: tiers.unlockedCount }), 1200);
       }
+
+      PRIME_AI_CONTEXT = buildAiContext(config, stats, projection, teamHT, teamDealsCount, rawData);
+      bindRdvSimulator(config, projection);
+      bindPrimeAI(config);
     }
 
     function renderError(msg) {
@@ -1527,10 +2266,13 @@
         const stats          = config.type === "rdv"
           ? computeRdv(json.meetings || [], json.opened_deals || [], json.deals || [], config)
           : compute(json.deals || [], config, { byMonth: sourceMonthly });
+        const projection     = config.type === "rdv"
+          ? buildRdvProjection(config, stats, json.pipeline_deals || [])
+          : buildSalesProjection(config, stats, json.pipeline_deals || []);
         const teamHT         = json.team_total_amount ?? json.team_total_ttc ?? json.team_total ?? 0;
         const teamDealsCount = json.team_deals_count || 0;
-        if (config.type === "rdv") renderRdvDashboard(config, stats, teamHT, teamDealsCount);
-        else renderDashboard(config, stats, teamHT, teamDealsCount);
+        if (config.type === "rdv") renderRdvDashboard(config, stats, projection, teamHT, teamDealsCount, json);
+        else renderDashboard(config, stats, projection, teamHT, teamDealsCount, json);
       } catch (e) {
         renderError(e.message || String(e));
       }
