@@ -866,10 +866,18 @@
     const periodLabel = (config) => config.periodLabel || INDIV_PERIOD_LABEL;
     const MS_NOW = Date.now();
     const NOW_KEY = monthKey(MS_NOW);
+    const TODAY_ISO = new Date(MS_NOW).toISOString().slice(0, 10);
     let PRIME_AI_CONTEXT = null;
     let primeSuggestionIdx = 0;
     let primeSuggestionTimer = null;
     let LAST_FOCUS_BEFORE_MODAL = null;
+
+    function shiftMonthKey(key, delta = 1) {
+      const [year, month] = String(key || "").split("-").map(Number);
+      if (!year || !month) return "";
+      const date = new Date(year, month - 1 + delta, 1);
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+    }
 
     // ── Count-up (ease-out-expo) ──────────────────────────────────────────────
     function countUp(el, to, duration = 1400, formatter = fmtEur) {
@@ -1631,21 +1639,24 @@
       if (config.type === "rdv") {
         return [
           "Pourquoi Lucas est à 16 RDV en avril ?",
+          "Combien je touche le mois prochain si je signe 20 000 € HT ?",
           "Quel est le potentiel de prime avec les deals encore ouverts ?",
-          "Quel mois Lucas a le plus de potentiel de signature ?",
+          "Quel mois Lucas a le plus de potentiel de signature ?"
         ];
       }
       if (config.type === "teamLead") {
         return [
           "Quel mois est le plus en retard sur l'objectif ?",
+          "Que donne mai 2026 si Camille signe 20 000 € ?",
           "Combien peut rapporter le pipeline actuel ?",
-          "Que manque-t-il pour atteindre le prochain palier équipe ?",
+          "Que manque-t-il pour atteindre le prochain palier équipe ?"
         ];
       }
       return [
+        "Combien je touche le mois prochain si je signe 20 000 € ?",
         "Quel mois est le plus proche de l'objectif ?",
         "Quel est le potentiel de commission avec le pipeline actuel ?",
-        "Sur quel mois il faut concentrer les signatures ?",
+        "Sur quel mois il faut concentrer les signatures ?"
       ];
     }
 
@@ -1827,14 +1838,27 @@
     function buildAiContext(config, stats, projection, teamHT, teamDealsCount, raw) {
       const currentTier = TIERS.filter(t => teamHT >= t.seuil).slice(-1)[0] || null;
       const nextTier = TIERS.find(t => teamHT < t.seuil) || null;
+      const nextCalendarKey = shiftMonthKey(NOW_KEY, 1);
+      const availableMonths = projection.rows.map(r => ({
+        key: r.mois,
+        label: r.label,
+        is_current_calendar_month: r.mois === NOW_KEY,
+        is_next_calendar_month: r.mois === nextCalendarKey,
+      }));
+      const currentVisibleMonth = projection.rows.find(r => r.mois === NOW_KEY) || null;
+      const nextVisibleMonth = projection.rows.find(r => r.mois > NOW_KEY) || null;
       const monthly = projection.rows.map(r => config.type === "rdv" ? ({
         mois: r.mois,
         label: r.label,
         objectif_rdv: r.rdvTarget,
         rdv: r.rdv,
+        ecart_vs_objectif_rdv: r.rdv - r.rdvTarget,
         transactions_ouvertes: r.transactions,
         deals_en_cours: r.pipelineDeals,
-        potentiel_signature_ht: Math.round(r.pipelineHT),
+        signature_acquise_ht: Number(r.signedHT.toFixed(2)),
+        potentiel_signature_ht: Number(r.pipelineHT.toFixed(2)),
+        prime_rdv_acquise: Number(r.primeRdv.toFixed(2)),
+        prime_transactions_acquise: Number(r.primeTransactions.toFixed(2)),
         commission_signature_acquise: Number(r.actualSignature.toFixed(2)),
         commission_signature_potentielle: Number(r.potentialSignature.toFixed(2)),
         variable_acquise: Number(r.actualTotal.toFixed(2)),
@@ -1843,34 +1867,108 @@
         mois: r.mois,
         label: r.label,
         objectif_ttc: r.objectiveTTC,
+        objectif_ht: Number(r.objectiveHT.toFixed(2)),
+        objectif_perso_ttc: r.persoTTC == null ? null : Number(r.persoTTC.toFixed(2)),
+        objectif_equipe_ttc: r.equipeTTC == null ? null : Number(r.equipeTTC.toFixed(2)),
+        seuil_surperf_ht: Number(r.seuilHT.toFixed(2)),
         signe_ttc: Number(r.actualTTC.toFixed(2)),
+        signe_ht: Number(r.actualHT.toFixed(2)),
         pipeline_ttc: Number(r.pipelineTTC.toFixed(2)),
+        pipeline_ht: Number(r.pipelineHT.toFixed(2)),
         atterrissage_ttc: Number(r.landingTTC.toFixed(2)),
+        atterrissage_ht: Number(r.landingHT.toFixed(2)),
         prime_acquise: Number(r.actualCommission.toFixed(2)),
         prime_potentielle: Number(r.potentialCommission.toFixed(2)),
+        gain_vs_acquis: Number(r.upsideCommission.toFixed(2)),
+        ecart_vs_objectif_ttc: Number((r.actualTTC - r.objectiveTTC).toFixed(2)),
         reste_objectif_ttc: Number(r.gapToObjectiveTTC.toFixed(2)),
       }));
 
+      const monthlyByKey = Object.fromEntries(monthly.map(row => [row.mois, row]));
+      const baseRates = {
+        type: config.type,
+        base_rate: Number((stats.baseRate || 0.09).toFixed(4)),
+        surperformance_rate: Number((stats.surperfRate || 0.02).toFixed(4)),
+        tva_multiplier: TVA,
+        tva_rate: Number((TVA - 1).toFixed(2)),
+      };
+
+      const profileRules = config.type === "rdv" ? {
+        summary: "Lucas est en mode BDR. On compte les meetings créés par Lucas, pas les deals assignés à Lucas.",
+        rdv_rule: {
+          created_by: config.name,
+          counted_if: [
+            "meeting cree par Lucas",
+            "meeting non annule",
+            "meeting title contient Presentation ou Présentation",
+            "regroupement sur le mois de creation du meeting",
+          ],
+          target_per_month: config.rdvTarget,
+          tiers: [
+            { min_percent: 50, min_rdv: Math.ceil(config.rdvTarget * 0.50), prime: 50 },
+            { min_percent: 75, min_rdv: Math.ceil(config.rdvTarget * 0.75), prime: 100 },
+            { min_percent: 100, min_rdv: config.rdvTarget, prime: 150 },
+          ],
+        },
+        transaction_rule: {
+          description: "Les transactions ouvertes sont les deals rattaches aux comptes ou contacts des meetings Lucas.",
+          tiers_by_open_transactions: [
+            { min: 0, max: 10, prime_per_transaction: 0 },
+            { min: 11, max: 20, prime_per_transaction: 10 },
+            { min: 21, max: 30, prime_per_transaction: 20 },
+            { min: 31, max: null, prime_per_transaction: 30 },
+          ],
+        },
+        signature_rule: {
+          base: "5% du montant HT des deals signes eligibles",
+          rate: Number((config.closingRate || 0.05).toFixed(4)),
+          default_input_unit: "HT",
+        },
+      } : {
+        summary: config.type === "teamLead"
+          ? "Camille combine un objectif individuel et une composante equipe. Les objectifs affiches sont en TTC, la commission se calcule en HT."
+          : "Les objectifs affiches sont en TTC, la commission se calcule en HT.",
+        commission_rule: {
+          description: "Commission = base sur le HT signe + sur-performance au-dela du seuil HT du mois.",
+          base_rate: Number((stats.baseRate || 0.09).toFixed(4)),
+          surperformance_rate: Number((stats.surperfRate || 0.02).toFixed(4)),
+          default_input_unit: "TTC",
+          objective_unit: "TTC",
+          commission_unit: "HT",
+          seuils_ht_par_mois: Object.fromEntries(projection.rows.map(r => [r.mois, Number(r.seuilHT.toFixed(2))])),
+        },
+        projection_rule: {
+          description: "Le previsionnel ajoute les deals en cours, regroupes sur la date de signature prevue quand elle existe, sinon sur la date de creation.",
+          source_label: config.sourceLabel || "CA HT",
+          commission_scope: config.commissionScope || "ventes individuelles",
+        },
+      };
+
       return {
         generated_at: new Date().toISOString(),
+        temporal_context: {
+          today_iso: TODAY_ISO,
+          current_calendar_month: { key: NOW_KEY, label: MOIS[NOW_KEY] || NOW_KEY },
+          next_calendar_month: { key: nextCalendarKey, label: MOIS[nextCalendarKey] || nextCalendarKey },
+          current_visible_month: currentVisibleMonth ? { key: currentVisibleMonth.mois, label: currentVisibleMonth.label } : null,
+          next_visible_month: nextVisibleMonth ? { key: nextVisibleMonth.mois, label: nextVisibleMonth.label } : null,
+          available_months: availableMonths,
+        },
         profile: {
           owner_id: OWNER,
           name: config.name,
           role: config.role,
           type: config.type,
           period: periodLabel(config),
+          dashboard_input_unit: config.type === "rdv" ? "HT pour les signatures" : "TTC",
         },
-        rules: config.type === "rdv" ? {
-          rdv: "Un RDV est compté si le meeting a ete cree par Lucas, n'est pas annule, contient Presentation ou Présentation dans le titre, et est regroupe sur le mois de creation du meeting.",
-          transactions: "Les transactions ouvertes correspondent aux deals rattaches aux comptes ou contacts de ces meetings.",
-          signatures: "La prime signature correspond a 5% du montant HT des deals signes eligibles.",
-        } : {
-          commission: "Commission = 9% du CA HT signe + 2% de sur-performance au-dela du seuil mensuel.",
-          projection: "Le previsionnel ajoute les deals en cours, regroupes sur la date de signature prevue quand elle existe, sinon sur la date de creation.",
-        },
+        finance_context: baseRates,
+        rules: profileRules,
         summary: config.type === "rdv" ? {
           rdv_total: stats.totalRdv,
           transactions_total: stats.totalTransactions,
+          commission_signatures_acquise: Number(stats.totalSignature.toFixed(2)),
+          signed_deals_count: stats.signedDeals,
           variable_acquise: Number(projection.actualTotal.toFixed(2)),
           variable_potentielle: Number(projection.potentialTotal.toFixed(2)),
           pipeline_deals: projection.pipelineDeals,
@@ -1882,6 +1980,7 @@
           commission_acquise: Number(projection.actualCommission.toFixed(2)),
           commission_potentielle: Number(projection.potentialCommission.toFixed(2)),
           pipeline_deals: projection.pipelineDeals,
+          objectif_total_ttc: Number(projection.objectiveTTC.toFixed(2)),
         },
         team_prime: {
           total_ht: Number(teamHT.toFixed(2)),
@@ -1890,14 +1989,17 @@
           next_tier: nextTier ? { name: nextTier.name, threshold: nextTier.seuil, prime: nextTier.prime } : null,
         },
         monthly,
-        signed_deals: (raw.deals || []).slice(0, 30).map(d => ({
+        monthly_by_key: monthlyByKey,
+        signed_deals: (raw.deals || []).slice(0, 20).map(d => ({
           name: d.name,
           amount_ttc: d.amount,
+          amount_ht: Number((Number(d.amount || 0) / TVA).toFixed(2)),
           closedate: d.closedate,
         })),
-        pipeline_deals: (raw.pipeline_deals || []).slice(0, 30).map(d => ({
+        pipeline_deals: (raw.pipeline_deals || []).slice(0, 20).map(d => ({
           name: d.name,
           amount_ttc: d.amount,
+          amount_ht: Number((Number(d.amount || 0) / TVA).toFixed(2)),
           stage: d.stage,
           createdate: d.createdate,
           closedate: d.closedate,
