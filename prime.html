@@ -627,8 +627,8 @@
       },
       "29672578": {
         type: "rdv", name: "Lucas Cheron", role: "BDR CSE",
-        periodLabel: "Avril–Déc 2026", rdvTarget: 50, closingRate: 0.05,
-        months: ["2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10", "2026-11", "2026-12"],
+        periodLabel: "Janv.–Déc. 2026", rdvTarget: 40, closingRate: 0.05,
+        months: ["2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10", "2026-11", "2026-12"],
       },
     };
 
@@ -912,7 +912,7 @@
       const meetingByMonth = {};
       meetings.forEach(m => {
         if (String(m.outcome || "").toUpperCase() === "CANCELED") return;
-        const key = monthKeyFromDate(m.startTime);
+        const key = monthKeyFromDate(m.createdAt || m.startTime);
         if (!key) return;
         meetingByMonth[key] = (meetingByMonth[key] || 0) + 1;
       });
@@ -981,7 +981,7 @@
       };
     }
 
-    function renderCountChart(rows, bestIdx) {
+    function renderCountChart(rows, bestIdx, target) {
       const W = 720, H = 260, PL = 44, PR = 12, PT = 22, PB = 32;
       const innerW = W - PL - PR, innerH = H - PT - PB;
       const max = Math.max(1, ...rows.flatMap(r => [r.rdv, r.target]));
@@ -1035,7 +1035,7 @@
         </div>
         <div class="legend">
           <span class="legend-item"><span class="legend-dot" style="background:linear-gradient(180deg,#a5b4fc,#4f46e5)"></span>RDV pris</span>
-          <span class="legend-item"><span class="legend-dot" style="background:rgba(245,158,11,0.18); border:1px dashed rgba(245,158,11,0.5)"></span>Objectif 50</span>
+          <span class="legend-item"><span class="legend-dot" style="background:rgba(245,158,11,0.18); border:1px dashed rgba(245,158,11,0.5)"></span>Objectif ${fmtNum(target)}</span>
           <span class="legend-item">👑 Meilleur mois</span>
         </div>
       `;
@@ -1065,7 +1065,9 @@
       }).join("")}</div>`;
     }
 
-    function renderRdvRules() {
+    function renderRdvRules(target) {
+      const band50 = Math.ceil(target * 0.5);
+      const band75 = Math.ceil(target * 0.75);
       return `
         <div class="glass reveal" style="animation-delay:.56s">
           <div class="card-head">
@@ -1085,10 +1087,10 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr><td>&lt; 50%</td><td class="num">0–25</td><td class="num">${fmtEur(0)}</td><td>0–10</td><td class="num">${fmtEur(0)}</td></tr>
-                  <tr><td>50–74%</td><td class="num">26–37</td><td class="num">${fmtEur(50)}</td><td>11–20</td><td class="num">${fmtEur(10)}</td></tr>
-                  <tr><td>75–99%</td><td class="num">38–49</td><td class="num">${fmtEur(100)}</td><td>21–30</td><td class="num">${fmtEur(20)}</td></tr>
-                  <tr><td>100% et +</td><td class="num">50+</td><td class="num">${fmtEur(150)}</td><td>31+</td><td class="num">${fmtEur(30)}</td></tr>
+                  <tr><td>&lt; 50%</td><td class="num">0–${fmtNum(band50 - 1)}</td><td class="num">${fmtEur(0)}</td><td>0–10</td><td class="num">${fmtEur(0)}</td></tr>
+                  <tr><td>50–74%</td><td class="num">${fmtNum(band50)}–${fmtNum(band75 - 1)}</td><td class="num">${fmtEur(50)}</td><td>11–20</td><td class="num">${fmtEur(10)}</td></tr>
+                  <tr><td>75–99%</td><td class="num">${fmtNum(band75)}–${fmtNum(target - 1)}</td><td class="num">${fmtEur(100)}</td><td>21–30</td><td class="num">${fmtEur(20)}</td></tr>
+                  <tr><td>100% et +</td><td class="num">${fmtNum(target)}+</td><td class="num">${fmtEur(150)}</td><td>31+</td><td class="num">${fmtEur(30)}</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1358,7 +1360,7 @@
               <span class="accent"></span><span class="glow"></span>
               <div class="lbl"><span class="dot"></span>RDV pris ${pLabel}</div>
               <div class="val" data-countup="${stats.totalRdv}" data-countup-format="num">${fmtNum(0)}</div>
-              <div class="sub">objectif période : ${fmtNum(stats.targetTotal)} RDV</div>
+              <div class="sub">meetings créés par Lucas · objectif période : ${fmtNum(stats.targetTotal)} RDV</div>
             </div>
             <div class="kpi glass emerald reveal" style="animation-delay:.13s">
               <span class="accent"></span><span class="glow"></span>
@@ -1391,17 +1393,17 @@
           <div class="glass reveal" style="animation-delay:.50s">
             <div class="card-head">
               <h3><span class="head-ico">📊</span>RDV mensuels vs objectif</h3>
-              <span class="meta">${pLabel} · objectif = barre claire pointillée · réalisé = barre pleine</span>
+              <span class="meta">${pLabel} · comptage par date de création du meeting · objectif = barre claire pointillée</span>
             </div>
-            <div class="card-body">${renderCountChart(stats.rows, stats.bestIdx)}</div>
+            <div class="card-body">${renderCountChart(stats.rows, stats.bestIdx, config.rdvTarget)}</div>
           </div>
 
-          ${renderRdvRules()}
+          ${renderRdvRules(config.rdvTarget)}
 
           <div class="glass reveal" style="animation-delay:.60s">
             <div class="card-head">
               <h3><span class="head-ico">🧾</span>Détail mensuel</h3>
-              <span class="meta">RDV créés par Lucas, deals rattachés aux comptes concernés</span>
+              <span class="meta">RDV créés par Lucas, deals rattachés aux comptes ou contacts concernés</span>
             </div>
             <div class="card-body" style="padding:0">
               <div class="table-wrap">
@@ -1433,7 +1435,7 @@
           </div>
 
           <div class="footer">
-            Calculé en direct depuis HubSpot · RDV = meetings créés par Lucas non annulés · Transactions = deals rattachés aux comptes de ces meetings · Prime d'équipe = tous les closedwon 2026 · Information interne, sans valeur contractuelle.
+            Calculé en direct depuis HubSpot · RDV = meetings créés par Lucas non annulés, regroupés par mois de création · Transactions = deals rattachés aux comptes ou contacts de ces meetings · Prime d'équipe = tous les closedwon 2026 · Information interne, sans valeur contractuelle.
           </div>
         </div>
       `;
