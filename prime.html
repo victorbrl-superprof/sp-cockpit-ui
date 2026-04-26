@@ -513,7 +513,14 @@
     .q-tab.future { opacity:0.75; }
 
     /* ══════════════ ACHIEVEMENTS ══════════════ */
-    .achievements { display:grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap:10px; }
+    .achievements {
+      display:grid;
+      grid-template-columns: repeat(var(--ach-cols, 4), minmax(0, 1fr));
+      gap:10px;
+    }
+    @media (max-width: 1180px) { .achievements { grid-template-columns: repeat(min(var(--ach-cols, 4), 3), minmax(0, 1fr)); } }
+    @media (max-width: 880px)  { .achievements { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 480px)  { .achievements { grid-template-columns: minmax(0, 1fr); } }
     .ach {
       display:flex; align-items:center; gap:10px;
       padding:12px 14px; border-radius:14px;
@@ -1262,7 +1269,7 @@
         { em: "👑", name: "+8 000€ commission",      cur: stats.commTotal,  target: 8000,  cls: "gold", money: true },
       ];
 
-      return `<div class="achievements">${list.map(a => {
+      return `<div class="achievements" style="--ach-cols:${achievementCols(list.length)}">${list.map(a => {
         const earned = a.cur >= a.target;
         const pct    = Math.min(100, (a.cur / a.target) * 100);
         const fmtVal = a.money ? fmtEur : fmtNum;
@@ -1279,6 +1286,14 @@
             </div>
           </div>`;
       }).join("")}</div>`;
+    }
+
+    function achievementCols(count) {
+      if (count <= 0) return 1;
+      if (count % 4 === 0) return 4;
+      if (count % 3 === 0) return 3;
+      if (count % 2 === 0) return Math.min(4, count / 2);
+      return Math.min(4, count);
     }
 
     function renderTeamLeadBreakdown(config) {
@@ -1481,7 +1496,7 @@
         { em: "💶", name: "21 transactions", cur: stats.totalTransactions, target: 21, cls: "fire" },
         { em: "✅", name: "Signature générée", cur: stats.signedDeals, target: 1, cls: "gold" },
       ];
-      return `<div class="achievements">${list.map(a => {
+      return `<div class="achievements" style="--ach-cols:${achievementCols(list.length)}">${list.map(a => {
         const earned = a.cur >= a.target;
         const pct = Math.min(100, (a.cur / a.target) * 100);
         return `
