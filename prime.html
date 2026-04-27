@@ -144,6 +144,18 @@
       stroke:currentColor; stroke-width:1.9; fill:none;
       stroke-linecap:round; stroke-linejoin:round;
     }
+    .hero-switch {
+      appearance:none; -webkit-appearance:none; -moz-appearance:none;
+      border:1px solid rgba(255,255,255,0.28);
+      background:rgba(255,255,255,0.14) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%23fff' d='M0 0l5 6 5-6z'/></svg>") no-repeat right 10px center;
+      color:white; cursor:pointer; font:inherit; font-weight:700; font-size:11px;
+      border-radius:999px; padding:7px 28px 7px 12px;
+      backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+      box-shadow:0 6px 16px -14px rgba(15,23,42,0.45);
+      transition:transform .18s ease, background-color .18s ease, border-color .18s ease;
+    }
+    .hero-switch:hover { transform:translateY(-1px); background-color:rgba(255,255,255,0.2); }
+    .hero-switch option { color:#0f172a; background:#fff; }
     .sr-only {
       position:absolute; width:1px; height:1px; padding:0; margin:-1px;
       overflow:hidden; clip:rect(0, 0, 0, 0); white-space:nowrap; border:0;
@@ -897,6 +909,15 @@
       { key: "platine", name: "Platine", emoji: "💎", seuil: 200000, prime: 2000 },
     ];
 
+    // Membres encadrés par la team lead. Sert au switcher dans le hero pour Camille.
+    const TEAM_LEAD_MEMBERS = [
+      { id: "78105232", name: "Camille Lecorno", role: "Team Lead" },
+      { id: "33334703", name: "Johanna Eboko",   role: "AE Confirmé" },
+      { id: "33386465", name: "Hugo Rodrigues",  role: "AE Junior" },
+      { id: "29672578", name: "Lucas Cheron",    role: "BDR" },
+    ];
+    const TEAM_LEAD_OWNERS = new Set(["78105232"]);
+
     const TVA  = 1.20;
     const SETTINGS_ICON = `
       <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -1024,12 +1045,72 @@
       return { base, surperf, total: base + surperf };
     }
 
+    // 5% HT sur les deals où l'AE a pris le RDV mais qu'un autre commercial / Camille a signé.
+    // Source : règle "Commission sur prise de rdv si signature d'un nouveau contrat" — fiche AE Q2 2026.
+    function computeKickback(kickbackDeals = [], rate = 0.05) {
+      const byMonth = {};
+      let totalHT = 0, totalCount = 0;
+      for (const d of kickbackDeals) {
+        const m = monthKeyFromDate(d.closedate);
+        if (!m) continue;
+        const ht = Number(d.amount || 0) / TVA;
+        if (!byMonth[m]) byMonth[m] = { ht: 0, count: 0 };
+        byMonth[m].ht += ht;
+        byMonth[m].count += 1;
+        totalHT += ht;
+        totalCount += 1;
+      }
+      return { byMonth, totalHT, totalCount, totalCommission: totalHT * rate, rate };
+    }
+
     function formatObjective(value, formatter = fmtEur) {
       return value == null ? "–" : formatter(value);
     }
 
     function formatRate(rate) {
       return `${Math.round(Number(rate || 0) * 100)}%`;
+    }
+
+    function renderTeamSwitcher(config) {
+      if (!TEAM_LEAD_OWNERS.has(String(OWNER))) return "";
+      const opts = TEAM_LEAD_MEMBERS.map(m => `<option value="${esc(m.id)}" ${m.id === OWNER ? "selected" : ""}>${esc(m.name)} · ${esc(m.role)}</option>`).join("");
+      return `<select class="hero-switch" id="hero-switch" aria-label="Changer de dashboard">${opts}</select>`;
+    }
+
+    function bindTeamSwitcher() {
+      const sel = document.getElementById("hero-switch");
+      if (!sel) return;
+      sel.addEventListener("change", (e) => {
+        const newOwner = e.target.value;
+        if (!newOwner || newOwner === OWNER) return;
+        const params = new URLSearchParams(location.search);
+        params.set("owner_id", newOwner);
+        location.search = params.toString();
+      });
+    }
+
+    function renderKickbackCard(kickback) {
+      if (!kickback) return "";
+      const { totalCount, totalHT, totalCommission, byMonth } = kickback;
+      const monthsSorted = Object.keys(byMonth).sort();
+      const monthsLine = monthsSorted.length
+        ? monthsSorted.map(m => `${esc(MOIS[m] || m)} : <strong>${fmtEur(byMonth[m].ht)}</strong> HT (${byMonth[m].count} deal${byMonth[m].count > 1 ? "s" : ""})`).join(" · ")
+        : "Aucun deal éligible pour le moment.";
+      const empty = totalCount === 0;
+      return `
+        <div class="glass reveal" style="animation-delay:.36s">
+          <div class="card-head">
+            <h3><span class="head-ico">🤝</span>5% RDV pris signés par un autre</h3>
+            <span class="meta">Règle fiche AE Q2 2026 · 5% HT sur deals signés par un autre commercial ou la team lead${empty ? "" : ` · <strong>${fmtEur(totalCommission)}</strong> acquis`}</span>
+          </div>
+          <div class="card-body">
+            <div class="ai-result-meta" style="font-size:13px; color:var(--slate-700); line-height:1.6;">
+              ${empty
+                ? "<strong>0 €</strong> à date. Aucun deal sur tes RDV n'a encore été signé par un autre commercial."
+                : `${totalCount} deal${totalCount > 1 ? "s" : ""} concernés · <strong>${fmtEur(totalHT)}</strong> HT cumulés → <strong>${fmtEur(totalCommission)}</strong> de commission à 5%.<div style="margin-top:6px; color:var(--slate-500); font-size:12px;">${monthsLine}</div>`}
+            </div>
+          </div>
+        </div>`;
     }
 
     function salesRuleSummary(config, stats) {
@@ -1060,6 +1141,12 @@
           objectiveHT: r.hasObjective ? r.objectifHT : null,
           persoTTC: config.objectifsPersoTTC?.[r.mois] ?? null,
           equipeTTC: config.objectifsEquipeTTC?.[r.mois] ?? null,
+          persoHT: r.persoHT == null ? null : r.persoHT,
+          seuilPersoHT: r.seuilPersoHT == null ? null : r.seuilPersoHT,
+          seuilEquipeHT: r.seuilEquipeHT == null ? null : r.seuilEquipeHT,
+          surperfPerso: r.surperfPerso == null ? null : r.surperfPerso,
+          surperfEquipe: r.surperfEquipe == null ? null : r.surperfEquipe,
+          splitMode: !!r.splitMode,
           actualTTC: r.caHT * TVA,
           actualHT: r.caHT,
           actualDeals: r.nbDeals,
@@ -1130,29 +1217,59 @@
     // ── Calcul commissions CA ────────────────────────────────────────────────
     function compute(deals, config, options = {}) {
       const byMonth = options.byMonth || monthlyFromDeals(deals);
+      const byMonthPerso = options.byMonthPerso || null;
+      const splitMode = config.type === "teamLead" && byMonthPerso != null;
       const months = Object.keys(config.objectifsTTC).sort();
       const baseRate = config.baseRate ?? 0.09;
       const surperfRate = config.surperfRate ?? 0.02;
       const rows = months.map(m => {
         const data = byMonth[m] || { ca: 0, nb: 0 };
         const caHT = data.ca / TVA;
+        const persoData = splitMode ? (byMonthPerso[m] || { ca: 0, nb: 0 }) : null;
+        const persoHT = persoData ? persoData.ca / TVA : 0;
         const objectiveTTC = config.objectifsTTC[m] == null ? null : Number(config.objectifsTTC[m]);
         const hasObjective = objectiveTTC != null && objectiveTTC > 0;
         const objectifHT = objectiveTTC == null ? 0 : objectiveTTC / TVA;
         const directRate = config.directRateByMonth?.[m] ?? null;
-        const configuredThreshold = config.seuilHTByMonth?.[m] ?? config.seuilHT ?? null;
-        const seuilHT = directRate != null
-          ? null
-          : (configuredThreshold ?? (hasObjective ? objectifHT : null));
+
+        // Seuils sur-performance.
+        // Camille (teamLead) : règle deux seuils — chaque seuil (perso, équipe) déclenche
+        // indépendamment +2% sur son propre excès. Les deux peuvent s'ajouter.
+        let seuilHT, seuilPersoHT = null, seuilEquipeHT = null;
+        let surperfPerso = 0, surperfEquipe = 0;
+        if (directRate != null) {
+          seuilHT = null;
+        } else if (splitMode) {
+          const persoTTC = config.objectifsPersoTTC?.[m];
+          const equipeTotalTTC = objectiveTTC; // total TTC = perso + AE
+          seuilPersoHT  = (persoTTC != null && persoTTC > 0) ? persoTTC / TVA : null;
+          seuilEquipeHT = (equipeTotalTTC != null && equipeTotalTTC > 0) ? equipeTotalTTC / TVA : null;
+          if (seuilPersoHT != null)  surperfPerso  = Math.max(0, persoHT - seuilPersoHT) * surperfRate;
+          if (seuilEquipeHT != null) surperfEquipe = Math.max(0, caHT     - seuilEquipeHT) * surperfRate;
+          // Valeur "principale" affichée pour compat (priorité au seuil équipe).
+          seuilHT = seuilEquipeHT ?? seuilPersoHT ?? null;
+        } else {
+          const configuredThreshold = config.seuilHTByMonth?.[m] ?? config.seuilHT ?? null;
+          seuilHT = configuredThreshold ?? (hasObjective ? objectifHT : null);
+        }
+
         const base = directRate != null ? caHT * directRate : caHT * baseRate;
-        const surperf = (directRate != null || seuilHT == null) ? 0 : Math.max(0, caHT - seuilHT) * surperfRate;
+        const surperf = directRate != null
+          ? 0
+          : (splitMode
+            ? surperfPerso + surperfEquipe
+            : (seuilHT == null ? 0 : Math.max(0, caHT - seuilHT) * surperfRate));
         const isPast     = m < NOW_KEY;
         const isCurrent  = m === NOW_KEY;
         const isFuture   = m > NOW_KEY;
         return {
           mois: m, label: MOIS[m] || m, isPast, isCurrent, isFuture,
-          caHT, objectiveTTC, objectifHT, seuilHT, base, surperf,
+          caHT, persoHT,
+          objectiveTTC, objectifHT,
+          seuilHT, seuilPersoHT, seuilEquipeHT,
+          base, surperf, surperfPerso, surperfEquipe,
           directRate, hasObjective, commissionMode: directRate != null ? "direct" : "standard",
+          splitMode,
           total: base + surperf, nbDeals: data.nb,
           atteint: hasObjective && caHT >= objectifHT,
         };
@@ -1870,6 +1987,16 @@
                 text: "Pour Hugo et Johanna, avril et mai n'ont pas d'objectif mensuel. Toute signature sur ces deux mois est commissionnée à 11% direct.",
                 example: "Exemple : 12 000 € TTC signés en mai = 10 000 € HT, donc 1 100 € de commission."
               }] : []),
+              ...(config.type === "ae" ? [{
+                term: "5% RDV signés par autre",
+                text: "Si Hugo ou Johanna prend le RDV (meeting au titre 'Présentation' / 'Presentation') mais que le deal est signé par un autre commercial ou la team lead, ils touchent 5% du montant HT.",
+                example: "Exemple : Hugo prend un R1 chez Acme, Camille closure à 24 000 € TTC. Hugo touche 5% × 20 000 € HT = 1 000 €."
+              }] : []),
+              ...(config.type === "teamLead" ? [{
+                term: "Sur-performance Camille (deux seuils)",
+                text: "La sur-performance 2% se déclenche indépendamment sur deux seuils : seuil personnel (objectif perso TTC du mois) et seuil équipe (total TTC du mois, perso + AE). Chaque dépassement déclenche +2% sur son propre excès. Les deux peuvent s'ajouter.",
+                example: "Exemple en juin : objectif total 32 900 € TTC, objectif perso 16 421 € TTC. Si l'équipe signe 40 000 € TTC dont 18 000 € en perso : surperf équipe sur (33 333-27 416) × 2% + surperf perso sur (15 000-13 684) × 2%."
+              }] : []),
             ],
           },
           {
@@ -2011,8 +2138,11 @@
         objectif_perso_ttc: r.persoTTC == null ? null : Number(r.persoTTC.toFixed(2)),
         objectif_equipe_ttc: r.equipeTTC == null ? null : Number(r.equipeTTC.toFixed(2)),
         seuil_surperf_ht: r.seuilHT == null ? null : Number(r.seuilHT.toFixed(2)),
+        seuil_perso_ht: r.seuilPersoHT == null ? null : Number(r.seuilPersoHT.toFixed(2)),
+        seuil_equipe_ht: r.seuilEquipeHT == null ? null : Number(r.seuilEquipeHT.toFixed(2)),
         signe_ttc: Number(r.actualTTC.toFixed(2)),
         signe_ht: Number(r.actualHT.toFixed(2)),
+        signe_perso_ht: r.persoHT == null ? null : Number(r.persoHT.toFixed(2)),
         pipeline_ttc: Number(r.pipelineTTC.toFixed(2)),
         pipeline_ht: Number(r.pipelineHT.toFixed(2)),
         atterrissage_ttc: Number(r.landingTTC.toFixed(2)),
@@ -2020,6 +2150,8 @@
         commission_mode: r.commissionMode,
         taux_direct: r.directRate == null ? null : Number(r.directRate.toFixed(4)),
         prime_acquise: Number(r.actualCommission.toFixed(2)),
+        surperf_perso: r.surperfPerso == null ? null : Number(r.surperfPerso.toFixed(2)),
+        surperf_equipe: r.surperfEquipe == null ? null : Number(r.surperfEquipe.toFixed(2)),
         prime_potentielle: Number(r.potentialCommission.toFixed(2)),
         gain_vs_acquis: Number(r.upsideCommission.toFixed(2)),
         ecart_vs_objectif_ttc: r.objectiveTTC == null ? null : Number((r.actualTTC - r.objectiveTTC).toFixed(2)),
@@ -2068,12 +2200,14 @@
         },
       } : {
         summary: config.type === "teamLead"
-          ? "Camille combine un objectif individuel et une composante equipe. Les objectifs affiches sont en TTC, la commission se calcule en HT."
+          ? "Camille combine objectif individuel + objectif equipe. Le 9% s'applique sur toute vente (perso ou equipe). La sur-performance 2% se declenche independamment sur chaque seuil depasse: si le CA equipe depasse le seuil equipe, +2% sur l'exces equipe; si son CA perso depasse le seuil perso, +2% sur l'exces perso. Les deux peuvent s'ajouter."
           : (config.directRateByMonth
-            ? "Les objectifs affiches sont en TTC, la commission se calcule en HT. Avril et mai sont des mois sans objectif, commissionnes a 11% direct."
+            ? "Les objectifs affiches sont en TTC, la commission se calcule en HT. Avril et mai sont des mois sans objectif, commissionnes a 11% direct. Bonus 5% HT (kickback) si l'AE prend le RDV mais qu'un autre commercial ou la team lead signe le deal."
             : "Les objectifs affiches sont en TTC, la commission se calcule en HT."),
         commission_rule: {
-          description: "Commission = base sur le HT signe + sur-performance au-dela du seuil HT du mois.",
+          description: config.type === "teamLead"
+            ? "Base 9% HT sur toute vente perso ou equipe + sur-performance 2% par seuil (perso, equipe) declenche independamment."
+            : "Commission = base 9% sur le HT signe + sur-performance 2% au-dela du seuil HT du mois + 5% kickback si RDV pris signe par autre.",
           base_rate: Number((stats.baseRate || 0.09).toFixed(4)),
           surperformance_rate: Number((stats.surperfRate || 0.02).toFixed(4)),
           default_input_unit: "TTC",
@@ -2086,6 +2220,20 @@
             rule: `${Math.round(Number(rate) * 100)}% direct sans objectif mensuel`,
           })),
           seuils_ht_par_mois: Object.fromEntries(projection.rows.map(r => [r.mois, r.seuilHT == null ? null : Number(r.seuilHT.toFixed(2))])),
+          two_threshold_rule: config.type === "teamLead" ? {
+            applies_to: "Camille (Team Lead)",
+            personal_seuil_source: "objectifsPersoTTC",
+            team_seuil_source: "objectifsTTC (total perso + equipe)",
+            logic: "surperf_perso = max(0, perso_HT - seuil_perso_HT) * 2% ; surperf_equipe = max(0, team_HT - seuil_equipe_HT) * 2% ; surperf_totale = surperf_perso + surperf_equipe (ou independamment).",
+          } : null,
+          kickback_rule: config.type === "ae" ? {
+            condition: "RDV (meeting au titre 'Présentation' / 'Presentation') pris par l'AE mais deal signe par un autre owner (autre commercial ou team lead).",
+            rate: 0.05,
+            unit: "HT",
+            current_total_ht: Number((stats.kickback?.totalHT || 0).toFixed(2)),
+            current_commission: Number((stats.kickback?.totalCommission || 0).toFixed(2)),
+            current_count: stats.kickback?.totalCount || 0,
+          } : null,
         },
         projection_rule: {
           description: "Le previsionnel ajoute les deals en cours, regroupes sur la date de signature prevue quand elle existe, sinon sur la date de creation.",
@@ -2441,11 +2589,17 @@
       const baseCardSub = hasDirectMonths ? "9% standard + 11% direct sur les mois sans objectif" : "sur tout le CA HT";
 
       const rowsHtml = stats.rows.map((r, i) => {
-        const surperfPill = r.commissionMode === "direct"
-          ? '<span class="pill zero">—</span>'
-          : (r.surperf > 0
-            ? `<span class="pill surperf">★ ${fmtEur(r.surperf)}</span>`
-            : `<span class="pill zero">${fmtEur(0)}</span>`);
+        let surperfPill;
+        if (r.commissionMode === "direct") {
+          surperfPill = '<span class="pill zero">—</span>';
+        } else if (r.splitMode && r.surperf > 0) {
+          const tip = `Perso ${fmtEur(r.surperfPerso)} + équipe ${fmtEur(r.surperfEquipe)}`;
+          surperfPill = `<span class="pill surperf" title="${esc(tip)}">★ ${fmtEur(r.surperf)}</span>`;
+        } else if (r.surperf > 0) {
+          surperfPill = `<span class="pill surperf">★ ${fmtEur(r.surperf)}</span>`;
+        } else {
+          surperfPill = `<span class="pill zero">${fmtEur(0)}</span>`;
+        }
         const objPill = r.hasObjective
           ? (r.atteint ? '<span class="pill ok">✓</span>' : (r.isPast ? '' : '<span class="pill future">à venir</span>'))
           : '';
@@ -2473,6 +2627,7 @@
               </div>
             </div>
             <div class="hero-actions">
+              ${renderTeamSwitcher(config)}
               <div class="badge">Live HubSpot</div>
               <button class="hero-action hero-action-icon" type="button" aria-haspopup="dialog" aria-controls="definitions-modal-backdrop" aria-label="Ouvrir les définitions" title="Définitions" onclick="openDefinitionsModal()">${SETTINGS_ICON}<span class="sr-only">Définitions</span></button>
             </div>
@@ -2497,15 +2652,17 @@
               <span class="accent"></span><span class="glow"></span>
               <div class="lbl"><span class="dot"></span>Sur-performance (+${surperfPct}%)</div>
               <div class="val" data-countup="${stats.commSurperf}">${fmtEur(0)}</div>
-              <div class="sub">au-delà du seuil mensuel</div>
+              <div class="sub">${config.type === "teamLead" ? "au-delà du seuil perso et / ou équipe" : "au-delà du seuil mensuel"}</div>
             </div>
             <div class="kpi glass violet  reveal" style="animation-delay:.29s">
               <span class="accent"></span><span class="glow"></span>
               <div class="lbl"><span class="dot"></span>Total commission</div>
               <div class="val" data-countup="${stats.commTotal}">${fmtEur(0)}</div>
-              <div class="sub">hors prime d'équipe</div>
+              <div class="sub">${stats.kickback?.totalCommission > 0 ? `inclut ${fmtEur(stats.kickback.totalCommission)} de 5% RDV` : `hors prime d'équipe`}</div>
             </div>
           </div>
+
+          ${config.type === "ae" ? renderKickbackCard(stats.kickback) : ""}
 
           <div class="glass reveal" style="animation-delay:.40s">
             <div class="card-head">
@@ -2603,6 +2760,7 @@
       bindSalesSimulator(stats, projection);
       bindPrimeAI(config);
       bindDefinitionsModal();
+      bindTeamSwitcher();
       bindQuarterTabs("#team-prime-card", quartersByKey, (newKey) => {
         rerenderTeamPrime(newKey, quartersByKey, config);
       });
@@ -2654,6 +2812,7 @@
               </div>
             </div>
             <div class="hero-actions">
+              ${renderTeamSwitcher(config)}
               <div class="badge">Live HubSpot</div>
               <button class="hero-action hero-action-icon" type="button" aria-haspopup="dialog" aria-controls="definitions-modal-backdrop" aria-label="Ouvrir les définitions" title="Définitions" onclick="openDefinitionsModal()">${SETTINGS_ICON}<span class="sr-only">Définitions</span></button>
             </div>
@@ -2780,6 +2939,7 @@
       bindRdvSimulator(config, projection);
       bindPrimeAI(config);
       bindDefinitionsModal();
+      bindTeamSwitcher();
       bindQuarterTabs("#team-prime-card", quartersByKey, (newKey) => {
         rerenderTeamPrime(newKey, quartersByKey, config);
       });
@@ -2847,9 +3007,24 @@
         if (!res.ok || !json.ok) throw new Error(json.error || `HTTP ${res.status}`);
 
         const sourceMonthly  = config.type === "teamLead" ? monthlyFromTeamAgg(json.team_monthly) : undefined;
+        // Pour Camille on isole ses propres signatures parmi les deals équipe afin d'évaluer
+        // la sur-performance perso (distincte de la sur-performance équipe). On filtre par owner_id.
+        const persoMonthly   = config.type === "teamLead"
+          ? monthlyFromDeals((json.deals || []).filter(d => String(d.owner_id || "") === String(OWNER)))
+          : undefined;
         const stats          = config.type === "rdv"
           ? computeRdv(json.meetings || [], json.opened_deals || [], json.deals || [], config)
-          : compute(json.deals || [], config, { byMonth: sourceMonthly });
+          : compute(json.deals || [], config, { byMonth: sourceMonthly, byMonthPerso: persoMonthly });
+        // Pour Hugo / Johanna : 5% HT sur les deals où ils ont pris le RDV mais qu'un autre a signé.
+        const kickback       = config.type === "ae"
+          ? computeKickback(json.kickback_deals || [], 0.05)
+          : { byMonth: {}, totalHT: 0, totalCount: 0, totalCommission: 0, rate: 0.05 };
+        if (config.type === "ae" && kickback.totalCommission > 0) {
+          stats.kickback = kickback;
+          stats.commTotal += kickback.totalCommission;
+        } else if (config.type === "ae") {
+          stats.kickback = kickback;
+        }
         const projection     = config.type === "rdv"
           ? buildRdvProjection(config, stats, json.pipeline_deals || [])
           : buildSalesProjection(config, stats, json.pipeline_deals || []);
