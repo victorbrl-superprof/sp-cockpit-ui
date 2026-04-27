@@ -942,6 +942,9 @@
     const P     = new URLSearchParams(location.search);
     const OWNER = P.get("owner_id") || "";
     const TOKEN = P.get("token")    || "";
+    // "as" : id du viewer originel quand un team lead navigue dans l'équipe.
+    // Permet de maintenir le switcher même quand Camille consulte le dashboard d'un AE.
+    const VIEWER_AS = P.get("as") || "";
     const BASE  = "https://yhtxrjegdeuwkcjvkfkt.supabase.co/functions/v1";
     const API   = BASE + "/prime-dashboard";
     const PRIME_AI_API = BASE + "/prime-ai-query";
@@ -1071,8 +1074,16 @@
       return `${Math.round(Number(rate || 0) * 100)}%`;
     }
 
+    // Le switcher est visible quand le viewer est lui-même team lead (OWNER team lead),
+    // OU quand le paramètre "as" indique qu'un team lead consulte le dashboard d'un AE.
+    function viewerTeamLeadId() {
+      if (TEAM_LEAD_OWNERS.has(String(OWNER))) return String(OWNER);
+      if (TEAM_LEAD_OWNERS.has(String(VIEWER_AS))) return String(VIEWER_AS);
+      return "";
+    }
+
     function renderTeamSwitcher(config) {
-      if (!TEAM_LEAD_OWNERS.has(String(OWNER))) return "";
+      if (!viewerTeamLeadId()) return "";
       const opts = TEAM_LEAD_MEMBERS.map(m => `<option value="${esc(m.id)}" ${m.id === OWNER ? "selected" : ""}>${esc(m.name)} · ${esc(m.role)}</option>`).join("");
       return `<select class="hero-switch" id="hero-switch" aria-label="Changer de dashboard">${opts}</select>`;
     }
@@ -1083,8 +1094,16 @@
       sel.addEventListener("change", (e) => {
         const newOwner = e.target.value;
         if (!newOwner || newOwner === OWNER) return;
+        const tlId = viewerTeamLeadId();
         const params = new URLSearchParams(location.search);
         params.set("owner_id", newOwner);
+        // Si le viewer est team lead, on garde son id dans "as" pour persister le switcher.
+        // Quand il revient sur son propre dashboard, on retire "as" pour rester propre.
+        if (tlId && newOwner !== tlId) {
+          params.set("as", tlId);
+        } else {
+          params.delete("as");
+        }
         location.search = params.toString();
       });
     }
