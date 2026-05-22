@@ -1800,36 +1800,54 @@
     /* ── Export CSV ── */
     function exportXLSX() {
       if (!lastAiRows.length || typeof XLSX === 'undefined') return;
-      // Si le résultat suit la convention "rapport" (section/metrique/valeur/contexte),
-      // on génère un xlsx multi-feuilles (une par section) avec colonnes
-      // réordonnées Métrique/Valeur/Contexte et largeurs lisibles. Sinon on
-      // exporte la table brute sur une feuille unique.
-      const REPORT_COLS = ['section','metrique','valeur','contexte'];
+      // Le résultat suit la convention "rapport" (section/metrique/valeur/contexte)
+      // ? On génère UNE feuille unique avec un sous-tableau par section,
+      // titre de section fusionné sur les 3 colonnes + ligne vide entre 2
+      // sections pour la respiration visuelle. Sinon fallback dump brut.
+      const REPORT_COLS = ['section', 'metrique', 'valeur', 'contexte'];
       const isReport = REPORT_COLS.every(c => lastAiCols.includes(c));
       const wb = XLSX.utils.book_new();
+      let ws;
       if (isReport) {
         const sections = new Map();
         for (const r of lastAiRows) {
           const sec = (r.section || 'Autres').toString().trim() || 'Autres';
           if (!sections.has(sec)) sections.set(sec, []);
-          sections.get(sec).push({
-            'Métrique': r.metrique ?? '',
-            'Valeur':   r.valeur   ?? '',
-            'Contexte': r.contexte ?? ''
-          });
+          sections.get(sec).push(r);
         }
+        const aoa = [];
+        const merges = [];
+        let firstSection = true;
         for (const [secName, rows] of sections) {
-          const ws = XLSX.utils.json_to_sheet(rows);
-          ws['!cols'] = [{wch: 52}, {wch: 28}, {wch: 38}];
-          // Sheet names limités à 31 chars + chars spéciaux interdits.
-          const safeName = secName.replace(/[\\/?\*\[\]:]/g, '').slice(0, 31) || 'Section';
-          XLSX.utils.book_append_sheet(wb, ws, safeName);
+          if (!firstSection) {
+            aoa.push([]);  // ligne vide entre sections
+          }
+          firstSection = false;
+          // Titre de section, mergé sur 3 colonnes
+          aoa.push([secName.toUpperCase(), '', '']);
+          merges.push({
+            s: { r: aoa.length - 1, c: 0 },
+            e: { r: aoa.length - 1, c: 2 }
+          });
+          // Header de colonnes
+          aoa.push(['Métrique', 'Valeur', 'Contexte']);
+          // Données
+          for (const row of rows) {
+            aoa.push([
+              row.metrique ?? '',
+              row.valeur ?? '',
+              row.contexte ?? ''
+            ]);
+          }
         }
+        ws = XLSX.utils.aoa_to_sheet(aoa);
+        ws['!cols'] = [{ wch: 52 }, { wch: 28 }, { wch: 38 }];
+        if (merges.length) ws['!merges'] = merges;
       } else {
-        const ws = XLSX.utils.json_to_sheet(lastAiRows, { header: lastAiCols });
-        ws['!cols'] = lastAiCols.map(() => ({wch: 22}));
-        XLSX.utils.book_append_sheet(wb, ws, 'Rapport');
+        ws = XLSX.utils.json_to_sheet(lastAiRows, { header: lastAiCols });
+        ws['!cols'] = lastAiCols.map(() => ({ wch: 22 }));
       }
+      XLSX.utils.book_append_sheet(wb, ws, 'Rapport');
       const filename = `cockpit-global-ia-${new Date().toISOString().slice(0, 10)}.xlsx`;
       XLSX.writeFile(wb, filename);
     }
