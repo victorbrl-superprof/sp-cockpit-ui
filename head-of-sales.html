@@ -1794,10 +1794,22 @@
       if (!lastAiRows.length) return;
       const e = v => { v = v == null ? '' : String(v); return (v.includes(',') || v.includes('"') || v.includes('\n')) ? `"${v.replace(/"/g, '""')}"` : v; };
       const csv = [lastAiCols.join(','), ...lastAiRows.map(r => lastAiCols.map(c => e(r[c])).join(','))].join('\n');
+      const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+
+      const url = URL.createObjectURL(blob);
+
       const a = document.createElement('a');
-      a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent('\uFEFF' + csv);
+
+      a.href = url;
       a.download = `cockpit-global-ia-${new Date().toISOString().slice(0, 10)}.csv`;
+
+      a.style.display = 'none';
+
+      document.body.appendChild(a);
+
       a.click();
+
+      setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
     }
 
     /* ── AI ── */
