@@ -7,6 +7,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Sales Cockpit</title>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -577,26 +578,24 @@
     }
 
     /* ── Export CSV ── */
-    function exportCSV() {
-      if (!lastAiRows.length) return;
-      const e = v => { v = v == null ? '' : String(v); return (v.includes(',') || v.includes('"') || v.includes('\n')) ? `"${v.replace(/"/g,'""')}"` : v; };
-      const csv = [lastAiCols.join(','), ...lastAiRows.map(r => lastAiCols.map(c => e(r[c])).join(','))].join('\n');
-      const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    function exportXLSX() {
 
-      const url = URL.createObjectURL(blob);
+      if (!lastAiRows.length || typeof XLSX === "undefined") return;
 
-      const a = document.createElement('a');
+      // SheetJS handles iframe-safe download (Blob + URL.createObjectURL
 
-      a.href = url;
-      a.download = `cockpit-ia-${new Date().toISOString().slice(0,10)}.csv`;
+      //   + auto-cleanup) so on évite tous les pièges du <a>.click() manuel.
 
-      a.style.display = 'none';
+      const ws = XLSX.utils.json_to_sheet(lastAiRows, { header: lastAiCols });
 
-      document.body.appendChild(a);
+      const wb = XLSX.utils.book_new();
 
-      a.click();
+      XLSX.utils.book_append_sheet(wb, ws, "Rapport");
 
-      setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+      const filename = `cockpit-ia-${new Date().toISOString().slice(0, 10)}.xlsx`;
+
+      XLSX.writeFile(wb, filename);
+
     }
 
     /* ── AI ── */
@@ -631,7 +630,7 @@
           let html = '';
           if (json.question) html += `<p class="ai-quote">&ldquo;${esc(json.question)}&rdquo;</p>`;
           html += `<div class="table-wrap"><table><thead>${thead}</thead><tbody>${tbody}</tbody></table></div>`;
-          html += `<button class="csv-btn" onclick="exportCSV()">📥 Exporter CSV <span style="opacity:.6;font-weight:400">(${rows.length} lignes)</span></button>`;
+          html += `<button class="csv-btn" onclick="exportXLSX()">📥 Exporter Excel <span style="opacity:.6;font-weight:400">(${rows.length} lignes)</span></button>`;
           if (json.sql) html += `<details style="margin-top:6px"><summary>▸ Voir le SQL généré</summary><pre>${esc(json.sql)}</pre></details>`;
           res.innerHTML = html;
         }
