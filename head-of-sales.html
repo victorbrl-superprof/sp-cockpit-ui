@@ -1799,23 +1799,39 @@
 
     /* ── Export CSV ── */
     function exportXLSX() {
-
-      if (!lastAiRows.length || typeof XLSX === "undefined") return;
-
-      // SheetJS handles iframe-safe download (Blob + URL.createObjectURL
-
-      //   + auto-cleanup) so on évite tous les pièges du <a>.click() manuel.
-
-      const ws = XLSX.utils.json_to_sheet(lastAiRows, { header: lastAiCols });
-
+      if (!lastAiRows.length || typeof XLSX === 'undefined') return;
+      // Si le résultat suit la convention "rapport" (section/metrique/valeur/contexte),
+      // on génère un xlsx multi-feuilles (une par section) avec colonnes
+      // réordonnées Métrique/Valeur/Contexte et largeurs lisibles. Sinon on
+      // exporte la table brute sur une feuille unique.
+      const REPORT_COLS = ['section','metrique','valeur','contexte'];
+      const isReport = REPORT_COLS.every(c => lastAiCols.includes(c));
       const wb = XLSX.utils.book_new();
-
-      XLSX.utils.book_append_sheet(wb, ws, "Rapport");
-
+      if (isReport) {
+        const sections = new Map();
+        for (const r of lastAiRows) {
+          const sec = (r.section || 'Autres').toString().trim() || 'Autres';
+          if (!sections.has(sec)) sections.set(sec, []);
+          sections.get(sec).push({
+            'Métrique': r.metrique ?? '',
+            'Valeur':   r.valeur   ?? '',
+            'Contexte': r.contexte ?? ''
+          });
+        }
+        for (const [secName, rows] of sections) {
+          const ws = XLSX.utils.json_to_sheet(rows);
+          ws['!cols'] = [{wch: 52}, {wch: 28}, {wch: 38}];
+          // Sheet names limités à 31 chars + chars spéciaux interdits.
+          const safeName = secName.replace(/[\\/?\*\[\]:]/g, '').slice(0, 31) || 'Section';
+          XLSX.utils.book_append_sheet(wb, ws, safeName);
+        }
+      } else {
+        const ws = XLSX.utils.json_to_sheet(lastAiRows, { header: lastAiCols });
+        ws['!cols'] = lastAiCols.map(() => ({wch: 22}));
+        XLSX.utils.book_append_sheet(wb, ws, 'Rapport');
+      }
       const filename = `cockpit-global-ia-${new Date().toISOString().slice(0, 10)}.xlsx`;
-
       XLSX.writeFile(wb, filename);
-
     }
 
     /* ── AI ── */
