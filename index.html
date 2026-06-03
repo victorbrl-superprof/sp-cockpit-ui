@@ -383,9 +383,11 @@
 
       const cseName     = f.cse_name               || 'CSE';
       const days        = f.window_days             || 365;
-      const membTotal   = f.memberships_total       || 0;
-      const membActive  = f.memberships_active      || 0;
-      const membDormant = f.memberships_dormant     || 0;
+      const membTotal     = f.memberships_total       || 0;   // invités (importés + organiques)
+      const membActive    = f.memberships_active      || 0;   // engagement : activité récente
+      const membDormant   = f.memberships_dormant     || 0;
+      const membActivated = f.memberships_activated   || 0;   // compte réellement activé
+      const membPending   = f.memberships_pending     || 0;   // importé, en attente d'activation
       const mrTotal     = f.mise_relations_total    || 0;
       const mrAccepted  = f.mise_relations_accepted || 0;
       const mrPeople    = f.mr_people_count         || 0;
@@ -405,19 +407,20 @@
         .map(r => ({ theme: r.theme, count: r.theme_count }))
         .sort((a,b) => b.count - a.count);
 
-      const pA = pct(membActive,  membTotal);
-      const pD = pct(membDormant, membTotal);
+      const pA   = pct(membActivated, membTotal);   // taux d'activation = activés / invités
+      const pEng = pct(membActive,    membTotal);   // engagement = activité récente / invités
       const pM = pct(mrAccepted,  mrTotal);
       const pL = pct(lessComp,    lessTotal);
-      const pC = pct(membTotal,   peQuota);
+      const pC = pct(membActivated, peQuota);        // taux de capture = activés / quota PE
       const mT = themes[0]?.count || 1;
 
       /* Cards */
       const membCard = card('membres','accent-indigo','icon-indigo','👥','Membres',
-        `<span class="badge badge-indigo">${pA}% actifs</span>`,
-        `<div class="big-stats">${stat(fmt(membTotal),'Total membres','val-indigo')}${stat(fmt(membActive),'Actifs','val-emerald')}${stat(fmt(membDormant),'Dormants','val-dormant')}${peQuota > 0 ? stat(fmt(peQuota),'Adressables','val-neutral') : ''}</div>
+        `<span class="badge badge-indigo">${pA}% activés</span>`,
+        `<div class="big-stats">${stat(fmt(membTotal),'Invités','val-indigo')}${stat(fmt(membActivated),'Activés','val-emerald')}${stat(fmt(membPending),'En attente','val-dormant')}${peQuota > 0 ? stat(fmt(peQuota),'Adressables','val-neutral') : ''}</div>
          ${prog("Taux d'activation",`${pA}%`,pA,'fill-indigo')}
-         ${peQuota > 0 ? prog('Taux de capture',`${pC}%`,pC,'fill-cyan') : ''}`);
+         ${peQuota > 0 ? prog('Taux de capture',`${pC}%`,pC,'fill-cyan') : ''}
+         ${prog('Actifs récents (activité)',`${pEng}%`,pEng,'fill-emerald')}`);
 
       const mrCard = card('mr','accent-emerald','icon-emerald','🤝','Mises en Relation',
         mrTotal > 0 ? `<span class="badge badge-emerald">${mrPeople} personnes</span>` : '',
@@ -508,7 +511,7 @@
             </div>
           </div>
           <div class="hero-right">
-            <div class="hero-stat"><div class="hero-stat-value">${fmt(membTotal)}</div><div class="hero-stat-label">membres</div></div>
+            <div class="hero-stat"><div class="hero-stat-value">${fmt(membTotal)}</div><div class="hero-stat-label">invités</div></div>
             <div class="hero-sep"></div>
             <div class="hero-stat"><div class="hero-stat-value">${fmtEur(lessCa + passCa)}</div><div class="hero-stat-label">CA total</div></div>
             <div class="hero-sep"></div>

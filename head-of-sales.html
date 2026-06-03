@@ -1318,7 +1318,7 @@
           <td style="color:var(--slate-400);font-size:11px;width:28px">${i + 1}</td>
           <td class="rank-name">${esc(r.cse_name || '—')}</td>
           <td style="text-align:center">${fmt(r.pe_quota_total)}</td>
-          <td style="text-align:center">${fmt(r.memberships_total)}</td>
+          <td style="text-align:center">${fmt(r.memberships_activated)}</td>
           <td style="text-align:center">${cap}</td>
           <td style="text-align:center">${fmt(r.lessons_total)}</td>
           <td style="text-align:center">${fmtEur(r.lessons_ca)}</td>
@@ -1356,7 +1356,7 @@
         [null, '#', ''],
         ['cse_name', 'CSE', ''],
         ['pe_quota_total', 'Quota', ' style="text-align:center"'],
-        ['memberships_total', 'Membres', ' style="text-align:center"'],
+        ['memberships_activated', 'Activés', ' style="text-align:center"'],
         ['capture_rate', 'Capture', ' style="text-align:center"'],
         ['lessons_total', 'Leçons', ' style="text-align:center"'],
         ['lessons_ca', 'CA', ' style="text-align:center"'],
@@ -1469,8 +1469,10 @@
     function renderCseCards(rows, spliitServices = [], spliitCseStats = null) {
       const f = rows[0];
       const membTotal = f.memberships_total || 0;
-      const membActive = f.memberships_active || 0;
+      const membActive = f.memberships_active || 0;   // engagement : activité récente
       const membDormant = f.memberships_dormant || 0;
+      const membActivated = f.memberships_activated || 0;   // compte réellement activé
+      const membPending = f.memberships_pending || 0;   // importé, en attente d'activation
       const mrTotal = f.mise_relations_total || 0;
       const mrAccepted = f.mise_relations_accepted || 0;
       const mrPeople = f.mr_people_count || 0;
@@ -1490,17 +1492,19 @@
         .map(r => ({ theme: r.theme, count: r.theme_count }))
         .sort((a, b) => b.count - a.count);
 
-      const pA = pct(membActive, membTotal);
+      const pA = pct(membActivated, membTotal);   // taux d'activation = activés / invités
+      const pEng = pct(membActive, membTotal);     // engagement = activité récente / invités
       const pD = pct(membDormant, membTotal);
       const pM = pct(mrAccepted, mrTotal);
       const pL = pct(lessComp, lessTotal);
-      const pC = pct(membTotal, peQuota);
+      const pC = pct(membActivated, peQuota);       // taux de capture = activés / quota PE
       const mT = themes[0]?.count || 1;
 
       const membCard = card('cse-membres', 'accent-indigo', 'icon-indigo', '👥', 'Membres',
-        `<span class="badge badge-indigo">${pA}% actifs</span>`,
-        `<div class="big-stats">${stat(fmt(membTotal), 'Total membres', 'val-indigo')}${stat(fmt(membActive), 'Actifs', 'val-emerald')}${stat(fmt(membDormant), 'Dormants', 'val-neutral')}</div>
+        `<span class="badge badge-indigo">${pA}% activés</span>`,
+        `<div class="big-stats">${stat(fmt(membTotal), 'Invités', 'val-indigo')}${stat(fmt(membActivated), 'Activés', 'val-emerald')}${stat(fmt(membPending), 'En attente', 'val-neutral')}</div>
          ${prog("Taux d'activation", `${pA}%`, pA, 'fill-indigo')}
+         ${prog('Actifs récents (activité)', `${pEng}%`, pEng, 'fill-emerald')}
          ${peQuota > 0 ? `<div class="divider"></div><div class="kpi-list">${kpi('Personnes adressables', fmt(peQuota))}${kpi('Pass utilisés', fmt(peUsed))}</div>${prog('Taux de capture', `${pC}%`, pC, 'fill-cyan')}` : ''}`);
 
       const mrCard = card('cse-mr', 'accent-emerald', 'icon-emerald', '🤝', 'Mises en Relation',
@@ -1618,8 +1622,10 @@
 
       const days = f.window_days || selectedDays;
       const membTotal = f.memberships_total || 0;
-      const membActive = f.memberships_active || 0;
+      const membActive = f.memberships_active || 0;   // engagement : activité récente
       const membDormant = f.memberships_dormant || 0;
+      const membActivated = f.memberships_activated || 0;   // compte réellement activé
+      const membPending = f.memberships_pending || 0;   // importé, en attente d'activation
       const mrTotal = f.mise_relations_total || 0;
       const mrAccepted = f.mise_relations_accepted || 0;
       const mrPeople = f.mr_people_count || 0;
@@ -1634,17 +1640,19 @@
       const walletAvg = f.wallet_amount_avg || 0;
       const peQuota = f.pe_quota_total || 0;
 
-      const pA = pct(membActive, membTotal);
+      const pA = pct(membActivated, membTotal);   // taux d'activation = activés / invités
+      const pEng = pct(membActive, membTotal);     // engagement = activité récente / invités
       const pD = pct(membDormant, membTotal);
       const pM = pct(mrAccepted, mrTotal);
       const pL = pct(lessComp, lessTotal);
-      const pC = pct(membTotal, peQuota);
+      const pC = pct(membActivated, peQuota);       // taux de capture = activés / quota PE
 
       /* Cards */
       const membCard = card('membres', 'accent-indigo', 'icon-indigo', '👥', 'Membres',
-        `<span class="badge badge-indigo">${pA}% actifs</span>`,
-        `<div class="big-stats">${stat(fmt(membTotal), 'Total membres', 'val-indigo')}${stat(fmt(membActive), 'Actifs', 'val-emerald')}${stat(fmt(membDormant), 'Dormants', 'val-neutral')}</div>
+        `<span class="badge badge-indigo">${pA}% activés</span>`,
+        `<div class="big-stats">${stat(fmt(membTotal), 'Invités', 'val-indigo')}${stat(fmt(membActivated), 'Activés', 'val-emerald')}${stat(fmt(membPending), 'En attente', 'val-neutral')}</div>
          ${prog("Taux d'activation", `${pA}%`, pA, 'fill-indigo')}
+         ${prog('Actifs récents (activité)', `${pEng}%`, pEng, 'fill-emerald')}
          ${peQuota > 0 ? `<div class="divider"></div><div class="kpi-list">${kpi('Personnes adressables', fmt(peQuota))}</div>${prog('Taux de capture', `${pC}%`, pC, 'fill-cyan')}` : ''}`);
 
       const mrCard = card('mr', 'accent-emerald', 'icon-emerald', '🤝', 'Mises en Relation',
@@ -1727,7 +1735,7 @@
             </div>
           </div>
           <div class="hero-right">
-            <div class="hero-stat"><div class="hero-stat-value">${fmt(membTotal)}</div><div class="hero-stat-label">membres</div></div>
+            <div class="hero-stat"><div class="hero-stat-value">${fmt(membTotal)}</div><div class="hero-stat-label">invités</div></div>
             <div class="hero-sep"></div>
             <div class="hero-stat"><div class="hero-stat-value">${fmtEur(lessCa + passCa)}</div><div class="hero-stat-label">CA total</div></div>
             <div class="hero-sep"></div>
