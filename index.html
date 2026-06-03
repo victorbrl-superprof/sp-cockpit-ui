@@ -417,10 +417,9 @@
       /* Cards */
       const membCard = card('membres','accent-indigo','icon-indigo','👥','Membres',
         `<span class="badge badge-indigo">${pA}% activés</span>`,
-        `<div class="big-stats">${stat(fmt(membTotal),'Invités','val-indigo')}${stat(fmt(membActivated),'Activés','val-emerald')}${stat(fmt(membPending),'En attente','val-dormant')}${peQuota > 0 ? stat(fmt(peQuota),'Adressables','val-neutral') : ''}</div>
+        `<div class="big-stats">${stat(fmt(membActivated),'Activés','val-emerald')}${stat(fmt(membPending),'En attente','val-dormant')}${peQuota > 0 ? stat(fmt(peQuota),'Adressables','val-neutral') : ''}</div>
          ${prog("Taux d'activation",`${pA}%`,pA,'fill-indigo')}
-         ${peQuota > 0 ? prog('Taux de capture',`${pC}%`,pC,'fill-cyan') : ''}
-         ${prog('Actifs récents (activité)',`${pEng}%`,pEng,'fill-emerald')}`);
+         ${peQuota > 0 ? prog('Taux de capture',`${pC}%`,pC,'fill-cyan') : ''}`);
 
       const mrCard = card('mr','accent-emerald','icon-emerald','🤝','Mises en Relation',
         mrTotal > 0 ? `<span class="badge badge-emerald">${mrPeople} personnes</span>` : '',
@@ -511,7 +510,7 @@
             </div>
           </div>
           <div class="hero-right">
-            <div class="hero-stat"><div class="hero-stat-value">${fmt(membTotal)}</div><div class="hero-stat-label">invités</div></div>
+            <div class="hero-stat"><div class="hero-stat-value">${fmt(membActivated)}</div><div class="hero-stat-label">activés</div></div>
             <div class="hero-sep"></div>
             <div class="hero-stat"><div class="hero-stat-value">${fmtEur(lessCa + passCa)}</div><div class="hero-stat-label">CA total</div></div>
             <div class="hero-sep"></div>

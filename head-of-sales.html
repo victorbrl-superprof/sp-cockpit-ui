@@ -1502,9 +1502,8 @@
 
       const membCard = card('cse-membres', 'accent-indigo', 'icon-indigo', '👥', 'Membres',
         `<span class="badge badge-indigo">${pA}% activés</span>`,
-        `<div class="big-stats">${stat(fmt(membTotal), 'Invités', 'val-indigo')}${stat(fmt(membActivated), 'Activés', 'val-emerald')}${stat(fmt(membPending), 'En attente', 'val-neutral')}</div>
+        `<div class="big-stats">${stat(fmt(membActivated), 'Activés', 'val-emerald')}${stat(fmt(membPending), 'En attente', 'val-neutral')}</div>
          ${prog("Taux d'activation", `${pA}%`, pA, 'fill-indigo')}
-         ${prog('Actifs récents (activité)', `${pEng}%`, pEng, 'fill-emerald')}
          ${peQuota > 0 ? `<div class="divider"></div><div class="kpi-list">${kpi('Personnes adressables', fmt(peQuota))}${kpi('Pass utilisés', fmt(peUsed))}</div>${prog('Taux de capture', `${pC}%`, pC, 'fill-cyan')}` : ''}`);
 
       const mrCard = card('cse-mr', 'accent-emerald', 'icon-emerald', '🤝', 'Mises en Relation',
@@ -1650,9 +1649,8 @@
       /* Cards */
       const membCard = card('membres', 'accent-indigo', 'icon-indigo', '👥', 'Membres',
         `<span class="badge badge-indigo">${pA}% activés</span>`,
-        `<div class="big-stats">${stat(fmt(membTotal), 'Invités', 'val-indigo')}${stat(fmt(membActivated), 'Activés', 'val-emerald')}${stat(fmt(membPending), 'En attente', 'val-neutral')}</div>
+        `<div class="big-stats">${stat(fmt(membActivated), 'Activés', 'val-emerald')}${stat(fmt(membPending), 'En attente', 'val-neutral')}</div>
          ${prog("Taux d'activation", `${pA}%`, pA, 'fill-indigo')}
-         ${prog('Actifs récents (activité)', `${pEng}%`, pEng, 'fill-emerald')}
          ${peQuota > 0 ? `<div class="divider"></div><div class="kpi-list">${kpi('Personnes adressables', fmt(peQuota))}</div>${prog('Taux de capture', `${pC}%`, pC, 'fill-cyan')}` : ''}`);
 
       const mrCard = card('mr', 'accent-emerald', 'icon-emerald', '🤝', 'Mises en Relation',
@@ -1735,7 +1733,7 @@
             </div>
           </div>
           <div class="hero-right">
-            <div class="hero-stat"><div class="hero-stat-value">${fmt(membTotal)}</div><div class="hero-stat-label">invités</div></div>
+            <div class="hero-stat"><div class="hero-stat-value">${fmt(membActivated)}</div><div class="hero-stat-label">activés</div></div>
             <div class="hero-sep"></div>
             <div class="hero-stat"><div class="hero-stat-value">${fmtEur(lessCa + passCa)}</div><div class="hero-stat-label">CA total</div></div>
             <div class="hero-sep"></div>
