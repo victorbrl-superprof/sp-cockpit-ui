@@ -580,8 +580,47 @@
     }
 
     /* ── Export CSV ── */
+    /**
+     * Repli CSV, sans aucune bibliothèque.
+     *
+     * Le bouton Excel dépend de SheetJS, chargé depuis un CDN. Quand ce CDN est
+     * bloqué — bloqueur de pub, extension, réseau d'entreprise — l'export
+     * échouait en SILENCE : `typeof XLSX === 'undefined'` puis `return`, aucun
+     * message. On dit maintenant ce qui se passe, et on sort quand même les
+     * données.
+     */
+    function exportCSVFallback() {
+      const esc = v => {
+        v = v == null ? '' : String(v);
+        return /[",\n;]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+      };
+      const csv = [lastAiCols.join(';'), ...lastAiRows.map(r => lastAiCols.map(c => esc(r[c])).join(';'))].join('\n');
+      // Le BOM fait ouvrir le fichier en UTF-8 par Excel, sinon les accents cassent.
+      const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `cockpit-export-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+    }
+
     function exportXLSX() {
-      if (!lastAiRows.length || typeof XLSX === 'undefined') return;
+      if (!lastAiRows.length) {
+        alert("Rien à exporter : lance d'abord une question.");
+        return;
+      }
+      if (typeof XLSX === 'undefined') {
+        // Ne pas abandonner sans rien dire : on explique et on livre du CSV.
+        alert(
+          "La bibliothèque Excel n'a pas pu être chargée (CDN bloqué par une extension ou le réseau).\n\n" +
+          "Export en CSV à la place — il s'ouvre dans Excel."
+        );
+        exportCSVFallback();
+        return;
+      }
       // Le résultat suit la convention "rapport" (section/metrique/valeur/contexte)
       // ? On génère UNE feuille unique avec un sous-tableau par section,
       // titre de section fusionné sur les 3 colonnes + ligne vide entre 2
@@ -631,7 +670,12 @@
       }
       XLSX.utils.book_append_sheet(wb, ws, 'Rapport');
       const filename = `cockpit-ia-${new Date().toISOString().slice(0, 10)}.xlsx`;
-      XLSX.writeFile(wb, filename);
+      try {
+        XLSX.writeFile(wb, filename);
+      } catch (e) {
+        alert("L'écriture du fichier Excel a échoué : " + (e && e.message ? e.message : e) + "\n\nExport en CSV à la place.");
+        exportCSVFallback();
+      }
     }
 
     /* ── AI ── */
@@ -683,7 +727,7 @@
     async function loadData() {
       document.getElementById('root').innerHTML = '<div class="state"><div class="spinner"></div><span>Chargement…</span></div>';
       try {
-        const r    = await fetch(`${API}?hubspot_company_id=${encodeURIComponent(CID)}&days=${selectedDays}&top_n=14`, { headers:{ Authorization:`Bearer ${TOKEN}` });
+        const r    = await fetch(`${API}?hubspot_company_id=${encodeURIComponent(CID)}&days=${selectedDays}&top_n=14`, { headers:{ Authorization:`Bearer ${TOKEN}` }});
         const json = await r.json();
         if (!json.ok) throw new Error(json.error || 'Erreur API');
         if (!json.data?.length) throw new Error('CSE non lié à ce compte HubSpot');
