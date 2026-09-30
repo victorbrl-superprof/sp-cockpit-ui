@@ -376,8 +376,61 @@
 
     const SPLIIT_ICON = '<img src="https://victorbrl-superprof.github.io/sp-cockpit-ui/spliiit-logo.png" style="width:22px;height:22px;object-fit:contain" alt="Spliiit" />';
 
+    /* ── Utilisation réelle des cagnottes Spliiit ──
+       Agrégats calculés en base (spliit_usage_summary) à partir du détail par
+       bénéficiaire envoyé par Spliiit : aucune donnée par personne n'arrive ici.
+       Crédit consommé = dépense Spliiit plafonnée au crédit de chaque personne. */
+    const fmtEur2 = (n) => n==null ? '–' : isNaN(+n) ? '–' : (+n).toLocaleString('fr-FR',{style:'currency',currency:'EUR',minimumFractionDigits:2,maximumFractionDigits:2});
+    const fmtDateFr = (d) => { if (!d) return ''; const [y,m,j] = String(d).slice(0,10).split('-'); return `${j}/${m}/${y}`; };
+    const USAGE_TRANCHES = ['0 %','1 – 24 %','25 – 49 %','50 – 74 %','75 – 99 %','100 %'];
+    const USAGE_GRID = 'display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px';
+
+    function spliitUsageSummary(u) {
+      const taux = Math.min(100, Math.round(+u.taux_consommation || 0));
+      return `<div class="big-stats">
+          ${stat(fmtEur2(u.consomme_moyen),'Consommé moy. / bénéf.','val-indigo')}
+          ${stat(fmtEur2(u.consomme_moyen_actif),'Consommé moy. / actif','val-emerald')}
+          ${stat(fmt(u.cagnotte_videe),'Cagnottes vidées','val-amber')}
+        </div>
+        ${prog('Crédit consommé', `${fmtEur(u.credit_consomme)} / ${fmtEur(u.montant_credite)}`, taux, 'fill-cyan')}
+        <div class="kpi-list">
+          ${kpi('Bénéficiaires (code activé)', fmt(u.beneficiaires))}
+          ${kpi('Part moyenne utilisée (actifs)', u.pct_moyen_actif==null ? '–' : `${fmt(u.pct_moyen_actif,1)} %`)}
+          ${kpi('Cagnotte jamais entamée', fmt(u.jamais_depense))}
+          ${kpi('Ont arrêté (abonnés perdus)', fmt(u.ont_arrete))}
+          ${kpi('Crédit restant', fmtEur(u.credit_restant))}
+        </div>`;
+    }
+
+    function spliitUsageRepartition(u) {
+      const rep = Array.isArray(u.repartition) ? u.repartition : [];
+      const maxRep = Math.max(1, ...rep.map(v => +v || 0));
+      return `<div class="theme-meta" style="margin-bottom:8px"><span class="theme-name" style="font-weight:600">Part de la cagnotte utilisée</span></div>
+        ${USAGE_TRANCHES.map((t,i) => `<div style="margin-bottom:6px"><div class="theme-meta"><span class="theme-name">${esc(t)}</span><span class="theme-count" style="color:var(--cyan)">${fmt(rep[i] ?? 0)}</span></div><div class="track sm"><div class="fill fill-cyan" style="width:${pct(rep[i] ?? 0, maxRep)}%"></div></div></div>`).join('')}`;
+    }
+
+    function spliitUsageShell(cardId, title, u, inner, note, withToggle) {
+      return `<div class="card col-full" data-card="${cardId}"><div class="card-accent accent-cyan"></div>
+        <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-spliit">${SPLIIT_ICON}</div><span class="card-title">${esc(title)}</span></div>
+        <div style="display:flex;align-items:center;gap:6px"><span class="badge badge-cyan">${fmt(u.taux_consommation,1)} % consommé</span>${withToggle ? `<button class="card-toggle" onclick="toggleCard('${cardId}')" title="Masquer">👁</button>` : ''}</div></div>
+        <div class="card-body"><div style="${USAGE_GRID}">${inner}</div>
+        <p class="ai-desc" style="margin-top:10px">${u.min_snapshot_date && u.min_snapshot_date !== u.snapshot_date ? `Du ${esc(fmtDateFr(u.min_snapshot_date))} au ${esc(fmtDateFr(u.snapshot_date))}` : `Au ${esc(fmtDateFr(u.snapshot_date))}`} · ${esc(note)} « % consommé » = total consommé ÷ total crédité ; « part moyenne » = moyenne des parts individuelles des actifs.</p></div></div>`;
+    }
+
+    function spliitServicesNote(totalServices, u) {
+      if (!u || u.abonnements_actifs == null || !(totalServices > u.abonnements_actifs)) return '';
+      return `<p class="ai-desc" style="margin-top:8px">Spliiit compte un abonnement une fois par code activé : ${fmt(totalServices)} ici pour ${fmt(u.abonnements_actifs)} abonnements réels.</p>`;
+    }
+
+    function spliitUsageCard(cardId, u, withToggle = true) {
+      if (!u || !u.beneficiaires) return '';
+      return spliitUsageShell(cardId, 'Utilisation de la cagnotte', u,
+        `<div>${spliitUsageSummary(u)}</div><div>${spliitUsageRepartition(u)}</div>`,
+        'crédit consommé = dépense Spliiit plafonnée au crédit de chaque bénéficiaire.', withToggle);
+    }
+
     /* ── Render ── */
-    function render(rows, spliitServices = [], spliitCseStats = null) {
+    function render(rows, spliitServices = [], spliitCseStats = null, spliitUsage = null) {
       const f = rows[0];
       currentCseId = f.cse_id || null;
 
@@ -464,9 +517,11 @@
            <div class="kpi-list">
             ${kpi('Montant crédité', fmtEur(spliitCseStats.montant_credite))}
             ${kpi('Montant généré', fmtEur(spliitCseStats.montant_genere))}
-            ${kpi('Moy. abonnements/user', fmt(spliitCseStats.abonnements_actifs_moy, 2))}
-            ${kpi('Montant moyen', fmtEur(spliitCseStats.montant_moyen))}
+            ${spliitUsage ? kpi('Moy. abonnements / actif', fmt(spliitUsage.abonnements_moy_actif, 2)) : kpi('Moy. abonnements/user', fmt(spliitCseStats.abonnements_actifs_moy, 2))}
+            ${spliitUsage ? '' : kpi('Montant moyen (Spliiit)', fmtEur(spliitCseStats.montant_moyen))}
            </div>`);
+
+      const spliitUsageCardHtml = spliitUsageCard('spliit-usage', spliitUsage);
 
       /* ── Spliit services ranked card (col-full) ── */
       const maxSvc = spliitServices[0]?.usage_count || 1;
@@ -479,7 +534,7 @@
              const m = i<3?['🥇','🥈','🥉'][i]:`${i+1}.`;
              return `<div><div class="theme-meta"><span class="theme-name">${esc(m)} ${esc(s.service)}</span><span class="theme-count" style="color:var(--cyan)">${s.usage_count}</span></div><div class="track sm"><div class="fill fill-cyan" style="width:${pct(s.usage_count,maxSvc)}%"></div></div></div>`;
            }).join('')
-         }</div></div></div>`;
+         }</div>${spliitServicesNote(spliitServices.reduce((a, x) => a + (+x.usage_count || 0), 0), spliitUsage)}</div></div>`;
 
       const aiCard =
         `<div class="card col-full" data-card="ia"><div class="card-accent accent-ai"></div>
@@ -501,7 +556,7 @@
       document.getElementById('root').innerHTML = `
         <div class="hero"><div class="hero-inner">
           <div class="hero-left">
-            <span class="hero-eyebrow">Sales Cockpit <span style="opacity:.5">· v1.5</span></span>
+            <span class="hero-eyebrow">Sales Cockpit <span style="opacity:.5">· v1.6</span></span>
             <span class="hero-name">${esc(cseName)}</span>
             <div class="period-tabs">
               <button class="period-tab ${selectedDays===30?'active':''}" onclick="switchPeriod(30)">30 jours</button>
@@ -519,7 +574,7 @@
           </div>
         </div></div>
         <div id="restore-bar" class="restore-bar"></div>
-        <div class="grid${spliitStatsCard ? ' has-spliit' : ''}">${membCard}${mrCard}${lessCard}${walletCard}${spliitStatsCard}${themesCard}${spliitServicesCard}${aiCard}</div>`;
+        <div class="grid${spliitStatsCard ? ' has-spliit' : ''}">${membCard}${mrCard}${lessCard}${walletCard}${spliitStatsCard}${themesCard}${spliitUsageCardHtml}${spliitServicesCard}${aiCard}</div>`;
 
       applyHidden();
 
@@ -543,7 +598,7 @@
     }
 
     /* ── Card visibility ── */
-    const CARD_LABELS = { membres:'👥 Membres', mr:'🤝 MR', lecons:'📚 Leçons', wallet:'💳 Wallet', themes:'🎯 Thématiques', 'spliit-stats':'Spliiit', 'spliit-services':'Services Spliiit', ia:'✦ IA' };
+    const CARD_LABELS = { membres:'👥 Membres', mr:'🤝 MR', lecons:'📚 Leçons', wallet:'💳 Wallet', themes:'🎯 Thématiques', 'spliit-stats':'Spliiit', 'spliit-usage':'Cagnotte Spliiit', 'spliit-services':'Services Spliiit', ia:'✦ IA' };
 
     function toggleCard(name) {
       if (!hiddenCards.includes(name)) hiddenCards.push(name);
@@ -731,7 +786,7 @@
         const json = await r.json();
         if (!json.ok) throw new Error(json.error || 'Erreur API');
         if (!json.data?.length) throw new Error('CSE non lié à ce compte HubSpot');
-        render(json.data, json.spliit_services || [], json.spliit_cse_stats || null);
+        render(json.data, json.spliit_services || [], json.spliit_cse_stats || null, json.spliit_usage || null);
         if (document.body.classList.contains('dark')) {
           document.querySelectorAll('.dark-toggle').forEach(b => { b.textContent = '☀️'; });
         }
