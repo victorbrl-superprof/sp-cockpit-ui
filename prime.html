@@ -4166,6 +4166,14 @@
       const maxPct = stats.maxPct;
       const paliersPct = setterPaliers(config, 100).map(p => p.pct).join(" / ");
       const firstName = String(config.name || "").split(" ")[0];
+      // Prime d'équipe (02/10/2026, demande de Victor) : la même que pour les AE, calculée sur
+      // tous les closedwon HubSpot de l'équipe, cumulés par trimestre en HT.
+      const teamTotalTTC = json.team_total_amount ?? json.team_total_ttc ?? json.team_total ?? 0;
+      const teamHT = teamTotalTTC / TVA;
+      const teamDealsCount = json.team_deals_count || 0;
+      const quartersByKey = computeQuartersHT(json.team_monthly || {});
+      const teamTiers = renderTiers(quartersByKey, currentQuarterKey());
+      const teamQuarter = teamTiers.active;
 
       document.getElementById("root").innerHTML = `
         <div class="hero">
@@ -4198,12 +4206,20 @@
 
           ${renderSetterSignatureCard(config, stats)}
 
+          <div class="glass reveal" id="team-prime-card" style="animation-delay:.72s">
+            <div class="card-head">
+              <h3><span class="head-ico">🏆</span>Prime d'équipe · ${esc(teamTiers.quarterLabel)}</h3>
+              <span class="meta">Remise à zéro chaque trimestre · CA HT ${esc(teamQuarter.label)} : <strong>${fmtEur(teamQuarter.ht)}</strong> · ${teamQuarter.deals} deals · cumul année : ${fmtEur(teamHT)} (${teamDealsCount} deals)</span>
+            </div>
+            <div class="card-body" id="team-prime-body">${teamTiers.html}</div>
+          </div>
+
           ${renderSetterMonthsTable(stats)}
 
           ${renderPrimeAiCard(config)}
 
           <div class="footer">
-            Calculé en direct depuis HubSpot · RDV pris = R1 (« Présentation ») posés par ${esc(firstName)} dans l'agenda d'un AE, comptés le jour de la prise (heure de Paris), annulés et décalés compris · No-show = (no-show + annulés) / (effectués + no-show + annulés), décalés hors taux · Signature = ${Math.round(stats.rate * 100)} % HT des deals signés après un R1 sur la même société · Information interne, sans valeur contractuelle.
+            Calculé en direct depuis HubSpot · RDV pris = R1 (« Présentation ») posés par ${esc(firstName)} dans l'agenda d'un AE, comptés le jour de la prise (heure de Paris), annulés et décalés compris · No-show = (no-show + annulés) / (effectués + no-show + annulés), décalés hors taux · Signature = ${Math.round(stats.rate * 100)} % HT des deals signés après un R1 sur la même société · Prime d'équipe = tous les closedwon HubSpot, cumulés par trimestre en HT (remise à zéro chaque trimestre) · Information interne, sans valeur contractuelle.
           </div>
         </div>
         ${renderDefinitionsModal(config)}
@@ -4230,9 +4246,19 @@
       }
 
       PRIME_AI_CONTEXT = buildSetterAiContext(config, stats, act);
+      PRIME_AI_CONTEXT.prime_equipe = {
+        trimestre: teamTiers.quarterLabel,
+        ca_ht_trimestre: Math.round(teamQuarter.ht),
+        deals_trimestre: teamQuarter.deals,
+        ca_ht_annee: Math.round(teamHT),
+        paliers: TIERS.map(t => ({ palier: t.name, seuil_ht: t.seuil, prime: t.prime })),
+      };
       bindPrimeAI(config);
       bindDefinitionsModal();
       bindTeamSwitcher();
+      bindQuarterTabs("#team-prime-card", quartersByKey, (newKey) => {
+        rerenderTeamPrime(newKey, quartersByKey, config);
+      });
     }
 
     function renderError(msg) {
