@@ -410,8 +410,10 @@
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
+    /* Pastille d'état DANS le flux, centrée au-dessus de la médaille : en position absolue (coin
+       haut droit), elle chevauchait la médaille sur les cartes étroites des setters (02/10/2026). */
     .tier-state {
-      position:absolute; top:8px; right:9px;
+      position:relative; margin:0 auto 8px;
       display:inline-flex; align-items:center; gap:4px;
       padding:3px 7px; border-radius:999px;
       font-size:9.5px; line-height:1; font-weight:800;
@@ -425,11 +427,9 @@
       border:1px solid rgba(16,185,129,0.34);
       box-shadow:0 4px 10px -7px rgba(16,185,129,0.75);
     }
-    .tier-state.locked {
-      color:var(--slate-500);
-      background:rgba(248,250,252,0.86);
-      border:1px solid rgba(148,163,184,0.34);
-    }
+    /* Palier non atteint : pas de pastille (la médaille grisée et « À débloquer » suffisent) ;
+       la place reste réservée pour que toutes les cartes d'une rangée gardent la même hauteur. */
+    .tier-state.locked { visibility:hidden; }
     .tier.locked   { opacity: 0.82; filter: saturate(0.65); }
     .tier.locked .emoji { filter: grayscale(1); opacity: 0.48; }
     .tier.locked .prime { color:var(--slate-500); }
@@ -2755,9 +2755,9 @@
         const detail = isCurrent
           ? "Prime du trimestre"
           : (done ? "Palier atteint" : (isNext ? `Reste ${fmtEur(t.seuil - teamHT)}` : "À débloquer"));
-        const stateLabel = done ? (isCurrent ? "✓ Actuel" : "✓ Atteint") : "🔒 Verrouillé";
+        const stateLabel = done ? (isCurrent ? "✓ Actuel" : "✓ Atteint") : "✓ Atteint";
         return `<div class="tier ${t.key} ${done ? "unlocked" : "locked"} ${isCurrent ? "current" : ""} ${isNext ? "next" : ""}">
-          <span class="tier-state ${done ? "unlocked" : "locked"}">${stateLabel}</span>
+          <span class="tier-state ${done ? "unlocked" : "locked"}"${done ? "" : ' aria-hidden="true"'}>${stateLabel}</span>
           <span class="emoji">${t.emoji}</span>
           <div class="name">${esc(t.name)}</div>
           <div class="seuil">&gt; ${t.seuil/1000}k€ HT</div>
@@ -3511,9 +3511,9 @@
         const detail = isCurrent
           ? (row.qualityOk ? (row.isCurrent ? "Prime acquise à date" : "Prime du mois") : "Bloquée : no-show")
           : (done ? "Palier atteint" : (isNext ? `Plus que ${plural(p.min - row.rdv, "RDV", "RDV")}` : "À débloquer"));
-        const stateLabel = done ? (isCurrent ? "✓ Actuel" : "✓ Atteint") : "🔒 Verrouillé";
+        const stateLabel = done ? (isCurrent ? "✓ Actuel" : "✓ Atteint") : "✓ Atteint";
         return `<div class="tier ${p.key} ${done ? "unlocked" : "locked"} ${isCurrent ? "current" : ""} ${isNext ? "next" : ""}">
-          <span class="tier-state ${done ? "unlocked" : "locked"}">${stateLabel}</span>
+          <span class="tier-state ${done ? "unlocked" : "locked"}"${done ? "" : ' aria-hidden="true"'}>${stateLabel}</span>
           <span class="emoji">${p.emoji}</span>
           <div class="name">Palier ${p.pct} %</div>
           <div class="seuil">≥ ${fmtNum(p.min)} RDV</div>
