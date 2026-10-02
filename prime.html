@@ -1069,14 +1069,6 @@
         objectifsTTC: { "2026-04": null, "2026-05": null, "2026-06": 5000,  "2026-07": 10000, "2026-08": 0,
                         "2026-09": 14000, "2026-10": 20000, "2026-11": 20000, "2026-12": 20000 },
       },
-      "33334703": {
-        type: "ae", name: "Johanna Eboko", role: "AE CSE Confirmé", seuilHT: 8333.33,
-        periodLabel: "Avr.–Déc. 2026",
-        directRateByMonth: { "2026-04": 0.11, "2026-05": 0.11 },
-        // Source : fiche objectifs Q2 2026 — Mois 1 = 10k TTC, Mois 2 (×0.5) = 12.5k, Sept = 17.5k, Oct/Nov/Déc = 25k
-        objectifsTTC: { "2026-04": null, "2026-05": null, "2026-06": 10000, "2026-07": 12500, "2026-08": 0,
-                        "2026-09": 17500, "2026-10": 25000, "2026-11": 25000, "2026-12": 25000 },
-      },
       "78105232": {
         type: "teamLead", name: "Camille Lecorno", role: "Team Lead CSE",
         periodLabel: "Janv.–Déc. 2026", sourceLabel: "CA équipe HT", commissionScope: "ventes équipe + individuelles",
@@ -1097,11 +1089,6 @@
           "2026-06": 15000, "2026-07": 22500, "2026-08": 0,
           "2026-09": 31500, "2026-10": 45000, "2026-11": 45000, "2026-12": 45000,
         },
-      },
-      "29672578": {
-        type: "rdv", name: "Lucas Cheron", role: "BDR CSE",
-        periodLabel: "Janv.–Déc. 2026", rdvTarget: 40, closingRate: 0.05,
-        months: ["2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10", "2026-11", "2026-12"],
       },
       // Setters (alternants BDR) : objectif de RDV pris fixé en début de mois.
       // Sans objectif pour un mois → pas de prime RDV ce mois-là (affichage seulement).
@@ -1125,9 +1112,7 @@
     // Membres encadrés par la team lead. Sert au switcher dans le hero pour Camille.
     const TEAM_LEAD_MEMBERS = [
       { id: "78105232", name: "Camille Lecorno", role: "Team Lead" },
-      { id: "33334703", name: "Johanna Eboko",   role: "AE Confirmé" },
       { id: "33386465", name: "Hugo Rodrigues",  role: "AE Junior" },
-      { id: "29672578", name: "Lucas Cheron",    role: "BDR" },
       { id: "37380501", name: "Calix Gabeu",     role: "Setter" },
       { id: "37380500", name: "Antonin Fayard",  role: "Setter" },
     ];
@@ -2232,12 +2217,12 @@
               { term: "Reste à l'objectif", text: "Montant encore manquant pour atteindre l'objectif mensuel affiché dans le tableau.", example: "Exemple : objectif 20 000 € et 12 000 € signés = 8 000 € restants." },
               ...(config.directRateByMonth ? [{
                 term: "Avril / mai sans objectif",
-                text: "Pour Hugo et Johanna, avril et mai n'ont pas d'objectif mensuel. Toute signature sur ces deux mois est commissionnée à 11% direct.",
+                text: "Pour Hugo, avril et mai n'ont pas d'objectif mensuel. Toute signature sur ces deux mois est commissionnée à 11% direct.",
                 example: "Exemple : 12 000 € TTC signés en mai = 10 000 € HT, donc 1 100 € de commission."
               }] : []),
               ...(config.type === "ae" ? [{
                 term: "5% RDV signés par autre",
-                text: "Si Hugo ou Johanna prend le RDV (meeting au titre 'Présentation' / 'Presentation') mais que le deal est signé par un autre commercial ou la team lead, ils touchent 5% du montant HT.",
+                text: "Si Hugo prend le RDV (meeting au titre 'Présentation' / 'Presentation') mais que le deal est signé par un autre commercial ou la team lead, ils touchent 5% du montant HT.",
                 example: "Exemple : Hugo prend un R1 chez Acme, Camille closure à 24 000 € TTC. Hugo touche 5% × 20 000 € HT = 1 000 €."
               }] : []),
               ...(config.type === "teamLead" ? [{
@@ -4338,7 +4323,7 @@
         const stats          = config.type === "rdv"
           ? computeRdv(json.meetings || [], json.opened_deals || [], json.deals || [], config)
           : compute(json.deals || [], config, { byMonth: sourceMonthly, byMonthPerso: persoMonthly });
-        // Pour Hugo / Johanna : 5% HT sur les deals où ils ont pris le RDV mais qu'un autre a signé.
+        // Pour Hugo : 5% HT sur les deals où ils ont pris le RDV mais qu'un autre a signé.
         const kickback       = config.type === "ae"
           ? computeKickback(json.kickback_deals || [], 0.05)
           : { byMonth: {}, totalHT: 0, totalCount: 0, totalCommission: 0, rate: 0.05 };
