@@ -816,6 +816,189 @@
     }
     .def-example::before { content:"Ex."; font-weight:800; }
 
+    /* ══════════════ SETTER (alternants BDR) ══════════════ */
+    .pill.ko   { background:var(--rose-light);   color:#9f1239; box-shadow:0 0 0 1px rgba(244,63,94,0.18); }
+    .pill.warn { background:var(--amber-light);  color:#92400e; box-shadow:0 0 0 1px rgba(245,158,11,0.25); }
+    .pill.info { background:var(--indigo-light); color:#3730a3; }
+
+    .st-month { display:grid; grid-template-columns:minmax(0, 1.55fr) minmax(0, 1fr); gap:20px; align-items:start; }
+    .st-big { display:flex; align-items:baseline; flex-wrap:wrap; gap:6px 10px; }
+    .st-big .n {
+      font-size:46px; font-weight:900; line-height:1; letter-spacing:-0.04em;
+      font-variant-numeric:tabular-nums;
+      background:linear-gradient(180deg, var(--slate-900), var(--indigo-dark));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    .st-big .of { font-size:20px; font-weight:800; color:var(--slate-400); font-variant-numeric:tabular-nums; }
+    .st-big .what { font-size:12px; font-weight:600; color:var(--slate-500); display:inline-flex; align-items:center; gap:8px; }
+    .st-pace { margin-top:8px; font-size:11.5px; color:var(--slate-500); font-weight:500; }
+    .st-pace strong { color:var(--slate-900); font-weight:700; }
+    .st-month .tier-track-wrap { margin-top:30px; }
+    .st-month .tiers { margin-top:20px; }
+    .st-month .tier .seuil { font-variant-numeric:tabular-nums; }
+
+    .st-quality {
+      padding:16px; border-radius:16px;
+      background:rgba(248,250,252,0.78);
+      border:1px solid rgba(226,232,240,0.9);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,0.5);
+    }
+    .st-q-head { display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; }
+    .st-q-rate {
+      margin-top:10px; font-size:38px; font-weight:900; line-height:1; letter-spacing:-0.03em;
+      font-variant-numeric:tabular-nums; color:#047857;
+    }
+    .st-quality.ko .st-q-rate { color:#be123c; }
+    .st-quality.empty .st-q-rate { color:var(--slate-400); }
+    .st-q-note { margin-top:6px; font-size:11px; color:var(--slate-500); line-height:1.45; }
+    .st-q-note strong { color:var(--slate-900); }
+    .st-rate-gauge {
+      position:relative; height:12px; margin:30px 0 4px;
+      border-radius:999px; background:rgba(226,232,240,0.85);
+      box-shadow:inset 0 2px 4px rgba(15,23,42,0.06);
+    }
+    .st-rate-fill {
+      position:absolute; top:0; left:0; bottom:0; width:0;
+      border-radius:inherit;
+      background:linear-gradient(90deg, #6ee7b7, var(--emerald));
+      box-shadow:0 0 14px 1px rgba(16,185,129,0.35);
+      transition:width 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .st-quality.ko .st-rate-fill { background:linear-gradient(90deg, #fda4af, var(--rose)); box-shadow:0 0 14px 1px rgba(244,63,94,0.35); }
+    .st-rate-mark {
+      position:absolute; top:-6px; bottom:-6px; width:2px;
+      transform:translateX(-50%);
+      background:var(--slate-700); border-radius:2px;
+    }
+    .st-rate-mark span {
+      position:absolute; bottom:calc(100% + 4px); left:50%; transform:translateX(-50%);
+      font-size:9.5px; font-weight:800; color:var(--slate-600); white-space:nowrap;
+    }
+    .st-counts { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:8px; margin-top:14px; }
+    .st-counts-cap {
+      grid-column:1 / -1; margin-top:2px;
+      font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:var(--slate-400);
+    }
+    .st-count {
+      padding:9px 10px; border-radius:12px;
+      background:rgba(255,255,255,0.82);
+      border:1px solid rgba(226,232,240,0.9);
+      min-width:0;
+    }
+    .st-count .n { font-size:20px; font-weight:800; line-height:1.1; font-variant-numeric:tabular-nums; color:var(--slate-900); }
+    .st-count .l {
+      margin-top:3px; font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em;
+      color:var(--slate-500); display:flex; align-items:center; gap:5px; white-space:nowrap;
+    }
+    .st-count .l::before { content:""; flex:0 0 auto; width:7px; height:7px; border-radius:50%; background:var(--dot, var(--slate-300)); }
+    .st-count.done        { --dot:var(--emerald); }
+    .st-count.noShow      { --dot:var(--rose); }
+    .st-count.canceled    { --dot:#fb7185; }
+    .st-count.rescheduled { --dot:var(--slate-400); }
+    .st-count.pending     { --dot:var(--amber); }
+    .st-count.upcoming    { --dot:var(--indigo); }
+    .st-count.out .n { color:var(--slate-600); }
+    .st-count.pending.has {
+      background:linear-gradient(135deg, rgba(254,243,199,0.95), rgba(253,230,138,0.5));
+      border-color:rgba(245,158,11,0.5);
+      box-shadow:0 8px 18px -12px rgba(245,158,11,0.85);
+    }
+    .st-count.pending.has .n, .st-count.pending.has .l { color:#92400e; }
+    .st-alert {
+      margin-top:12px; padding:12px 14px; border-radius:14px;
+      background:linear-gradient(135deg, rgba(254,243,199,0.8), rgba(253,230,138,0.4));
+      border:1px solid rgba(245,158,11,0.35);
+      font-size:12px; color:var(--slate-700); line-height:1.45;
+    }
+    .st-alert > strong { color:#92400e; }
+    .st-alert ul { list-style:none; margin-top:8px; display:grid; gap:6px; }
+    .st-alert li { display:grid; gap:1px; min-width:0; }
+    .st-alert li .t { font-size:11.5px; font-weight:700; color:var(--slate-900); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .st-alert li .s { font-size:10.5px; color:#92400e; font-weight:600; }
+    .st-alert .more { margin-top:6px; font-size:10.5px; color:var(--slate-500); }
+
+    .st-indicators {
+      display:grid; gap:14px; align-items:stretch;
+      grid-template-columns:minmax(0, 1fr) minmax(0, 1.45fr) minmax(0, 1fr) minmax(0, 1.3fr);
+    }
+    .st-ind .card-head { padding:12px 16px; }
+    .st-ind .card-body { padding:14px 16px 16px; }
+    .st-ind-row { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
+    .st-ind-val {
+      font-size:30px; font-weight:800; line-height:1.05; letter-spacing:-0.03em;
+      font-variant-numeric:tabular-nums;
+      background:linear-gradient(180deg, var(--slate-900), var(--slate-700));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    .st-ind-val.alert { background:linear-gradient(180deg, #e11d48, #9f1239); -webkit-background-clip:text; background-clip:text; }
+    .st-ind-unit { font-size:12px; font-weight:700; color:var(--slate-500); }
+    .st-ind-sub { margin-top:4px; font-size:11px; color:var(--slate-500); font-weight:500; line-height:1.45; }
+    .st-ind-sub strong { color:var(--slate-900); font-weight:700; }
+    .st-delta { display:inline-flex; align-items:center; gap:3px; padding:3px 8px; border-radius:999px; font-size:10.5px; font-weight:800; white-space:nowrap; }
+    .st-delta.up   { background:var(--emerald-light); color:#047857; }
+    .st-delta.down { background:var(--rose-light);    color:#9f1239; }
+    .st-delta.flat { background:rgba(241,245,249,0.9); color:var(--slate-500); }
+    .st-wk { display:grid; gap:8px; margin-top:16px; }
+    .st-wk-row {
+      display:grid; grid-template-columns:108px minmax(0, 1fr) 24px; align-items:center; gap:8px;
+      font-size:11px; color:var(--slate-600); font-weight:600;
+    }
+    .st-wk-row small { display:block; font-size:9.5px; color:var(--slate-400); font-weight:600; }
+    .st-wk-bar { height:9px; border-radius:999px; background:rgba(226,232,240,0.85); overflow:hidden; }
+    .st-wk-bar i {
+      display:block; height:100%; width:0; border-radius:inherit;
+      background:linear-gradient(90deg, #a5b4fc, var(--indigo-dark));
+      transition:width 1.2s .3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .st-wk-row.prev .st-wk-bar i { background:rgba(148,163,184,0.6); }
+    .st-wk-row b { text-align:right; color:var(--slate-900); font-variant-numeric:tabular-nums; }
+
+    .calls-chart { width:100%; height:auto; display:block; overflow:visible; margin-top:10px; }
+    .calls-chart .ghost { fill:rgba(148,163,184,0.14); stroke:rgba(148,163,184,0.6); stroke-width:1.2; stroke-dasharray:3 3; }
+    .calls-chart .cur, .calls-chart .conn {
+      transform-origin:bottom; transform-box:fill-box;
+      animation:barGrow 0.85s cubic-bezier(0.33, 1.4, 0.5, 1) both;
+    }
+    .calls-chart .cur { filter:drop-shadow(0 3px 4px rgba(79,70,229,0.25)); }
+    .calls-chart .conn { fill:#312e81; opacity:0.5; }
+    .calls-chart .base { stroke:var(--slate-300); stroke-width:1; }
+    .calls-chart .v { fill:var(--indigo-dark); font-size:10px; font-weight:800; text-anchor:middle; }
+    .calls-chart .day { fill:var(--slate-600); font-size:10px; font-weight:700; text-anchor:middle; }
+    .calls-chart .day.today { fill:var(--indigo-dark); font-weight:800; }
+    .calls-chart .day.future { fill:var(--slate-400); font-weight:500; }
+    .calls-chart .prev-v { fill:var(--slate-400); font-size:9px; font-weight:600; text-anchor:middle; }
+    .st-legend { display:flex; gap:12px; flex-wrap:wrap; margin-top:8px; }
+    .st-legend .legend-item { font-size:10.5px; }
+    .st-legend .legend-dot { width:10px; height:10px; }
+
+    .st-list { list-style:none; display:grid; margin-top:10px; }
+    .st-list li {
+      display:grid; grid-template-columns:minmax(0, 1fr) auto; gap:1px 10px;
+      padding:8px 0; border-top:1px solid rgba(226,232,240,0.7);
+    }
+    .st-list .t { font-size:12px; font-weight:600; color:var(--slate-900); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .st-list .s { grid-column:1; font-size:10.5px; color:var(--slate-500); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .st-list .r { grid-column:2; grid-row:1 / span 2; align-self:center; }
+    .st-ind details { margin-top:4px; }
+    .st-ind details summary { padding-top:4px; }
+    .st-empty { margin-top:10px; font-size:12px; color:var(--slate-500); line-height:1.5; }
+    .st-section-title {
+      margin:18px 0 8px; font-size:10.5px; font-weight:800; text-transform:uppercase;
+      letter-spacing:0.06em; color:var(--slate-500);
+    }
+    td .cell-note { display:block; margin-top:2px; font-size:10px; color:var(--slate-400); font-weight:600; }
+    td.deal-name { white-space:normal; line-height:1.35; }
+    tr.st-current td { background:rgba(224,231,255,0.38); }
+
+    @media (max-width: 1180px) { .st-indicators { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 980px)  { .st-month { grid-template-columns:minmax(0, 1fr); } }
+    @media (max-width: 600px)  {
+      .st-indicators { grid-template-columns:minmax(0, 1fr); }
+      .st-big .n { font-size:40px; }
+      .st-count { padding:8px; }
+      .st-count .l { font-size:8.5px; letter-spacing:0.02em; }
+    }
+
     /* ══════════════ FOOTER / STATE ══════════════ */
     .footer { padding:14px 20px 24px; text-align:center; font-size:11px; color:var(--slate-500); font-weight:500; }
 
@@ -857,6 +1040,26 @@
   <canvas id="confetti"></canvas>
 
   <script>
+    // ── Règles setters (« PRIMES ALTERNANTS BDR », validées par Victor le 02/10/2026) ──
+    // Un RDV pris = R1 (titre « Présentation ») posé par le setter dans l'agenda d'un AE,
+    // compté dans le mois de la PRISE (hs_createdate, Europe/Paris), pas dans celui de la réunion.
+    // Annulés et décalés comptent comme RDV pris. Seuls no-show et annulés sont des absences, et
+    // seulement une fois la date de la réunion passée (taux sur les R1 qui ont déjà eu lieu).
+    const SETTER_RULES = {
+      type: "setter", role: "Setter CSE",
+      startMonth: "2026-09",     // premier mois affiché dans le tableau des mois
+      noShowMax: 0.30,           // au-delà, la prime RDV du mois passe à 0
+      prime100: 150,             // prime cible à 100 % de l'objectif
+      prime120: 200,             // prime cible à 120 % de l'objectif
+      paliers: [                 // % de l'objectif de RDV pris → prime RDV du mois
+        { pct: 60,  prime: 37.5 },  // 25 % de la prime cible 100 %
+        { pct: 75,  prime: 75   },  // 50 % de la prime cible 100 %
+        { pct: 100, prime: 150  },  // = prime100
+        { pct: 120, prime: 200  },  // = prime120
+      ],
+      closingRate: 0.03,         // 3 % HT des deals signés après un R1 du setter
+    };
+
     // ── Config commerciaux (règles fiches Q2 2026) ────────────────────────────
     const CONFIG = {
       "33386465": {
@@ -900,6 +1103,16 @@
         periodLabel: "Janv.–Déc. 2026", rdvTarget: 40, closingRate: 0.05,
         months: ["2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10", "2026-11", "2026-12"],
       },
+      // Setters (alternants BDR) : objectif de RDV pris fixé en début de mois.
+      // Sans objectif pour un mois → pas de prime RDV ce mois-là (affichage seulement).
+      "37380501": {
+        ...SETTER_RULES, name: "Calix Gabeu",
+        objectifsRdv: { "2026-10": 25 },
+      },
+      "37380500": {
+        ...SETTER_RULES, name: "Antonin Fayard",
+        objectifsRdv: { "2026-10": 25 },
+      },
     };
 
     const TIERS = [
@@ -915,6 +1128,8 @@
       { id: "33334703", name: "Johanna Eboko",   role: "AE Confirmé" },
       { id: "33386465", name: "Hugo Rodrigues",  role: "AE Junior" },
       { id: "29672578", name: "Lucas Cheron",    role: "BDR" },
+      { id: "37380501", name: "Calix Gabeu",     role: "Setter" },
+      { id: "37380500", name: "Antonin Fayard",  role: "Setter" },
     ];
     const TEAM_LEAD_OWNERS = new Set(["78105232"]);
 
@@ -948,6 +1163,9 @@
     const BASE  = "https://yhtxrjegdeuwkcjvkfkt.supabase.co/functions/v1";
     const API   = BASE + "/prime-dashboard";
     const PRIME_AI_API = BASE + "/prime-ai-query";
+    // Lien personnel : le jeton de l'URL est envoyé tel quel, la fonction décide (403 = hors périmètre).
+    const ACCESS_DENIED_MSG  = "Ce lien n'ouvre pas ce tableau de bord.";
+    const ACCESS_INVALID_MSG = "Lien d'accès invalide ou révoqué : demande un nouveau lien personnel.";
 
     // ── Helpers ───────────────────────────────────────────────────────────────
     const fmtEur = (n) => n == null ? "–" : (+n).toLocaleString("fr-FR",{ style:"currency", currency:"EUR", maximumFractionDigits: 0 });
@@ -1903,6 +2121,14 @@
     }
 
     function primeAiSuggestions(config) {
+      if (config.type === "setter") {
+        return [
+          "Combien de RDV me manquent pour le prochain palier ?",
+          "Mon taux de no-show bloque-t-il ma prime ce mois-ci ?",
+          "Combien je touche si je pose 25 RDV ce mois-ci ?",
+          "Combien me rapporte un deal signé à 6 000 € TTC ?"
+        ];
+      }
       if (config.type === "rdv") {
         return [
           "Pourquoi Lucas est à 16 RDV en avril ?",
@@ -1964,6 +2190,9 @@
           ],
         },
       ];
+
+      // Setters : pas de prime d'équipe trimestrielle sur leur fiche, on ne montre que leurs règles.
+      if (config.type === "setter") return setterDefinitionGroups(config);
 
       if (config.type === "rdv") {
         return common.concat([
@@ -2038,7 +2267,7 @@
             <div class="modal-head">
               <div>
                 <h3 id="definitions-modal-title">Définitions du dashboard</h3>
-                <p>${esc(config.name)} · explication des indicateurs, du prévisionnel et du simulateur</p>
+                <p>${esc(config.name)} · ${config.type === "setter" ? "explication des règles de prime et des indicateurs d'activité" : "explication des indicateurs, du prévisionnel et du simulateur"}</p>
               </div>
               <button id="definitions-modal-close" class="modal-close" type="button" aria-label="Fermer les définitions">×</button>
             </div>
@@ -2457,12 +2686,17 @@
             "Content-Type": "application/json",
             Authorization: `Bearer ${TOKEN}`,
           },
+          // owner_id / mode : la fonction vérifie que le lien personnel couvre ce tableau de bord.
           body: JSON.stringify({
             question,
+            owner_id: OWNER,
+            mode: config.type || "ae",
             context: PRIME_AI_CONTEXT || { profile: { name: config.name, role: config.role } },
           }),
         });
-        const json = await res.json();
+        if (res.status === 403) throw new Error(ACCESS_DENIED_MSG);
+        const json = await res.json().catch(() => ({}));
+        if (res.status === 401) throw new Error(ACCESS_INVALID_MSG);
         if (!res.ok || !json.ok) throw new Error(json.error || `HTTP ${res.status}`);
         let html = "";
         if (json.question) html += `<p class="ai-quote">&ldquo;${esc(json.question)}&rdquo;</p>`;
@@ -2964,8 +3198,1073 @@
       });
     }
 
+    // ══════════════ SETTERS (alternants BDR) ══════════════
+    // Tout se lit en Europe/Paris : un R1 compte dans le mois et la semaine où le setter
+    // l'a posé (createdAt = hs_createdate), pas dans ceux où la réunion a lieu.
+
+    // ── Dates Europe/Paris ────────────────────────────────────────────────────
+    const PARIS_DAY_PARTS = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" });
+    const FMT_DAY_LABEL   = new Intl.DateTimeFormat("fr-FR", { timeZone: "UTC", weekday: "short", day: "numeric" });
+    const FMT_DAY_MONTH   = new Intl.DateTimeFormat("fr-FR", { timeZone: "UTC", day: "numeric", month: "short" });
+    const FMT_PARIS_DATE  = new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris", day: "numeric", month: "short" });
+    const FMT_PARIS_SLOT  = new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris", weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+    const FMT_MONTH_LONG  = new Intl.DateTimeFormat("fr-FR", { timeZone: "UTC", month: "long", year: "numeric" });
+
+    function toDate(value) {
+      if (value == null || value === "") return null;
+      // HubSpot renvoie parfois des timestamps en ms sous forme de chaîne.
+      const raw = typeof value === "string" && /^\d+$/.test(value) ? Number(value) : value;
+      const d = new Date(raw);
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+    function parisDayKey(value) {
+      const d = toDate(value);
+      if (!d) return "";
+      const p = Object.fromEntries(PARIS_DAY_PARTS.formatToParts(d).map(x => [x.type, x.value]));
+      return `${p.year}-${p.month}-${p.day}`;
+    }
+    const parisMonthKey = (value) => parisDayKey(value).slice(0, 7);
+    // Les clés jour "YYYY-MM-DD" se manipulent en UTC pur (pas de changement d'heure).
+    const dayKeyUtc  = (key) => { const [y, m, d] = String(key).split("-").map(Number); return Date.UTC(y, m - 1, d); };
+    const addDaysKey = (key, n) => new Date(dayKeyUtc(key) + n * 86400000).toISOString().slice(0, 10);
+    const weekdayOf  = (key) => new Date(dayKeyUtc(key)).getUTCDay(); // 0 = dimanche
+    const mondayKey  = (key) => addDaysKey(key, -((weekdayOf(key) + 6) % 7));
+    const fmtDayKey  = (key, fmt = FMT_DAY_MONTH) => key ? fmt.format(new Date(dayKeyUtc(key))) : "–";
+    const fmtParisDate = (value) => { const d = toDate(value); return d ? FMT_PARIS_DATE.format(d) : "–"; };
+    const fmtParisSlot = (value) => { const d = toDate(value); return d ? FMT_PARIS_SLOT.format(d) : "date inconnue"; };
+    const timeOf = (value) => toDate(value)?.getTime() ?? 0;
+    function monthLabelLong(key) {
+      const [y, m] = String(key).split("-").map(Number);
+      return y && m ? FMT_MONTH_LONG.format(new Date(Date.UTC(y, m - 1, 15))) : String(key);
+    }
+    const monthLabelShort = (key) => MOIS[key] || monthLabelLong(key);
+    const capFirst = (s) => String(s || "").charAt(0).toUpperCase() + String(s || "").slice(1);
+    function workdaysBetween(startKey, endKey) {
+      let n = 0;
+      for (let k = startKey; k <= endKey; k = addDaysKey(k, 1)) {
+        const d = weekdayOf(k);
+        if (d !== 0 && d !== 6) n++;
+      }
+      return n;
+    }
+    function lastDayOfMonthKey(key) {
+      const [y, m] = String(key).split("-").map(Number);
+      return new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10);
+    }
+
+    // ── Formats ───────────────────────────────────────────────────────────────
+    // Les primes setter tombent sur des centimes (37,50 €, 3 % du HT) : on les garde.
+    const fmtPrime = (n) => {
+      if (n == null) return "–";
+      const v = Math.round(Number(n) * 100) / 100;
+      return v.toLocaleString("fr-FR", { style: "currency", currency: "EUR", minimumFractionDigits: Number.isInteger(v) ? 0 : 2, maximumFractionDigits: 2 });
+    };
+    // Une décimale : 30,4 % ne doit pas s'afficher « 30 % » alors qu'il dépasse le seuil.
+    const fmtPct = (ratio) => ratio == null ? "–" : Number(ratio).toLocaleString("fr-FR", { style: "percent", maximumFractionDigits: 1 });
+    const sumBy  = (list, fn) => list.reduce((s, x) => s + (Number(fn(x)) || 0), 0);
+    const plural = (n, one, many) => `${fmtNum(n)} ${n > 1 ? many : one}`;
+
+    const SETTER_TIER_STYLE = [
+      { key: "bronze",  emoji: "🥉" },
+      { key: "silver",  emoji: "🥈" },
+      { key: "gold",    emoji: "🥇" },
+      { key: "platine", emoji: "💎" },
+    ];
+    // inRate : le statut entre dans le taux de no-show (dénominateur).
+    const SETTER_STATUS = {
+      done:        { label: "Effectués",    inRate: true  },
+      noShow:      { label: "No-show",      inRate: true  },
+      canceled:    { label: "Annulés",      inRate: true  },
+      rescheduled: { label: "Décalés",      inRate: false },
+      pending:     { label: "À renseigner", inRate: false },
+      upcoming:    { label: "À venir",      inRate: false },
+    };
+    const SETTER_GAUGE_MAX_PCT = 130; // la jauge RDV va jusqu'à 130 % pour laisser voir le palier 120 %
+
+    function closerName(id) {
+      const key = String(id || "");
+      if (!key) return "closer non renseigné";
+      return CONFIG[key]?.name || `owner ${key}`;
+    }
+
+    function dedupeById(list) {
+      const seen = new Set();
+      return (Array.isArray(list) ? list : []).filter(item => {
+        const id = String(item?.id ?? "");
+        if (!id) return true;
+        if (seen.has(id)) return false;
+        seen.add(id);
+        return true;
+      });
+    }
+
+    const isCanceledOutcome = (outcome) => ["CANCELED", "CANCELLED"].includes(String(outcome || "").trim().toUpperCase());
+
+    // Statut d'un R1. Le taux de no-show ne porte que sur les R1 dont la réunion a déjà eu lieu :
+    // tant que la date n'est pas passée, le R1 reste « à venir », même s'il est déjà marqué annulé
+    // (prospect qui annule à l'avance) ; il pèse comme absence à sa date. Le décalé reste décalé
+    // quelle que soit la date (hors taux dans tous les cas). Date passée sans résultat (SCHEDULED
+    // ou vide) : « à renseigner ».
+    function setterMeetingStatus(meeting, nowMs) {
+      const outcome = String(meeting?.outcome || "").trim().toUpperCase();
+      if (outcome === "RESCHEDULED") return "rescheduled";
+      const start = toDate(meeting?.startTime);
+      if (start && start.getTime() > nowMs) return "upcoming";
+      if (outcome === "COMPLETED") return "done";
+      if (outcome === "NO_SHOW") return "noShow";
+      if (isCanceledOutcome(outcome)) return "canceled";
+      return "pending";
+    }
+
+    // Atteinte en % entier, calculée en entiers : 29 / 25 = 116 %, pas 115 % (1,16 × 100 en flottant).
+    function setterAttainmentPct(row) {
+      return row.hasObjective ? Math.floor((row.rdv * 100) / row.target) : null;
+    }
+
+    // Paliers du mois avec le nombre de RDV minimum (ex. objectif 25 → 15 / 19 / 25 / 30).
+    function setterPaliers(config, target) {
+      return (config.paliers || []).slice().sort((a, b) => a.pct - b.pct).map((p, i) => ({
+        ...SETTER_TIER_STYLE[Math.min(i, SETTER_TIER_STYLE.length - 1)],
+        ...p,
+        min: Math.ceil((target * p.pct) / 100),
+      }));
+    }
+
+    // Comparaison entière (rdv × 100 ≥ objectif × %) : pas d'arrondi flottant sur les seuils.
+    function setterPalierFor(config, rdv, target) {
+      if (!(target > 0)) return null;
+      const reached = setterPaliers(config, target).filter(p => rdv * 100 >= target * p.pct);
+      return reached.length ? reached[reached.length - 1] : null;
+    }
+
+    // Mois affichés : du premier mois setter jusqu'au mois en cours (ou au dernier objectif fixé).
+    function setterMonths(config, nowMonth) {
+      const objectiveKeys = Object.keys(config.objectifsRdv || {}).sort();
+      const end = [nowMonth, objectiveKeys[objectiveKeys.length - 1] || ""].sort().pop();
+      const months = [];
+      for (let k = config.startMonth || nowMonth; k && k <= end && months.length < 36; k = shiftMonthKey(k, 1)) months.push(k);
+      return months;
+    }
+
+    function computeSetter(setter, config, nowMs, json = {}) {
+      const rawMeetings = Array.isArray(setter.meetings) ? setter.meetings : (json.meetings || []);
+      const meetings = dedupeById(rawMeetings).map(m => ({
+        ...m,
+        takenKey: parisDayKey(m.createdAt || m.startTime), // jour de la prise
+        status: setterMeetingStatus(m, nowMs),
+      }));
+      const todayKey = parisDayKey(nowMs);
+      const nowMonth = todayKey.slice(0, 7);
+      const months = setterMonths(config, nowMonth);
+      const monthsSet = new Set(months);
+      const rate = config.closingRate ?? 0.03;
+      const maxPct = Math.round((config.noShowMax ?? 0.30) * 100);
+      const signedDeals = dedupeById(setter.signed_deals).map(d => ({
+        ...d, monthKey: parisMonthKey(d.closedate), ht: Number(d.amount || 0) / TVA,
+      }));
+      const generatedDeals = dedupeById(setter.generated_deals).map(d => ({
+        ...d, monthKey: parisMonthKey(d.createdate),
+      }));
+
+      const rows = months.map(m => {
+        const taken = meetings.filter(x => x.takenKey.slice(0, 7) === m);
+        const counts = Object.fromEntries(Object.keys(SETTER_STATUS).map(k => [k, 0]));
+        taken.forEach(x => { counts[x.status] += 1; });
+        // « À venir » déjà marqués annulés : hors taux aujourd'hui, absences à leur date.
+        const canceledAhead = taken.filter(x => x.status === "upcoming" && isCanceledOutcome(x.outcome)).length;
+        const rawTarget = config.objectifsRdv?.[m];
+        const target = rawTarget == null ? null : Number(rawTarget);
+        const hasObjective = target != null && target > 0;
+        const rdv = taken.length; // annulés et décalés compris
+        const palier = hasObjective ? setterPalierFor(config, rdv, target) : null;
+        // Taux de no-show : (no-show + annulés) / (effectués + no-show + annulés).
+        const absences = counts.noShow + counts.canceled;
+        const rateBase = counts.done + absences;
+        const noShowRate = rateBase > 0 ? absences / rateBase : null;
+        const qualityOk = rateBase === 0 || absences * 100 <= maxPct * rateBase;
+        const primePalier = palier ? palier.prime : 0;
+        const primeRdv = hasObjective && qualityOk ? primePalier : 0;
+        const signed = signedDeals.filter(d => d.monthKey === m);
+        const signedHT = sumBy(signed, d => d.ht);
+        const primeSignature = signedHT * rate; // sans autre condition (ni objectif ni no-show)
+        return {
+          mois: m, label: monthLabelShort(m), longLabel: monthLabelLong(m),
+          isPast: m < nowMonth, isCurrent: m === nowMonth, isFuture: m > nowMonth,
+          meetings: taken, rdv, target: hasObjective ? target : null, hasObjective,
+          attainment: hasObjective ? rdv / target : null,
+          palier, primePalier, counts, canceledAhead, absences, rateBase, noShowRate, qualityOk,
+          blocked: hasObjective && !qualityOk && primePalier > 0,
+          primeRdv, signed, signedHT, primeSignature,
+          generated: generatedDeals.filter(d => d.monthKey === m).length,
+          total: primeRdv + primeSignature,
+        };
+      });
+
+      const accrued = rows.filter(r => !r.isFuture);
+      return {
+        meetings, rows, months, monthsSet, todayKey, nowMonth, nowMs, maxPct, rate,
+        current: rows.find(r => r.isCurrent) || rows[rows.length - 1] || null,
+        signedDeals, generatedDeals,
+        totalRdv: sumBy(accrued, r => r.rdv),
+        totalPrimeRdv: sumBy(accrued, r => r.primeRdv),
+        totalSignature: sumBy(accrued, r => r.primeSignature),
+        total: sumBy(accrued, r => r.total),
+      };
+    }
+
+    // Indicateurs d'activité (semaines du lundi au dimanche, Europe/Paris).
+    function computeSetterActivity(setter, stats) {
+      const { todayKey, meetings } = stats;
+      const curMon = mondayKey(todayKey);
+      const prevMon = addDaysKey(curMon, -7);
+      const inWeek = (key, mon) => !!key && key >= mon && key <= addDaysKey(mon, 6);
+      const callsByDay = setter.calls_by_day && typeof setter.calls_by_day === "object" ? setter.calls_by_day : null;
+      // connected = null quand le serveur n'a pas pu lire les dispositions d'appel : nombre inconnu,
+      // on le garde tel quel (affiché « – »), surtout pas un faux 0. Jour absent = aucun appel.
+      const callAt = (key) => {
+        const c = callsByDay?.[key];
+        if (!c) return { total: 0, connected: 0 };
+        return { total: Number(c.total || 0), connected: c.connected == null ? null : (Number(c.connected) || 0) };
+      };
+      const sumConnected = (list, pick) => list.some(d => pick(d).connected == null) ? null : sumBy(list, d => pick(d).connected);
+      // Jours ouvrés seulement (lundi → vendredi), semaine en cours face à la précédente.
+      const days = [0, 1, 2, 3, 4].map(i => {
+        const key = addDaysKey(curMon, i);
+        const prevKey = addDaysKey(prevMon, i);
+        return { key, prevKey, cur: callAt(key), prev: callAt(prevKey), future: key > todayKey, today: key === todayKey };
+      });
+      const elapsed = days.filter(d => !d.future);
+      const tasks = setter.overdue_tasks && typeof setter.overdue_tasks === "object" ? setter.overdue_tasks : null;
+      const taskItems = (Array.isArray(tasks?.items) ? tasks.items : []).slice()
+        .sort((a, b) => timeOf(a.dueDate) - timeOf(b.dueDate)); // les plus anciennes d'abord
+      return {
+        curMon, prevMon, curEnd: addDaysKey(curMon, 6), prevEnd: addDaysKey(prevMon, 6),
+        r1Cur: meetings.filter(m => inWeek(m.takenKey, curMon)).length,
+        r1Prev: meetings.filter(m => inWeek(m.takenKey, prevMon)).length,
+        hasCalls: !!callsByDay,
+        days,
+        elapsedDays: elapsed.length,
+        curTotal: sumBy(elapsed, d => d.cur.total),
+        curConnected: sumConnected(elapsed, d => d.cur),
+        prevTotal: sumBy(days, d => d.prev.total),
+        prevConnected: sumConnected(days, d => d.prev),
+        hasTasks: !!tasks,
+        overdueCount: Number(tasks?.count ?? taskItems.length) || 0,
+        overdueItems: taskItems,
+      };
+    }
+
+    function dealStageInfo(stage) {
+      const s = String(stage || "").toLowerCase();
+      if (s === "closedwon") return { label: "Signé", cls: "ok" };
+      if (s === "closedlost") return { label: "Perdu", cls: "zero" };
+      return { label: "En cours", cls: "info" };
+    }
+
+    function deltaPill(diff, suffix) {
+      if (diff > 0) return `<span class="st-delta up">▲ +${fmtNum(diff)} ${suffix}</span>`;
+      if (diff < 0) return `<span class="st-delta down">▼ −${fmtNum(Math.abs(diff))} ${suffix}</span>`;
+      return `<span class="st-delta flat">= ${suffix}</span>`;
+    }
+
+    // ── Rendu : KPIs du mois ──────────────────────────────────────────────────
+    function renderSetterKpis(config, stats) {
+      const r = stats.current;
+      const paliers = r.hasObjective ? setterPaliers(config, r.target) : [];
+      const next = paliers.find(p => r.rdv < p.min) || null;
+      const nextKpi = !r.hasObjective
+        ? `<div class="val">–</div><div class="sub">pas d'objectif fixé en ${esc(r.longLabel)}</div>`
+        : (next
+          ? `<div class="val" data-countup="${next.prime}" data-countup-format="prime">${fmtPrime(0)}</div><div class="sub">palier ${next.pct} % à ${fmtNum(next.min)} RDV · plus que <strong>${plural(next.min - r.rdv, "RDV", "RDV")}</strong>${r.qualityOk ? "" : ` · versée si no-show ≤ ${stats.maxPct} %`}</div>`
+          : `<div class="val" data-countup="${paliers[paliers.length - 1]?.prime || 0}" data-countup-format="prime">${fmtPrime(0)}</div><div class="sub">💎 palier max ${paliers[paliers.length - 1]?.pct || 120} % atteint</div>`);
+      const rateKpi = r.rateBase === 0
+        ? `<div class="val">–</div><div class="sub">aucun R1 au résultat saisi · seuil ${stats.maxPct} %</div>`
+        : `<div class="val" data-countup="${r.noShowRate}" data-countup-format="pct">${fmtPct(0)}</div><div class="sub">seuil ${stats.maxPct} % · ${r.qualityOk ? "✓ prime RDV versée" : "✗ prime RDV à 0"}${r.counts.pending ? ` · ${plural(r.counts.pending, "à renseigner", "à renseigner")}` : ""}</div>`;
+      return `
+        <div class="kpis">
+          <div class="kpi glass indigo reveal" style="animation-delay:.05s">
+            <span class="accent"></span><span class="glow"></span>
+            <div class="lbl"><span class="dot"></span>Prime ${esc(r.longLabel)}${r.isCurrent ? " à date" : ""}</div>
+            <div class="val" data-countup="${r.total}" data-countup-format="prime">${fmtPrime(0)}</div>
+            <div class="sub">${r.hasObjective ? (r.blocked ? "prime RDV bloquée (no-show)" : `${fmtPrime(r.primeRdv)} RDV`) : "pas de prime RDV (sans objectif)"} + ${fmtPrime(r.primeSignature)} signatures</div>
+          </div>
+          <div class="kpi glass emerald reveal" style="animation-delay:.13s">
+            <span class="accent"></span><span class="glow"></span>
+            <div class="lbl"><span class="dot"></span>Prochain palier RDV</div>
+            ${nextKpi}
+          </div>
+          <div class="kpi glass amber reveal" style="animation-delay:.21s">
+            <span class="accent"></span><span class="glow"></span>
+            <div class="lbl"><span class="dot"></span>Taux de no-show ${esc(r.label)}</div>
+            ${rateKpi}
+          </div>
+          <div class="kpi glass violet reveal" style="animation-delay:.29s">
+            <span class="accent"></span><span class="glow"></span>
+            <div class="lbl"><span class="dot"></span>Prime cumulée</div>
+            <div class="val" data-countup="${stats.total}" data-countup-format="prime">${fmtPrime(0)}</div>
+            <div class="sub">depuis ${esc(monthLabelLong(stats.months[0] || stats.nowMonth))} · ${fmtPrime(stats.totalPrimeRdv)} RDV + ${fmtPrime(stats.totalSignature)} signatures</div>
+          </div>
+        </div>`;
+    }
+
+    // ── Rendu : mois en cours (RDV pris + qualité) ────────────────────────────
+    function renderSetterObjectiveBlock(config, row, stats) {
+      const target = row.target;
+      const paliers = setterPaliers(config, target);
+      const current = row.palier;
+      const next = paliers.find(p => row.rdv < p.min) || null;
+      const pctFloor = setterAttainmentPct(row); // 59,5 % ne doit pas s'afficher 60 %
+      const fillPct = Math.min(100, (row.attainment * 100 / SETTER_GAUGE_MAX_PCT) * 100);
+      const notches = paliers.map(p =>
+        `<div class="tier-notch" style="left:${(p.pct / SETTER_GAUGE_MAX_PCT * 100).toFixed(2)}%"><div class="tier-notch-lbl">${p.pct} %</div></div>`
+      ).join("");
+
+      const tiersHtml = paliers.map(p => {
+        const done = row.rdv >= p.min;
+        const isCurrent = done && current?.pct === p.pct;
+        const isNext = !done && next?.pct === p.pct;
+        const detail = isCurrent
+          ? (row.qualityOk ? (row.isCurrent ? "Prime acquise à date" : "Prime du mois") : "Bloquée : no-show")
+          : (done ? "Palier atteint" : (isNext ? `Plus que ${plural(p.min - row.rdv, "RDV", "RDV")}` : "À débloquer"));
+        const stateLabel = done ? (isCurrent ? "✓ Actuel" : "✓ Atteint") : "🔒 Verrouillé";
+        return `<div class="tier ${p.key} ${done ? "unlocked" : "locked"} ${isCurrent ? "current" : ""} ${isNext ? "next" : ""}">
+          <span class="tier-state ${done ? "unlocked" : "locked"}">${stateLabel}</span>
+          <span class="emoji">${p.emoji}</span>
+          <div class="name">Palier ${p.pct} %</div>
+          <div class="seuil">≥ ${fmtNum(p.min)} RDV</div>
+          <div class="prime">${fmtPrime(p.prime)}</div>
+          <div class="tier-detail">${esc(detail)}</div>
+        </div>`;
+      }).join("");
+
+      // Rythme : RDV pris par jour ouvré écoulé, projeté sur le mois (indicatif).
+      let pace = "";
+      if (row.isCurrent) {
+        const monthStart = `${row.mois}-01`;
+        const monthEnd = lastDayOfMonthKey(row.mois);
+        const elapsed = workdaysBetween(monthStart, stats.todayKey);
+        const totalDays = workdaysBetween(monthStart, monthEnd);
+        const left = Math.max(0, totalDays - elapsed);
+        if (elapsed >= 3 && totalDays > 0) {
+          const projected = Math.round((row.rdv / elapsed) * totalDays);
+          pace = `Au rythme actuel : ≈ <strong>${plural(projected, "RDV", "RDV")}</strong> fin ${esc(row.label.toLowerCase())} · ${plural(left, "jour ouvré restant", "jours ouvrés restants")}`;
+        } else {
+          pace = `${plural(left, "jour ouvré restant", "jours ouvrés restants")} ce mois-ci`;
+        }
+      }
+
+      const subLeft = row.qualityOk
+        ? `Prime RDV ${esc(row.longLabel)}${row.isCurrent ? " à date" : ""} : <strong>${fmtPrime(row.primeRdv)}</strong>${current ? ` · ${current.emoji} palier ${current.pct} %` : " · aucun palier"}`
+        : `Prime RDV bloquée : no-show <strong>${fmtPct(row.noShowRate)}</strong> &gt; ${stats.maxPct} %${current ? ` (palier ${fmtPrime(current.prime)} suspendu)` : ""}`;
+      const subRight = next
+        ? `Prochaine : ${next.emoji} <strong>${fmtPrime(next.prime)}</strong> à ${fmtNum(next.min)} RDV · plus que <strong>${plural(next.min - row.rdv, "RDV", "RDV")}</strong>`
+        : `💎 Palier max atteint`;
+
+      return `
+        <div class="st-big">
+          <span class="n" data-countup="${row.rdv}" data-countup-format="num">${fmtNum(0)}</span>
+          <span class="of">/ ${fmtNum(target)}</span>
+          <span class="what">RDV pris <span class="pill ${pctFloor >= 100 ? "surperf" : (current ? "ok" : "zero")}">${pctFloor} % de l'objectif</span></span>
+        </div>
+        ${pace ? `<div class="st-pace">${pace}</div>` : ""}
+        <div class="tier-track-wrap">
+          <div class="tier-track">
+            <div class="tier-fill" data-w="${fillPct.toFixed(2)}">
+              ${current ? `<div class="head-bubble">${current.emoji}</div>` : ""}
+            </div>
+            ${notches}
+          </div>
+        </div>
+        <div class="tiers">${tiersHtml}</div>
+        <div class="tier-sub"><span>${subLeft}</span><span>${subRight}</span></div>`;
+    }
+
+    function renderSetterNoObjectiveBlock(row) {
+      return `
+        <div class="st-big">
+          <span class="n" data-countup="${row.rdv}" data-countup-format="num">${fmtNum(0)}</span>
+          <span class="what">RDV pris en ${esc(row.longLabel)}</span>
+        </div>
+        <div class="tier-sub" style="margin-top:22px">
+          <span><strong>Pas d'objectif fixé</strong> pour ${esc(row.longLabel)} : pas de prime RDV ce mois-ci.</span>
+          <span>Les RDV restent comptés, la prime sur signature s'applique.</span>
+        </div>`;
+    }
+
+    function renderSetterPendingAlert(stats, row) {
+      const pendingAll = stats.meetings.filter(m => m.status === "pending" && stats.monthsSet.has(m.takenKey.slice(0, 7)));
+      if (!pendingAll.length) return "";
+      const here = pendingAll.filter(m => m.takenKey.slice(0, 7) === row.mois).sort((a, b) => timeOf(a.startTime) - timeOf(b.startTime));
+      const others = pendingAll.length - here.length;
+      const moreOthers = others > 0 ? `<div class="more">+ ${plural(others, "R1 à renseigner", "R1 à renseigner")} sur d'autres mois</div>` : "";
+      if (!here.length) {
+        return `<div class="st-alert"><strong>${plural(others, "R1 passé sans résultat", "R1 passés sans résultat")}</strong> sur d'autres mois : le closer doit le saisir dans HubSpot.</div>`;
+      }
+      const items = here.slice(0, 5).map(m => `
+        <li>
+          <span class="t">${esc(m.title || "R1 sans titre")}</span>
+          <span class="s">${esc(fmtParisSlot(m.startTime))} · à saisir par ${esc(closerName(m.closerOwnerId))}</span>
+        </li>`).join("");
+      const moreHere = here.length > 5 ? `<div class="more">+ ${fmtNum(here.length - 5)} autre${here.length - 5 > 1 ? "s" : ""} en ${esc(row.longLabel)}</div>` : "";
+      return `
+        <div class="st-alert">
+          <strong>${plural(here.length, "R1 passé sans résultat", "R1 passés sans résultat")}</strong> : le closer doit saisir le résultat dans HubSpot (effectué, no-show, annulé ou décalé). Taux provisoire d'ici là.
+          <ul>${items}</ul>
+          ${moreHere}${moreOthers}
+        </div>`;
+    }
+
+    function renderSetterQuality(row, stats) {
+      const c = row.counts;
+      const empty = row.rateBase === 0;
+      const cls = empty ? "empty" : (row.qualityOk ? "ok" : "ko");
+      const state = empty
+        ? `<span class="pill zero">en attente de résultats</span>`
+        : (row.qualityOk
+          ? `<span class="pill ok">✓ ≤ ${stats.maxPct} % · prime RDV versée</span>`
+          : `<span class="pill ko">✗ &gt; ${stats.maxPct} % · prime RDV à 0</span>`);
+      const fill = empty ? 0 : Math.min(100, row.noShowRate * 100);
+      const ahead = row.canceledAhead
+        ? ` Dont ${plural(row.canceledAhead, "R1 à venir déjà annulé, qui comptera comme absence à sa date", "R1 à venir déjà annulés, qui compteront comme absences à leur date")}.`
+        : "";
+      const note = empty
+        ? `Aucun R1 de ce mois n'a encore eu lieu avec un résultat saisi (effectué, no-show ou annulé).${ahead}`
+        : `Taux de show <strong>${fmtPct(c.done / row.rateBase)}</strong> · (${plural(c.noShow, "no-show", "no-show")} + ${plural(c.canceled, "annulé", "annulés")}) / <strong>${plural(row.rateBase, "R1", "R1")}</strong> passés au résultat saisi. Décalés, à renseigner et à venir restent hors taux.${ahead}`;
+      const chip = (key, extra = "") => `
+        <div class="st-count ${key} ${SETTER_STATUS[key].inRate ? "" : "out"} ${extra}">
+          <div class="n">${fmtNum(c[key])}</div>
+          <div class="l">${esc(SETTER_STATUS[key].label)}</div>
+        </div>`;
+      return `
+        <div class="st-quality ${cls}">
+          <div class="st-q-head"><span class="metric-eyebrow">Taux de no-show · ${esc(row.label)}</span>${state}</div>
+          <div class="st-q-rate">${empty ? "–" : fmtPct(row.noShowRate)}</div>
+          <div class="st-q-note">${note}</div>
+          <div class="st-rate-gauge">
+            <div class="st-rate-fill" data-w="${fill.toFixed(1)}"></div>
+            <div class="st-rate-mark" style="left:${stats.maxPct}%"><span>seuil ${stats.maxPct} %</span></div>
+          </div>
+          <div class="st-counts">
+            <div class="st-counts-cap">Dans le taux</div>
+            ${chip("done")}${chip("noShow")}${chip("canceled")}
+            <div class="st-counts-cap">Hors taux</div>
+            ${chip("rescheduled")}${chip("pending", c.pending > 0 ? "has" : "")}${chip("upcoming")}
+          </div>
+          ${renderSetterPendingAlert(stats, row)}
+        </div>`;
+    }
+
+    function renderSetterMonthCard(config, row, stats) {
+      return `
+        <div class="glass reveal" style="animation-delay:.34s">
+          <div class="card-head">
+            <h3><span class="head-ico">📅</span>${esc(capFirst(row.longLabel))} · RDV pris</h3>
+            <span class="meta">comptés le jour de la prise · annulés et décalés compris${row.hasObjective ? ` · objectif <strong>${fmtNum(row.target)}</strong>` : ""}</span>
+          </div>
+          <div class="card-body">
+            <div class="st-month">
+              <div>${row.hasObjective ? renderSetterObjectiveBlock(config, row, stats) : renderSetterNoObjectiveBlock(row)}</div>
+              <div>${renderSetterQuality(row, stats)}</div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    // ── Rendu : rangée d'indicateurs d'activité ───────────────────────────────
+    function renderSetterWeekCard(act) {
+      const max = Math.max(1, act.r1Cur, act.r1Prev);
+      return `
+        <div class="glass st-ind reveal" style="animation-delay:.42s">
+          <div class="card-head">
+            <h3><span class="head-ico">📍</span>R1 pris · semaine</h3>
+            <span class="meta">jour de la prise</span>
+          </div>
+          <div class="card-body">
+            <div class="st-ind-row">
+              <span class="st-ind-val" data-countup="${act.r1Cur}" data-countup-format="num">${fmtNum(0)}</span>
+              <span class="st-ind-unit">cette semaine</span>
+            </div>
+            <div style="margin-top:6px">${deltaPill(act.r1Cur - act.r1Prev, "vs semaine dernière")}</div>
+            <div class="st-wk">
+              <div class="st-wk-row">
+                <span>Cette semaine<small>${esc(fmtDayKey(act.curMon))} – ${esc(fmtDayKey(act.curEnd))}</small></span>
+                <div class="st-wk-bar"><i data-w="${(act.r1Cur / max * 100).toFixed(1)}"></i></div>
+                <b>${fmtNum(act.r1Cur)}</b>
+              </div>
+              <div class="st-wk-row prev">
+                <span>Semaine dernière<small>${esc(fmtDayKey(act.prevMon))} – ${esc(fmtDayKey(act.prevEnd))}</small></span>
+                <div class="st-wk-bar"><i data-w="${(act.r1Prev / max * 100).toFixed(1)}"></i></div>
+                <b>${fmtNum(act.r1Prev)}</b>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    // Barres « semaine en cours » posées dans le fantôme pointillé de la semaine précédente
+    // (même logique visuelle que objectif / réalisé dans les graphes mensuels).
+    function renderCallsChart(days) {
+      const W = 320, H = 158, PL = 4, PR = 4, PT = 16, PB = 34;
+      const innerW = W - PL - PR, innerH = H - PT - PB;
+      const max = Math.max(1, ...days.flatMap(d => [d.future ? 0 : d.cur.total, d.prev.total]));
+      const yMax = max * 1.12;
+      const colW = innerW / days.length;
+      const ghostW = Math.min(42, colW * 0.68);
+      const barW = ghostW * 0.56;
+      const baseY = PT + innerH;
+      let marks = "";
+      // Connectés inconnus (null) : ni barre foncée ni « N connectés » dans l'infobulle.
+      const callsTitle = (c) => `${c.total} appels${c.connected == null ? "" : `, ${c.connected} connectés`}`;
+      days.forEach((d, i) => {
+        const cx = PL + colW * i + colW / 2;
+        const hPrev = (d.prev.total / yMax) * innerH;
+        if (hPrev > 0) {
+          marks += `<rect class="ghost" x="${(cx - ghostW / 2).toFixed(1)}" y="${(baseY - hPrev).toFixed(1)}" width="${ghostW.toFixed(1)}" height="${hPrev.toFixed(1)}" rx="6"><title>${esc(fmtDayKey(d.prevKey, FMT_DAY_LABEL))} : ${callsTitle(d.prev)}</title></rect>`;
+        }
+        if (!d.future) {
+          const hCur = (d.cur.total / yMax) * innerH;
+          const hConn = d.cur.connected == null ? 0 : Math.min(hCur, (d.cur.connected / yMax) * innerH);
+          const delay = (0.2 + i * 0.06).toFixed(2);
+          if (hCur > 0) {
+            marks += `<rect class="cur" x="${(cx - barW / 2).toFixed(1)}" y="${(baseY - hCur).toFixed(1)}" width="${barW.toFixed(1)}" height="${hCur.toFixed(1)}" rx="5" fill="url(#st-calls-grad)" style="animation-delay:${delay}s"><title>${esc(fmtDayKey(d.key, FMT_DAY_LABEL))} : ${callsTitle(d.cur)}</title></rect>`;
+          }
+          if (hConn > 0) {
+            marks += `<rect class="conn" x="${(cx - barW / 2).toFixed(1)}" y="${(baseY - hConn).toFixed(1)}" width="${barW.toFixed(1)}" height="${hConn.toFixed(1)}" rx="5" style="animation-delay:${delay}s"/>`;
+          }
+          marks += `<text class="v" x="${cx.toFixed(1)}" y="${(baseY - hCur - 5).toFixed(1)}">${fmtNum(d.cur.total)}</text>`;
+        }
+        marks += `<text class="day ${d.today ? "today" : (d.future ? "future" : "")}" x="${cx.toFixed(1)}" y="${baseY + 14}">${esc(fmtDayKey(d.key, FMT_DAY_LABEL))}</text>`;
+        marks += `<text class="prev-v" x="${cx.toFixed(1)}" y="${baseY + 27}">s-1 : ${fmtNum(d.prev.total)}</text>`;
+      });
+      return `
+        <svg class="calls-chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Appels par jour ouvré, semaine en cours et semaine précédente">
+          <defs>
+            <linearGradient id="st-calls-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"  stop-color="#a5b4fc"/>
+              <stop offset="60%" stop-color="#6366f1"/>
+              <stop offset="100%" stop-color="#4f46e5"/>
+            </linearGradient>
+          </defs>
+          <line class="base" x1="${PL}" y1="${baseY}" x2="${W - PR}" y2="${baseY}"/>
+          ${marks}
+        </svg>`;
+    }
+
+    function renderSetterCallsCard(act) {
+      const head = (meta) => `
+        <div class="card-head">
+          <h3><span class="head-ico">📞</span>Appels par jour</h3>
+          <span class="meta">${meta}</span>
+        </div>`;
+      if (!act.hasCalls) {
+        return `<div class="glass st-ind reveal" style="animation-delay:.48s">${head("jours ouvrés")}<div class="card-body"><div class="st-empty">Appels indisponibles pour le moment.</div></div></div>`;
+      }
+      const avgCur = act.elapsedDays ? act.curTotal / act.elapsedDays : 0;
+      const avgPrev = act.prevTotal / 5;
+      const connectedKnown = act.curConnected != null;
+      const connectedPct = act.curTotal && connectedKnown ? act.curConnected / act.curTotal : null;
+      return `
+        <div class="glass st-ind reveal" style="animation-delay:.48s">
+          ${head(`<strong>${fmtNum(act.curTotal)}</strong> cette semaine · ${fmtNum(act.prevTotal)} la précédente`)}
+          <div class="card-body">
+            <div class="st-ind-row">
+              <span class="st-ind-val" data-countup="${Math.round(avgCur)}" data-countup-format="num">${fmtNum(0)}</span>
+              <span class="st-ind-unit">appels / jour</span>
+              ${deltaPill(Math.round(avgCur) - Math.round(avgPrev), "vs sem. dernière")}
+            </div>
+            <div class="st-ind-sub">moyenne sur ${plural(act.elapsedDays, "jour ouvré", "jours ouvrés")} · <strong>${fmtNum(act.curConnected)}</strong> connectés${connectedPct == null ? "" : ` (${fmtPct(connectedPct)})`}</div>
+            ${act.curTotal + act.prevTotal === 0
+              ? `<div class="st-empty">Aucun appel enregistré sur ces deux semaines.</div>`
+              : `${renderCallsChart(act.days)}
+            <div class="st-legend legend">
+              <span class="legend-item"><span class="legend-dot" style="background:linear-gradient(180deg,#a5b4fc,#4f46e5)"></span>Cette semaine</span>
+              ${connectedKnown ? `<span class="legend-item"><span class="legend-dot" style="background:#312e81; opacity:.55"></span>dont connectés</span>` : ""}
+              <span class="legend-item"><span class="legend-dot" style="background:rgba(148,163,184,0.14); border:1px dashed rgba(148,163,184,0.7)"></span>Semaine dernière</span>
+            </div>`}
+          </div>
+        </div>`;
+    }
+
+    function renderSetterDealsCard(stats) {
+      const deals = stats.generatedDeals.slice().sort((a, b) => timeOf(b.createdate) - timeOf(a.createdate));
+      const r = stats.current;
+      const openTTC = sumBy(deals.filter(d => !["closedwon", "closedlost"].includes(String(d.stage || "").toLowerCase())), d => d.amount);
+      const items = deals.slice(0, 3).map(d => {
+        const stage = dealStageInfo(d.stage);
+        return `
+          <li>
+            <span class="t">${esc(d.name || "Deal sans nom")}</span>
+            <span class="s">créé le ${esc(fmtParisDate(d.createdate))} · ${fmtEur(d.amount)} TTC</span>
+            <span class="r"><span class="pill ${stage.cls}">${stage.label}</span></span>
+          </li>`;
+      }).join("");
+      return `
+        <div class="glass st-ind reveal" style="animation-delay:.54s">
+          <div class="card-head">
+            <h3><span class="head-ico">🧾</span>Transactions générées</h3>
+            <span class="meta">après un R1</span>
+          </div>
+          <div class="card-body">
+            <div class="st-ind-row">
+              <span class="st-ind-val" data-countup="${r.generated}" data-countup-format="num">${fmtNum(0)}</span>
+              <span class="st-ind-unit">en ${esc(r.label.toLowerCase())}</span>
+            </div>
+            <div class="st-ind-sub"><strong>${fmtNum(deals.length)}</strong> depuis ${esc(monthLabelLong(stats.months[0] || stats.nowMonth))} · ${plural(stats.signedDeals.length, "signée", "signées")} · ${fmtEur(openTTC)} TTC encore en cours</div>
+            ${deals.length ? `<ul class="st-list">${items}</ul>` : `<div class="st-empty">Pas encore de deal créé sur une société de tes R1.</div>`}
+          </div>
+        </div>`;
+    }
+
+    function renderSetterTasksCard(act, stats) {
+      const head = `
+        <div class="card-head">
+          <h3><span class="head-ico">⏰</span>Tâches en retard</h3>
+          <span class="meta">échéance passée, non terminées</span>
+        </div>`;
+      if (!act.hasTasks) {
+        return `<div class="glass st-ind reveal" style="animation-delay:.60s">${head}<div class="card-body"><div class="st-empty">Tâches indisponibles pour le moment.</div></div></div>`;
+      }
+      const todayUtc = dayKeyUtc(stats.todayKey);
+      const item = (t) => {
+        const dueKey = parisDayKey(t.dueDate);
+        const late = dueKey ? Math.max(0, Math.round((todayUtc - dayKeyUtc(dueKey)) / 86400000)) : null;
+        return `
+          <li>
+            <span class="t">${esc(t.subject || "Tâche sans titre")}</span>
+            <span class="s">${esc(t.companyName || "sans société")} · échéance ${esc(fmtParisDate(t.dueDate))}</span>
+            <span class="r"><span class="pill ko">${late == null ? "en retard" : (late === 0 ? "aujourd'hui" : `${fmtNum(late)} j`)}</span></span>
+          </li>`;
+      };
+      const shown = act.overdueItems.slice(0, 4);
+      const rest = act.overdueItems.slice(4);
+      const beyond = Math.max(0, act.overdueCount - act.overdueItems.length);
+      return `
+        <div class="glass st-ind reveal" style="animation-delay:.60s">
+          ${head}
+          <div class="card-body">
+            <div class="st-ind-row">
+              <span class="st-ind-val ${act.overdueCount > 0 ? "alert" : ""}" data-countup="${act.overdueCount}" data-countup-format="num">${fmtNum(0)}</span>
+              <span class="st-ind-unit">${act.overdueCount > 1 ? "tâches en retard" : "tâche en retard"}</span>
+            </div>
+            ${act.overdueCount === 0
+              ? `<div class="st-empty">Aucune tâche en retard 👏</div>`
+              : `<ul class="st-list">${shown.map(item).join("")}</ul>
+                 ${rest.length ? `<details><summary>Voir ${plural(rest.length, "autre tâche", "autres tâches")}</summary><ul class="st-list">${rest.map(item).join("")}</ul></details>` : ""}
+                 ${beyond ? `<div class="st-ind-sub">+ ${plural(beyond, "autre tâche", "autres tâches")} dans HubSpot</div>` : ""}`}
+          </div>
+        </div>`;
+    }
+
+    // ── Rendu : prime sur signature ───────────────────────────────────────────
+    function renderSetterSignatureCard(config, stats) {
+      const rate = stats.rate;
+      const meetingsById = new Map(stats.meetings.map(m => [String(m.id), m]));
+      // Date qui sert à la règle côté serveur (r1AnchorMs) : la PRISE du R1, pas la réunion.
+      // Un deal signé entre la prise et la réunion est légitime ; afficher la date de réunion
+      // le ferait passer pour « signé avant le R1 ».
+      const r1Date = (d) => {
+        const m = meetingsById.get(String(d.fromMeetingId ?? ""));
+        return m ? fmtParisDate(m.createdAt || m.startTime) : "–";
+      };
+      const signed = stats.signedDeals.filter(d => stats.monthsSet.has(d.monthKey))
+        .sort((a, b) => timeOf(b.closedate) - timeOf(a.closedate));
+      const generated = stats.generatedDeals.slice().sort((a, b) => timeOf(b.createdate) - timeOf(a.createdate));
+      const cur = stats.current;
+      const signedRows = signed.map(d => `
+        <tr>
+          <td class="deal-name"><strong>${esc(d.name || "Deal sans nom")}</strong></td>
+          <td class="num">${esc(r1Date(d))}</td>
+          <td class="num">${esc(fmtParisDate(d.closedate))}</td>
+          <td class="num">${fmtEur(d.amount)}</td>
+          <td class="num">${fmtEur(d.ht)}</td>
+          <td class="num"><strong>${fmtPrime(d.ht * rate)}</strong></td>
+        </tr>`).join("");
+      const generatedRows = generated.map(d => {
+        const stage = dealStageInfo(d.stage);
+        return `
+          <tr>
+            <td class="deal-name"><strong>${esc(d.name || "Deal sans nom")}</strong></td>
+            <td class="num">${esc(r1Date(d))}</td>
+            <td class="num">${esc(fmtParisDate(d.createdate))}</td>
+            <td class="num"><span class="pill ${stage.cls}">${stage.label}</span></td>
+            <td class="num">${fmtEur(d.amount)}</td>
+            <td class="num">${d.closedate ? esc(fmtParisDate(d.closedate)) : "–"}</td>
+          </tr>`;
+      }).join("");
+      const colgroup = `<colgroup><col style="width:34%" /><col /><col /><col /><col /><col /></colgroup>`;
+      return `
+        <div class="glass reveal" style="animation-delay:.66s">
+          <div class="card-head">
+            <h3><span class="head-ico">✍️</span>Prime sur signature · ${Math.round(rate * 100)} % HT</h3>
+            <span class="meta">signés après un R1 sur la même société · <strong>${fmtPrime(cur.primeSignature)}</strong> en ${esc(cur.label.toLowerCase())} · ${fmtPrime(stats.totalSignature)} au total</span>
+          </div>
+          <div class="card-body" style="padding:0">
+            ${signed.length ? `
+              <div class="table-wrap">
+                <table>
+                  ${colgroup}
+                  <thead>
+                    <tr>
+                      <th>Deal signé</th>
+                      <th class="num">R1 pris le</th>
+                      <th class="num">Signé le</th>
+                      <th class="num">Montant TTC</th>
+                      <th class="num">Montant HT</th>
+                      <th class="num">Prime ${Math.round(rate * 100)} %</th>
+                    </tr>
+                  </thead>
+                  <tbody>${signedRows}</tbody>
+                </table>
+              </div>`
+            : `<div class="card-body"><div class="st-empty" style="margin-top:0">Aucune signature pour l'instant sur tes R1. Dès qu'un AE signe un deal sur une société où tu as posé un R1 (après ce R1), ${Math.round(rate * 100)} % du HT s'ajoute ici.</div></div>`}
+            ${generated.length ? `
+              <details style="margin:0; padding:12px 18px 14px; border-top:1px solid rgba(226,232,240,0.7)">
+                <summary>Voir ${plural(generated.length, "transaction générée", "transactions générées")} (deals créés après un R1 sur la même société)</summary>
+                <div class="table-wrap" style="margin-top:8px">
+                  <table>
+                    ${colgroup}
+                    <thead>
+                      <tr>
+                        <th>Deal</th>
+                        <th class="num">R1 pris le</th>
+                        <th class="num">Créé le</th>
+                        <th class="num">Étape</th>
+                        <th class="num">Montant TTC</th>
+                        <th class="num">Signature</th>
+                      </tr>
+                    </thead>
+                    <tbody>${generatedRows}</tbody>
+                  </table>
+                </div>
+              </details>` : ""}
+          </div>
+        </div>`;
+    }
+
+    // ── Rendu : tableau des mois ──────────────────────────────────────────────
+    function renderSetterMonthsTable(stats) {
+      const rowsHtml = stats.rows.map(r => {
+        const c = r.counts;
+        const state = r.isFuture ? ` <span class="pill future">à venir</span>` : (r.isCurrent ? ` <span class="pill future">à date</span>` : "");
+        const attain = r.hasObjective
+          ? `${setterAttainmentPct(r)} %${r.palier ? ` <span class="pill ${r.palier.pct >= 100 ? "surperf" : "ok"}">${r.palier.emoji} ${r.palier.pct} %</span>` : ""}`
+          : "–";
+        const pendingNote = c.pending ? `${plural(c.pending, "à renseigner", "à renseigner")}` : "";
+        const noShow = r.rateBase
+          ? `${fmtPct(r.noShowRate)}${r.qualityOk ? "" : ` <span class="pill ko">&gt; ${stats.maxPct} %</span>`}<span class="cell-note">${r.absences} / ${r.rateBase}${pendingNote ? ` · ${pendingNote}` : ""}</span>`
+          : `–${pendingNote ? `<span class="cell-note">${pendingNote}</span>` : ""}`;
+        const primeRdv = !r.hasObjective
+          ? `<span class="pill zero">pas d'objectif fixé</span>`
+          : (r.blocked ? `<span class="pill ko">0 € · no-show</span>` : fmtPrime(r.primeRdv));
+        return `<tr${r.isCurrent ? ' class="st-current"' : ""}>
+          <td><strong>${esc(r.label)}</strong>${state}</td>
+          <td class="num">${fmtNum(r.rdv)}</td>
+          <td class="num">${r.hasObjective ? fmtNum(r.target) : "–"}</td>
+          <td class="num">${attain}</td>
+          <td class="num">${noShow}</td>
+          <td class="num">${primeRdv}</td>
+          <td class="num">${fmtPrime(r.primeSignature)}${r.signed.length ? `<span class="cell-note">${plural(r.signed.length, "deal", "deals")}</span>` : ""}</td>
+          <td class="num"><strong>${fmtPrime(r.total)}</strong></td>
+        </tr>`;
+      }).join("");
+      return `
+        <div class="glass reveal" style="animation-delay:.72s">
+          <div class="card-head">
+            <h3><span class="head-ico">🗂️</span>Détail mensuel</h3>
+            <span class="meta">RDV comptés au mois de la prise · prime RDV versée si no-show ≤ ${stats.maxPct} %</span>
+          </div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <colgroup>
+                  <col class="col-mois" />
+                  <col class="col-num" /><col class="col-num" /><col class="col-num" /><col class="col-num" />
+                  <col class="col-num" /><col class="col-num" /><col class="col-num" />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>Mois</th>
+                    <th class="num">RDV pris</th>
+                    <th class="num">Objectif</th>
+                    <th class="num">Atteinte</th>
+                    <th class="num">No-show</th>
+                    <th class="num">Prime RDV</th>
+                    <th class="num">Prime signature</th>
+                    <th class="num">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rowsHtml}
+                  <tr class="row-soft">
+                    <td><strong>Total</strong></td>
+                    <td class="num"><strong>${fmtNum(stats.totalRdv)}</strong></td>
+                    <td class="num">–</td>
+                    <td class="num">–</td>
+                    <td class="num">–</td>
+                    <td class="num"><strong>${fmtPrime(stats.totalPrimeRdv)}</strong></td>
+                    <td class="num"><strong>${fmtPrime(stats.totalSignature)}</strong></td>
+                    <td class="num"><strong>${fmtPrime(stats.total)}</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    // ── Définitions & contexte IA ─────────────────────────────────────────────
+    function setterDefinitionGroups(config) {
+      const maxPct = Math.round((config.noShowMax ?? 0.30) * 100);
+      const ratePct = Math.round((config.closingRate ?? 0.03) * 100);
+      const paliersText = setterPaliers(config, 100).map(p => `${p.pct} % → ${fmtPrime(p.prime)}`).join(" · ");
+      const exTarget = Object.values(config.objectifsRdv || {})[0] || 25;
+      const exText = setterPaliers(config, exTarget).map(p => `${p.min} RDV → ${fmtPrime(p.prime)}`).join(", ");
+      return [
+        {
+          title: "Prime RDV",
+          items: [
+            { term: "RDV pris", text: "R1 (réunion dont le titre contient « Présentation ») que tu poses dans l'agenda d'un AE. Il compte le jour où tu le poses, pas le jour de la réunion. Les R1 annulés et décalés comptent aussi.", example: "Un R1 posé le 28 octobre pour le 4 novembre compte en octobre." },
+            { term: "Objectif du mois", text: "Fixé en début de mois. Sans objectif fixé, pas de prime RDV ce mois-là : les RDV restent comptés et affichés." },
+            { term: "Paliers", text: `Moins de ${setterPaliers(config, 100)[0]?.pct || 60} % de l'objectif → 0 € · ${paliersText}.`, example: `Objectif ${exTarget} : ${exText}.` },
+          ],
+        },
+        {
+          title: "Condition qualité",
+          items: [
+            { term: "Taux de no-show", text: `(no-show + annulés) / (effectués + no-show + annulés), sur les R1 pris dans le mois dont la réunion a déjà eu lieu et dont le résultat est saisi. Au-delà de ${maxPct} %, la prime RDV du mois passe à 0 (la prime sur signature reste due).`, example: `10 R1 au résultat saisi dont 2 no-show et 1 annulé → 30 % : prime versée si le seuil est ${maxPct} %.` },
+            { term: "Annulé", text: "Compte comme RDV pris. Une fois la date de la réunion passée, il pèse comme une absence dans le taux ; annulé à l'avance, il reste « à venir » (hors taux) jusqu'à sa date." },
+            { term: "Décalé", text: "Compte comme RDV pris, mais ce n'est ni une absence ni un effectué : il reste hors du taux." },
+            { term: "À renseigner", text: "R1 dont la date est passée sans résultat saisi dans HubSpot. Hors du taux tant que le closer ne l'a pas saisi : le taux affiché est provisoire." },
+            { term: "À venir", text: "R1 dont la date n'est pas encore passée, même s'il est déjà marqué annulé (sauf décalé). Hors du taux jusqu'à sa date." },
+          ],
+        },
+        {
+          title: "Prime sur signature",
+          items: [
+            { term: `${ratePct} % HT`, text: `${ratePct} % du montant HT (montant HubSpot / 1,2) de chaque deal signé dans le mois sur une société où tu as posé un R1, signé après la prise de ce R1. Pas d'autre condition.`, example: `Deal signé à 4 800 € TTC = 4 000 € HT → ${fmtPrime(4000 * (config.closingRate ?? 0.03))}.` },
+          ],
+        },
+        {
+          title: "Activité",
+          items: [
+            { term: "R1 pris · semaine", text: "R1 posés du lundi au dimanche (heure de Paris), semaine en cours face à la précédente." },
+            { term: "Appels par jour", text: "Appels HubSpot dont tu es propriétaire, par jour ouvré. La semaine précédente apparaît en pointillés derrière chaque barre ; la partie foncée = appels connectés." },
+            { term: "Transactions générées", text: "Deals créés sur une société de tes R1, après la prise du R1 (le jour où tu l'as posé)." },
+            { term: "Tâches en retard", text: "Tes tâches HubSpot non terminées dont l'échéance est passée, les plus anciennes d'abord." },
+          ],
+        },
+      ];
+    }
+
+    function buildSetterAiContext(config, stats, act) {
+      const round2 = (n) => Number(Number(n || 0).toFixed(2));
+      const nextCalendarKey = shiftMonthKey(stats.nowMonth, 1);
+      const monthly = stats.rows.map(r => ({
+        mois: r.mois,
+        label: r.longLabel,
+        objectif_rdv: r.target,
+        pas_d_objectif_fixe: !r.hasObjective,
+        rdv_pris: r.rdv,
+        atteinte_pct: setterAttainmentPct(r),
+        palier_atteint_pct: r.palier ? r.palier.pct : null,
+        prime_palier: round2(r.primePalier),
+        effectues: r.counts.done,
+        no_show: r.counts.noShow,
+        annules: r.counts.canceled,
+        decales: r.counts.rescheduled,
+        a_renseigner: r.counts.pending,
+        a_venir: r.counts.upcoming,
+        a_venir_deja_annules: r.canceledAhead,
+        taux_no_show_pct: r.noShowRate == null ? null : Number((r.noShowRate * 100).toFixed(1)),
+        condition_no_show_ok: r.qualityOk,
+        prime_rdv: round2(r.primeRdv),
+        signatures: r.signed.length,
+        signature_ht: round2(r.signedHT),
+        prime_signature: round2(r.primeSignature),
+        prime_totale: round2(r.total),
+        transactions_generees: r.generated,
+      }));
+      return {
+        generated_at: new Date().toISOString(),
+        temporal_context: {
+          today_iso: stats.todayKey,
+          current_calendar_month: { key: stats.nowMonth, label: monthLabelLong(stats.nowMonth) },
+          next_calendar_month: { key: nextCalendarKey, label: monthLabelLong(nextCalendarKey) },
+          available_months: stats.rows.map(r => ({ key: r.mois, label: r.longLabel, is_current_calendar_month: r.isCurrent })),
+        },
+        profile: {
+          owner_id: OWNER,
+          name: config.name,
+          role: config.role,
+          type: "setter",
+          dashboard_input_unit: "TTC pour les montants de deal (HT = TTC / 1,2)",
+        },
+        finance_context: { type: "setter", tva_multiplier: TVA, signature_rate: config.closingRate },
+        rules: {
+          summary: "Setter (alternant BDR) : il pose des R1 dans l'agenda des AE. Prime RDV mensuelle par paliers sur l'objectif de RDV pris, versée seulement si le taux de no-show est sous le seuil, plus une prime sur signature.",
+          rdv_rule: {
+            counted_if: [
+              "réunion dont le titre contient Présentation ou Presentation",
+              "créée par le setter dans l'agenda d'un AE",
+              "tous résultats confondus : annulés et décalés comptent comme RDV pris",
+            ],
+            month_assignment: "mois de la prise du RDV (date de création, Europe/Paris), pas le mois de la réunion",
+            objectifs_par_mois: config.objectifsRdv,
+            sans_objectif: "pas de prime RDV ce mois-là",
+            paliers: [{ min_pct: 0, prime: 0 }].concat(setterPaliers(config, 100).map(p => ({ min_pct: p.pct, prime: p.prime }))),
+            palier_rule: "prime du palier le plus haut atteint : RDV pris × 100 ≥ objectif × pourcentage du palier",
+          },
+          quality_rule: {
+            formula: "(no-show + annulés) / (effectués + no-show + annulés), sur les R1 pris dans le mois dont la réunion a déjà eu lieu et au résultat saisi",
+            max_no_show_rate: config.noShowMax,
+            absences: ["no-show", "annulé (une fois la date de la réunion passée)"],
+            hors_taux: ["décalé", "à renseigner (date passée sans résultat)", "à venir (date pas encore passée, même si déjà marqué annulé : a_venir_deja_annules)"],
+            effet: "si le taux dépasse le seuil, la prime RDV du mois vaut 0 ; la prime sur signature reste due",
+          },
+          signature_rule: {
+            rate: config.closingRate,
+            base: "montant HT = amount HubSpot / 1,2",
+            condition: "deal closedwon signé dans le mois, sur une société associée à un R1 du setter, signé après la date de ce R1",
+            default_input_unit: "TTC",
+          },
+        },
+        summary: {
+          mois_en_cours: stats.current ? monthly.find(m => m.mois === stats.current.mois) : null,
+          prime_rdv_cumulee: round2(stats.totalPrimeRdv),
+          prime_signature_cumulee: round2(stats.totalSignature),
+          prime_totale_cumulee: round2(stats.total),
+        },
+        monthly,
+        monthly_by_key: Object.fromEntries(monthly.map(m => [m.mois, m])),
+        activity: {
+          r1_semaine_en_cours: { du: act.curMon, au: act.curEnd, r1_pris: act.r1Cur },
+          r1_semaine_precedente: { du: act.prevMon, au: act.prevEnd, r1_pris: act.r1Prev },
+          appels: act.hasCalls ? {
+            semaine_en_cours: act.days.filter(d => !d.future).map(d => ({ jour: d.key, appels: d.cur.total, connectes: d.cur.connected })),
+            semaine_precedente: act.days.map(d => ({ jour: d.prevKey, appels: d.prev.total, connectes: d.prev.connected })),
+            total_semaine_en_cours: act.curTotal,
+            total_semaine_precedente: act.prevTotal,
+            ...(act.curConnected == null || act.prevConnected == null
+              ? { connectes_note: "connectes = null : nombre d'appels connectés inconnu (dispositions HubSpot illisibles), pas zéro" }
+              : {}),
+          } : null,
+          transactions_generees_total: stats.generatedDeals.length,
+          taches_en_retard: act.hasTasks ? act.overdueCount : null,
+        },
+        signed_deals: stats.signedDeals.slice(0, 20).map(d => ({
+          name: d.name,
+          amount_ttc: Number(d.amount || 0),
+          amount_ht: round2(d.ht),
+          prime_signature: round2(d.ht * stats.rate),
+          closedate: d.closedate,
+        })),
+        generated_deals: stats.generatedDeals.slice(0, 20).map(d => ({
+          name: d.name,
+          amount_ttc: Number(d.amount || 0),
+          stage: d.stage,
+          createdate: d.createdate,
+          closedate: d.closedate,
+        })),
+      };
+    }
+
+    // ── Rendu principal setter ────────────────────────────────────────────────
+    function renderSetterDashboard(config, json) {
+      const setter = json.setter && typeof json.setter === "object" ? json.setter : {};
+      // Horloge de référence : celle du serveur si fournie, sinon celle du navigateur.
+      const serverNow = Date.parse(setter.now || "");
+      const nowMs = Number.isFinite(serverNow) ? serverNow : MS_NOW;
+      const stats = computeSetter(setter, config, nowMs, json);
+      if (!stats.current) { renderError("Aucun mois à afficher pour ce setter."); return; }
+      const act = computeSetterActivity(setter, stats);
+      const r = stats.current;
+      const maxPct = stats.maxPct;
+      const paliersPct = setterPaliers(config, 100).map(p => p.pct).join(" / ");
+      const firstName = String(config.name || "").split(" ")[0];
+
+      document.getElementById("root").innerHTML = `
+        <div class="hero">
+          <div class="hero-head">
+            <div class="hero-title">
+              <div>
+                <h1>Prime 2026 — ${esc(config.name)}</h1>
+                <div class="sub">${esc(config.role)} · ${r.hasObjective ? `objectif ${esc(r.longLabel)} : ${fmtNum(r.target)} RDV pris` : `pas d'objectif fixé en ${esc(r.longLabel)}`} · paliers ${paliersPct} % · no-show ≤ ${maxPct} % · ${Math.round(stats.rate * 100)} % HT sur signature</div>
+              </div>
+            </div>
+            <div class="hero-actions">
+              ${renderTeamSwitcher(config)}
+              <div class="badge">Live HubSpot</div>
+              <button class="hero-action hero-action-icon" type="button" aria-haspopup="dialog" aria-controls="definitions-modal-backdrop" aria-label="Ouvrir les définitions" title="Définitions" onclick="openDefinitionsModal()">${SETTINGS_ICON}<span class="sr-only">Définitions</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid">
+          ${renderSetterKpis(config, stats)}
+
+          ${renderSetterMonthCard(config, r, stats)}
+
+          <div class="st-indicators">
+            ${renderSetterWeekCard(act)}
+            ${renderSetterCallsCard(act)}
+            ${renderSetterDealsCard(stats)}
+            ${renderSetterTasksCard(act, stats)}
+          </div>
+
+          ${renderSetterSignatureCard(config, stats)}
+
+          ${renderSetterMonthsTable(stats)}
+
+          ${renderPrimeAiCard(config)}
+
+          <div class="footer">
+            Calculé en direct depuis HubSpot · RDV pris = R1 (« Présentation ») posés par ${esc(firstName)} dans l'agenda d'un AE, comptés le jour de la prise (heure de Paris), annulés et décalés compris · No-show = (no-show + annulés) / (effectués + no-show + annulés), décalés hors taux · Signature = ${Math.round(stats.rate * 100)} % HT des deals signés après un R1 sur la même société · Information interne, sans valeur contractuelle.
+          </div>
+        </div>
+        ${renderDefinitionsModal(config)}
+      `;
+
+      const formatters = { num: fmtNum, prime: fmtPrime, pct: fmtPct };
+      document.querySelectorAll("[data-countup]").forEach(el => {
+        const v = parseFloat(el.getAttribute("data-countup"));
+        countUp(el, v, 1400, formatters[el.getAttribute("data-countup-format")] || fmtEur);
+      });
+
+      setTimeout(() => {
+        document.querySelectorAll(".tier-fill, .st-rate-fill, .st-wk-bar i").forEach(el => {
+          el.style.width = el.getAttribute("data-w") + "%";
+        });
+      }, 250);
+
+      // Confetti quand l'objectif du mois est atteint (et la condition no-show remplie).
+      if (r.isCurrent && r.palier && r.palier.pct >= 100 && r.qualityOk) {
+        const key = `prime-confetti-setter-${OWNER}-${r.mois}-${r.palier.pct}`;
+        let seen = false;
+        try { seen = !!sessionStorage.getItem(key); sessionStorage.setItem(key, "1"); } catch (_) { /* stockage indisponible */ }
+        if (!seen) setTimeout(() => confetti({ burst: r.palier.pct >= 120 ? 2 : 1 }), 1200);
+      }
+
+      PRIME_AI_CONTEXT = buildSetterAiContext(config, stats, act);
+      bindPrimeAI(config);
+      bindDefinitionsModal();
+      bindTeamSwitcher();
+    }
+
     function renderError(msg) {
       document.getElementById("root").innerHTML = `<div class="error"><strong>Erreur :</strong> ${esc(msg)}</div>`;
+    }
+
+    function renderAccessDenied() {
+      // Une team lead qui navigue dans l'équipe garde un retour vers son propre tableau de bord.
+      const tlId = TEAM_LEAD_OWNERS.has(String(VIEWER_AS)) ? String(VIEWER_AS) : "";
+      let back = "";
+      if (tlId && tlId !== OWNER) {
+        const params = new URLSearchParams(location.search);
+        params.set("owner_id", tlId);
+        params.delete("as");
+        back = ` <a href="?${esc(params.toString())}" style="color:inherit; font-weight:700;">Revenir à mon tableau de bord</a>`;
+      }
+      document.getElementById("root").innerHTML = `<div class="error"><strong>${esc(ACCESS_DENIED_MSG)}</strong>${back}</div>`;
     }
 
     // ── Confetti ──────────────────────────────────────────────────────────────
@@ -3022,8 +4321,13 @@
         const res  = await fetch(`${API}?owner_id=${encodeURIComponent(OWNER)}&mode=${encodeURIComponent(config.type || "ae")}`, {
           headers: { Authorization: `Bearer ${TOKEN}` },
         });
-        const json = await res.json();
+        // 403 : le lien personnel ne couvre pas cet owner (ou ce mode). On n'en dit pas plus.
+        if (res.status === 403) { renderAccessDenied(); return; }
+        const json = await res.json().catch(() => ({}));
+        if (res.status === 401) throw new Error(ACCESS_INVALID_MSG);
         if (!res.ok || !json.ok) throw new Error(json.error || `HTTP ${res.status}`);
+
+        if (config.type === "setter") { renderSetterDashboard(config, json); return; }
 
         const sourceMonthly  = config.type === "teamLead" ? monthlyFromTeamAgg(json.team_monthly) : undefined;
         // Pour Camille on isole ses propres signatures parmi les deals équipe afin d'évaluer
