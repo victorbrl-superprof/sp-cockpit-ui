@@ -903,6 +903,53 @@
       border-color:rgba(245,158,11,0.5);
       box-shadow:0 8px 18px -12px rgba(245,158,11,0.85);
     }
+
+    /* ══════════════ SETTER : listes de comptes cliquables ══════════════ */
+    button.st-count { appearance:none; font:inherit; text-align:left; cursor:pointer; transition:border-color .15s, box-shadow .15s, transform .15s; }
+    button.st-count:hover:not(:disabled) { border-color:rgba(99,102,241,0.55); box-shadow:0 8px 18px -14px rgba(79,70,229,0.9); transform:translateY(-1px); }
+    button.st-count:disabled { cursor:default; }
+    .st-link {
+      appearance:none; border:none; background:none; padding:0; margin:0; font:inherit; color:inherit; cursor:pointer;
+      text-decoration:underline; text-decoration-style:dotted; text-decoration-color:rgba(99,102,241,0.55); text-underline-offset:3px;
+    }
+    .st-link:hover { color:var(--indigo-dark); text-decoration-style:solid; }
+    .st-link:focus-visible, button.st-count:focus-visible { outline:2px solid var(--indigo); outline-offset:2px; border-radius:6px; }
+    /* Préfixe st-acc : .st-list est déjà pris par les <ul> des cartes d'activité. */
+    .st-acc-modal { width:min(980px, 100%); }
+    .st-acc-group h4 {
+      display:flex; align-items:center; gap:8px; margin-bottom:8px;
+      font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--slate-500);
+    }
+    .st-acc-group h4 .n { color:var(--slate-900); font-variant-numeric:tabular-nums; }
+    .st-acc-wrap { overflow-x:auto; border:1px solid rgba(226,232,240,0.9); border-radius:14px; background:rgba(255,255,255,0.9); }
+    .st-acc-table { width:100%; min-width:640px; border-collapse:collapse; font-size:12.5px; table-layout:auto; }
+    .st-acc-table th {
+      text-align:left; padding:9px 12px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.05em;
+      color:var(--slate-500); background:rgba(248,250,252,0.9); border-bottom:1px solid rgba(226,232,240,0.9); white-space:nowrap;
+    }
+    .st-acc-table td { padding:9px 12px; border-bottom:1px solid rgba(241,245,249,0.95); vertical-align:top; color:var(--slate-700); font-variant-numeric:tabular-nums; }
+    .st-acc-table tr:last-child td { border-bottom:none; }
+    .st-acc-table td.acc { font-weight:700; color:var(--slate-900); white-space:normal; }
+    .st-acc-table td.acc a { color:var(--indigo-dark); text-decoration:none; }
+    .st-acc-table td.acc a:hover { text-decoration:underline; }
+    .st-acc-table td .muted { display:block; margin-top:2px; font-size:11px; font-weight:500; color:var(--slate-400); }
+    .st-status { display:inline-flex; align-items:center; gap:6px; white-space:nowrap; font-weight:700; font-size:11.5px; }
+    .st-status::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--dot, var(--slate-300)); }
+    .st-status.done { --dot:var(--emerald); } .st-status.noShow { --dot:var(--rose); } .st-status.canceled { --dot:#fb7185; }
+    .st-status.rescheduled { --dot:var(--slate-400); } .st-status.pending { --dot:var(--amber); } .st-status.upcoming { --dot:var(--indigo); }
+    .st-acc-empty { padding:18px; text-align:center; color:var(--slate-500); font-size:13px; }
+    .st-link-plain { text-decoration:none; }
+    /* Pastilles devenues <button> : contenu en <span> (pas de <div> dans un bouton). */
+    button.st-count .n { display:block; }
+    .st-follow-list { display:grid; gap:8px; }
+    .st-follow-item {
+      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+      padding:10px 12px; border-radius:12px; background:rgba(255,255,255,0.85); border:1px solid rgba(226,232,240,0.9);
+    }
+    .st-follow-item .who { font-weight:700; color:var(--slate-900); min-width:0; }
+    .st-follow-item .who a { color:inherit; text-decoration:none; }
+    .st-follow-item .who a:hover { color:var(--indigo-dark); text-decoration:underline; }
+    .st-follow-item .when { font-size:11.5px; color:var(--slate-500); }
     .st-count.pending.has .n, .st-count.pending.has .l { color:#92400e; }
     .st-alert {
       margin-top:12px; padding:12px 14px; border-radius:14px;
@@ -3184,8 +3231,9 @@
     }
 
     // ══════════════ SETTERS (alternants BDR) ══════════════
-    // Tout se lit en Europe/Paris : un R1 compte dans le mois et la semaine où le setter
-    // l'a posé (createdAt = hs_createdate), pas dans ceux où la réunion a lieu.
+    // Tout se lit en Europe/Paris. RDV pris (objectif, paliers, semaine) : jour où le setter
+    // a posé le R1 (createdAt = hs_createdate). Résultats et taux de no-show : jour de la
+    // réunion (startTime = hs_meeting_start_time), quel que soit le mois de prise (12/10/2026).
 
     // ── Dates Europe/Paris ────────────────────────────────────────────────────
     const PARIS_DAY_PARTS = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" });
@@ -3269,7 +3317,8 @@
     function closerName(id) {
       const key = String(id || "");
       if (!key) return "closer non renseigné";
-      return CONFIG[key]?.name || `owner ${key}`;
+      // Noms des owners hors CONFIG : renvoyés par prime-dashboard (setter.closers).
+      return CONFIG[key]?.name || SETTER_CLOSERS[key] || `owner ${key}`;
     }
 
     function dedupeById(list) {
@@ -3294,7 +3343,9 @@
       const outcome = String(meeting?.outcome || "").trim().toUpperCase();
       if (outcome === "RESCHEDULED") return "rescheduled";
       const start = toDate(meeting?.startTime);
-      if (start && start.getTime() > nowMs) return "upcoming";
+      // Sans date de réunion, rien ne dit qu'elle a eu lieu : « à renseigner », hors taux.
+      if (!start) return "pending";
+      if (start.getTime() > nowMs) return "upcoming";
       if (outcome === "COMPLETED") return "done";
       if (outcome === "NO_SHOW") return "noShow";
       if (isCanceledOutcome(outcome)) return "canceled";
@@ -3333,9 +3384,13 @@
 
     function computeSetter(setter, config, nowMs, json = {}) {
       const rawMeetings = Array.isArray(setter.meetings) ? setter.meetings : (json.meetings || []);
+      const companyNames = setter.companies && typeof setter.companies === "object" ? setter.companies : {};
       const meetings = dedupeById(rawMeetings).map(m => ({
         ...m,
-        takenKey: parisDayKey(m.createdAt || m.startTime), // jour de la prise
+        takenKey: parisDayKey(m.createdAt || m.startTime), // jour de la prise → RDV pris, objectif
+        heldKey: parisDayKey(m.startTime || m.createdAt),  // jour de la réunion → taux de no-show
+        companies: (Array.isArray(m.companyIds) ? m.companyIds : [])
+          .map(id => ({ id: String(id), name: String(companyNames[id] || "").trim() })),
         status: setterMeetingStatus(m, nowMs),
       }));
       const todayKey = parisDayKey(nowMs);
@@ -3352,11 +3407,16 @@
       }));
 
       const rows = months.map(m => {
+        // Deux rattachements (décision de Victor du 12/10/2026, retours de Camille) :
+        //   - RDV pris, objectif, palier : mois de la PRISE (takenKey) ;
+        //   - résultats et taux de no-show : mois de la RÉUNION (heldKey). Un R1 pris le 23/09
+        //     et tenu le 05/10 compte comme RDV pris en septembre, son no-show pèse sur octobre.
         const taken = meetings.filter(x => x.takenKey.slice(0, 7) === m);
+        const held = meetings.filter(x => x.heldKey.slice(0, 7) === m);
         const counts = Object.fromEntries(Object.keys(SETTER_STATUS).map(k => [k, 0]));
-        taken.forEach(x => { counts[x.status] += 1; });
+        held.forEach(x => { counts[x.status] += 1; });
         // « À venir » déjà marqués annulés : hors taux aujourd'hui, absences à leur date.
-        const canceledAhead = taken.filter(x => x.status === "upcoming" && isCanceledOutcome(x.outcome)).length;
+        const canceledAhead = held.filter(x => x.status === "upcoming" && isCanceledOutcome(x.outcome)).length;
         const rawTarget = config.objectifsRdv?.[m];
         const target = rawTarget == null ? null : Number(rawTarget);
         const hasObjective = target != null && target > 0;
@@ -3375,7 +3435,9 @@
         return {
           mois: m, label: monthLabelShort(m), longLabel: monthLabelLong(m),
           isPast: m < nowMonth, isCurrent: m === nowMonth, isFuture: m > nowMonth,
-          meetings: taken, rdv, target: hasObjective ? target : null, hasObjective,
+          meetings: taken, held, rdv, target: hasObjective ? target : null, hasObjective,
+          // R1 déjà posés pour une réunion au-delà de ce mois (affichés « à venir » en note).
+          upcomingLater: m === nowMonth ? meetings.filter(x => x.status === "upcoming" && x.heldKey.slice(0, 7) > m).length : 0,
           attainment: hasObjective ? rdv / target : null,
           palier, primePalier, counts, canceledAhead, absences, rateBase, noShowRate, qualityOk,
           blocked: hasObjective && !qualityOk && primePalier > 0,
@@ -3547,9 +3609,9 @@
 
       return `
         <div class="st-big">
-          <span class="n" data-countup="${row.rdv}" data-countup-format="num">${fmtNum(0)}</span>
+          ${stLink(`<span class="n" data-countup="${row.rdv}" data-countup-format="num">${fmtNum(0)}</span>`, "taken", row.mois, row.rdv, "RDV pris, voir les comptes", true)}
           <span class="of">/ ${fmtNum(target)}</span>
-          <span class="what">RDV pris <span class="pill ${pctFloor >= 100 ? "surperf" : (current ? "ok" : "zero")}">${pctFloor} % de l'objectif</span></span>
+          <span class="what">${stLink("RDV pris", "taken", row.mois, row.rdv, "voir les comptes")} <span class="pill ${pctFloor >= 100 ? "surperf" : (current ? "ok" : "zero")}">${pctFloor} % de l'objectif</span></span>
         </div>
         ${pace ? `<div class="st-pace">${pace}</div>` : ""}
         <div class="tier-track-wrap">
@@ -3567,8 +3629,8 @@
     function renderSetterNoObjectiveBlock(row) {
       return `
         <div class="st-big">
-          <span class="n" data-countup="${row.rdv}" data-countup-format="num">${fmtNum(0)}</span>
-          <span class="what">RDV pris en ${esc(row.longLabel)}</span>
+          ${stLink(`<span class="n" data-countup="${row.rdv}" data-countup-format="num">${fmtNum(0)}</span>`, "taken", row.mois, row.rdv, "RDV pris, voir les comptes", true)}
+          <span class="what">${stLink(`RDV pris en ${esc(row.longLabel)}`, "taken", row.mois, row.rdv, "voir les comptes")}</span>
         </div>
         <div class="tier-sub" style="margin-top:22px">
           <span><strong>Pas d'objectif fixé</strong> pour ${esc(row.longLabel)} : pas de prime RDV ce mois-ci.</span>
@@ -3577,9 +3639,9 @@
     }
 
     function renderSetterPendingAlert(stats, row) {
-      const pendingAll = stats.meetings.filter(m => m.status === "pending" && stats.monthsSet.has(m.takenKey.slice(0, 7)));
+      const pendingAll = stats.meetings.filter(m => m.status === "pending" && stats.monthsSet.has(m.heldKey.slice(0, 7)));
       if (!pendingAll.length) return "";
-      const here = pendingAll.filter(m => m.takenKey.slice(0, 7) === row.mois).sort((a, b) => timeOf(a.startTime) - timeOf(b.startTime));
+      const here = pendingAll.filter(m => m.heldKey.slice(0, 7) === row.mois).sort((a, b) => timeOf(a.startTime) - timeOf(b.startTime));
       const others = pendingAll.length - here.length;
       const moreOthers = others > 0 ? `<div class="more">+ ${plural(others, "R1 à renseigner", "R1 à renseigner")} sur d'autres mois</div>` : "";
       if (!here.length) {
@@ -3612,18 +3674,25 @@
       const ahead = row.canceledAhead
         ? ` Dont ${plural(row.canceledAhead, "R1 à venir déjà annulé, qui comptera comme absence à sa date", "R1 à venir déjà annulés, qui compteront comme absences à leur date")}.`
         : "";
+      const later = row.upcomingLater
+        ? ` + ${plural(row.upcomingLater, "R1 déjà posé pour une réunion le mois prochain ou après", "R1 déjà posés pour une réunion le mois prochain ou après")}.`
+        : "";
+      const held = stLink(`réunions ${esc(deMois(row.mois))}`, "held", row.mois, row.held.length, "voir les comptes par résultat");
       const note = empty
-        ? `Aucun R1 de ce mois n'a encore eu lieu avec un résultat saisi (effectué, no-show ou annulé).${ahead}`
-        : `Taux de show <strong>${fmtPct(c.done / row.rateBase)}</strong> · (${plural(c.noShow, "no-show", "no-show")} + ${plural(c.canceled, "annulé", "annulés")}) / <strong>${plural(row.rateBase, "R1", "R1")}</strong> passés au résultat saisi. Décalés, à renseigner et à venir restent hors taux.${ahead}`;
+        ? `Aucune des ${held} n'a encore eu lieu avec un résultat saisi (effectué, no-show ou annulé).${ahead}${later}`
+        : `Taux de show <strong>${fmtPct(c.done / row.rateBase)}</strong> · (${plural(c.noShow, "no-show", "no-show")} + ${plural(c.canceled, "annulé", "annulés")}) / <strong>${plural(row.rateBase, "R1", "R1")}</strong> au résultat saisi, sur les ${held} (quel que soit le mois de prise). Décalés, à renseigner et à venir restent hors taux.${ahead}${later}`;
+      // Pastilles cliquables : la liste des comptes derrière chaque résultat du mois.
       const chip = (key, extra = "") => `
-        <div class="st-count ${key} ${SETTER_STATUS[key].inRate ? "" : "out"} ${extra}">
-          <div class="n">${fmtNum(c[key])}</div>
-          <div class="l">${esc(SETTER_STATUS[key].label)}</div>
-        </div>`;
+        <button type="button" class="st-count ${key} ${SETTER_STATUS[key].inRate ? "" : "out"} ${extra}" data-st-list="${key}" data-st-month="${esc(row.mois)}"
+          aria-haspopup="dialog"${c[key] ? "" : " disabled"}>
+          <span class="n">${fmtNum(c[key])}</span>
+          <span class="l">${esc(SETTER_STATUS[key].label)}</span>
+          <span class="sr-only"> : réunions ${esc(deMois(row.mois))}, voir les comptes</span>
+        </button>`;
       return `
         <div class="st-quality ${cls}">
           <div class="st-q-head"><span class="metric-eyebrow">Taux de no-show · ${esc(row.label)}</span>${state}</div>
-          <div class="st-q-rate">${empty ? "–" : fmtPct(row.noShowRate)}</div>
+          <div class="st-q-rate">${stLink(empty ? "–" : fmtPct(row.noShowRate), "held", row.mois, row.held.length, `taux de no-show des réunions ${deMois(row.mois)}, voir les comptes par résultat`, true)}</div>
           <div class="st-q-note">${note}</div>
           <div class="st-rate-gauge">
             <div class="st-rate-fill" data-w="${fill.toFixed(1)}"></div>
@@ -3644,7 +3713,7 @@
         <div class="glass reveal" style="animation-delay:.34s">
           <div class="card-head">
             <h3><span class="head-ico">📅</span>${esc(capFirst(row.longLabel))} · RDV pris</h3>
-            <span class="meta">comptés le jour de la prise · annulés et décalés compris${row.hasObjective ? ` · objectif <strong>${fmtNum(row.target)}</strong>` : ""}</span>
+            <span class="meta">RDV comptés le jour de la prise, annulés et décalés compris · no-show compté au mois de la réunion${row.hasObjective ? ` · objectif <strong>${fmtNum(row.target)}</strong>` : ""} · clic sur un nombre = liste des comptes</span>
           </div>
           <div class="card-body">
             <div class="st-month">
@@ -3935,15 +4004,17 @@
           ? `${setterAttainmentPct(r)} %${r.palier ? ` <span class="pill ${r.palier.pct >= 100 ? "surperf" : "ok"}">${r.palier.emoji} ${r.palier.pct} %</span>` : ""}`
           : "–";
         const pendingNote = c.pending ? `${plural(c.pending, "à renseigner", "à renseigner")}` : "";
+        // Taux du mois = réunions du mois ; clic = ces réunions par résultat (no-show en tête).
+        const heldHint = `taux de no-show des réunions ${deMois(r.mois)}, voir les comptes par résultat`;
         const noShow = r.rateBase
-          ? `${fmtPct(r.noShowRate)}${r.qualityOk ? "" : ` <span class="pill ko">&gt; ${stats.maxPct} %</span>`}<span class="cell-note">${r.absences} / ${r.rateBase}${pendingNote ? ` · ${pendingNote}` : ""}</span>`
-          : `–${pendingNote ? `<span class="cell-note">${pendingNote}</span>` : ""}`;
+          ? `${stLink(fmtPct(r.noShowRate), "held", r.mois, r.held.length, heldHint)}${r.qualityOk ? "" : ` <span class="pill ko">&gt; ${stats.maxPct} %</span>`}<span class="cell-note">${stLink(plural(r.absences, "absence", "absences"), "absences", r.mois, r.absences, "voir les comptes no-show et annulés")} / ${r.rateBase}${pendingNote ? ` · ${pendingNote}` : ""}</span>`
+          : `${stLink("–", "held", r.mois, r.held.length, heldHint)}${pendingNote ? `<span class="cell-note">${pendingNote}</span>` : ""}`;
         const primeRdv = !r.hasObjective
           ? `<span class="pill zero">pas d'objectif fixé</span>`
           : (r.blocked ? `<span class="pill ko">0 € · no-show</span>` : fmtPrime(r.primeRdv));
         return `<tr${r.isCurrent ? ' class="st-current"' : ""}>
           <td><strong>${esc(r.label)}</strong>${state}</td>
-          <td class="num">${fmtNum(r.rdv)}</td>
+          <td class="num">${stLink(fmtNum(r.rdv), "taken", r.mois, r.rdv, `RDV pris en ${r.longLabel}, voir les comptes`)}</td>
           <td class="num">${r.hasObjective ? fmtNum(r.target) : "–"}</td>
           <td class="num">${attain}</td>
           <td class="num">${noShow}</td>
@@ -3956,7 +4027,7 @@
         <div class="glass reveal" style="animation-delay:.72s">
           <div class="card-head">
             <h3><span class="head-ico">🗂️</span>Détail mensuel</h3>
-            <span class="meta">RDV comptés au mois de la prise · prime RDV versée si no-show ≤ ${stats.maxPct} %</span>
+            <span class="meta">RDV pris au mois de la prise · no-show au mois de la réunion · prime RDV versée si no-show ≤ ${stats.maxPct} % · clic sur un nombre = liste des comptes</span>
           </div>
           <div class="card-body" style="padding:0">
             <div class="table-wrap">
@@ -3997,6 +4068,231 @@
         </div>`;
     }
 
+    // ── Listes de comptes cliquables (12/10/2026, retours de Camille) ──────────
+    // Chaque nombre de RDV pris ou de résultats ouvre la liste des comptes derrière, mois passés
+    // compris, avec le lien vers la société HubSpot : Calix et Antonin suivent leurs no-show d'ici.
+    const HS_COMPANY_URL = "https://app-eu1.hubspot.com/contacts/145843104/record/0-2/";
+    const SETTER_ABSENCES = ["noShow", "canceled"];
+    const SETTER_STATUS_ONE = {
+      done: "Effectué", noShow: "No-show", canceled: "Annulé",
+      rescheduled: "Décalé", pending: "À renseigner", upcoming: "À venir",
+    };
+    let SETTER_DRILL = null; // stats du dernier rendu setter (listes ouvertes à la demande)
+    let SETTER_CLOSERS = {}; // owner_id → « Prénom Nom », renvoyé par prime-dashboard
+    const FMT_MONTH_NAME = new Intl.DateTimeFormat("fr-FR", { timeZone: "UTC", month: "long" });
+    // « d'octobre », « de septembre » : élision devant voyelle.
+    function deMois(key) {
+      const [y, m] = String(key).split("-").map(Number);
+      const name = y && m ? FMT_MONTH_NAME.format(new Date(Date.UTC(y, m - 1, 15))) : String(key);
+      return /^[aeiouyàâéèêîôûh]/i.test(name) ? `d'${name}` : `de ${name}`;
+    }
+
+    function setterAccountName(m) {
+      const names = (m.companies || []).map(c => c.name).filter(Boolean);
+      if (names.length) return names.join(" · ");
+      // Sans nom de société : le titre du R1, sans « x Superprof I Présentation ».
+      const title = String(m.title || "").replace(/\s+x\s+superprof\b.*$/i, "").trim();
+      return title || "R1 sans société";
+    }
+
+    function setterAccountLink(m) {
+      const first = (m.companies || [])[0];
+      const name = esc(setterAccountName(m));
+      return first?.id
+        ? `<a href="${HS_COMPANY_URL}${encodeURIComponent(first.id)}" target="_blank" rel="noopener noreferrer" title="Ouvrir la société dans HubSpot">${name}</a>`
+        : name;
+    }
+
+    // Absence suivie d'un nouveau R1 du setter sur la même société, posé APRÈS le R1 manqué
+    // (pas après sa date : un annulé à l'avance peut être re-posé avant la date prévue). Le
+    // serveur ne renvoie que les R1 du setter : un R1 re-posé par l'AE n'est pas vu.
+    function setterRebooked(m, meetings) {
+      const ids = new Set((m.companies || []).map(c => c.id));
+      if (!ids.size) return null;
+      const bookedAt = timeOf(m.createdAt);
+      return meetings
+        .filter(o => o.id !== m.id && timeOf(o.createdAt) > bookedAt && (o.companies || []).some(c => ids.has(c.id)))
+        .sort((a, b) => timeOf(a.createdAt) - timeOf(b.createdAt))[0] || null;
+    }
+
+    function setterFollowCell(m, meetings) {
+      const next = setterRebooked(m, meetings);
+      return next
+        ? `<span class="pill ok">Re-posé le ${esc(fmtParisDate(next.createdAt))}</span><span class="muted">réunion ${esc(fmtParisSlot(next.startTime))}</span>`
+        : `<span class="pill ko">À relancer</span>`;
+    }
+
+    // Colonne « Suivi » dès que la liste contient une absence (no-show ou annulé). Compte,
+    // résultat et suivi d'abord : ce sont eux qu'on doit voir sans défiler sur mobile.
+    function setterListTable(list, meetings) {
+      if (!list.length) return `<div class="st-acc-empty">Aucun R1.</div>`;
+      const follow = list.some(m => SETTER_ABSENCES.includes(m.status));
+      const rows = list.map(m => `
+        <tr>
+          <td class="acc">${setterAccountLink(m)}${(m.companies || []).some(c => c.name) ? "" : `<span class="muted">${esc(m.title || "")}</span>`}</td>
+          <td><span class="st-status ${esc(m.status)}">${esc(SETTER_STATUS_ONE[m.status] || m.status)}</span></td>
+          ${follow ? `<td>${SETTER_ABSENCES.includes(m.status) ? setterFollowCell(m, meetings) : ""}</td>` : ""}
+          <td>${esc(fmtParisSlot(m.startTime))}</td>
+          <td>${esc(fmtParisDate(m.createdAt))}</td>
+          <td>${esc(closerName(m.closerOwnerId))}</td>
+        </tr>`).join("");
+      return `
+        <div class="st-acc-wrap">
+          <table class="st-acc-table">
+            <thead><tr><th>Compte</th><th>Résultat</th>${follow ? "<th>Suivi</th>" : ""}<th>Réunion</th><th>Pris le</th><th>Closer</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>`;
+    }
+
+    // kind : "taken" (RDV pris du mois), "held" (réunions du mois par résultat), "absences"
+    // (no-show + annulés) ou un statut (done, noShow…) ; mois = clé AAAA-MM.
+    function setterDrillView(kind, mois) {
+      const stats = SETTER_DRILL;
+      const row = stats?.rows.find(r => r.mois === mois);
+      if (!row) return null;
+      const label = row.longLabel;
+      const recentFirst = (field) => (a, b) => timeOf(b[field]) - timeOf(a[field]);
+      if (kind === "taken") {
+        const list = row.meetings.slice().sort(recentFirst("createdAt"));
+        return {
+          title: `RDV pris en ${label} · ${list.length}`,
+          sub: "R1 posés ce mois-là, tous résultats confondus (annulés et décalés compris). La réunion peut tomber un mois suivant.",
+          body: setterListTable(list, stats.meetings),
+        };
+      }
+      if (kind === "held") {
+        const order = ["noShow", "canceled", "done", "pending", "rescheduled", "upcoming"];
+        const groups = order.map(key => {
+          const list = row.held.filter(m => m.status === key).sort(recentFirst("startTime"));
+          if (!list.length) return "";
+          return `<section class="st-acc-group">
+            <h4><span class="st-status ${key}">${esc(SETTER_STATUS[key].label)}</span><span class="n">${fmtNum(list.length)}</span></h4>
+            ${setterListTable(list, stats.meetings)}
+          </section>`;
+        }).join("");
+        return {
+          title: `Réunions ${deMois(mois)} par résultat`,
+          sub: `R1 dont la réunion a lieu en ${label}, quel que soit le mois de prise. Le taux de no-show du mois porte sur les effectués, no-show et annulés de cette liste ; décalés, à renseigner et à venir restent hors taux.`,
+          body: groups || `<div class="st-acc-empty">Aucune réunion en ${esc(label)}.</div>`,
+        };
+      }
+      const keys = kind === "absences" ? SETTER_ABSENCES : [kind];
+      if (!keys.every(k => SETTER_STATUS[k])) return null;
+      const list = row.held.filter(m => keys.includes(m.status)).sort(recentFirst("startTime"));
+      return {
+        title: `${kind === "absences" ? "No-show et annulés" : SETTER_STATUS[kind].label} · ${label} · ${list.length}`,
+        sub: `Réunions ${deMois(mois)}, quel que soit le mois de prise.`,
+        body: setterListTable(list, stats.meetings),
+      };
+    }
+
+    // Nombre cliquable : ouvre la liste des comptes derrière (rien à lister → texte simple).
+    // Pas d'aria-label (il masquerait le chiffre affiché) : l'action est ajoutée en texte
+    // réservé aux lecteurs d'écran, après le texte visible. plain = sans soulignement.
+    function stLink(html, kind, mois, count, hint, plain = false) {
+      return count > 0
+        ? `<button type="button" class="st-link${plain ? " st-link-plain" : ""}" data-st-list="${esc(kind)}" data-st-month="${esc(mois)}" aria-haspopup="dialog">${html}<span class="sr-only"> : ${esc(hint)}</span></button>`
+        : html;
+    }
+
+    function renderSetterListModal() {
+      return `
+        <div id="st-list-backdrop" class="modal-backdrop" hidden aria-hidden="true">
+          <div class="modal st-acc-modal" role="dialog" aria-modal="true" aria-labelledby="st-list-title">
+            <div class="modal-head">
+              <div><h3 id="st-list-title"></h3><p id="st-list-sub"></p></div>
+              <button id="st-list-close" class="modal-close" type="button" aria-label="Fermer la liste">×</button>
+            </div>
+            <div class="modal-body" id="st-list-body"></div>
+          </div>
+        </div>`;
+    }
+
+    // trigger : le bouton cliqué, qui reprend le focus à la fermeture (Safari ne focalise pas un
+    // bouton au clic : document.activeElement serait alors le body).
+    function openSetterList(kind, mois, trigger) {
+      const view = setterDrillView(kind, mois);
+      const backdrop = document.getElementById("st-list-backdrop");
+      const closeBtn = document.getElementById("st-list-close");
+      if (!view || !backdrop || !closeBtn) return;
+      document.getElementById("st-list-title").textContent = view.title;
+      document.getElementById("st-list-sub").textContent = view.sub;
+      document.getElementById("st-list-body").innerHTML = view.body;
+      LAST_FOCUS_BEFORE_MODAL = trigger || document.activeElement;
+      backdrop.hidden = false;
+      backdrop.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      closeBtn.focus();
+    }
+
+    function closeSetterList() {
+      const backdrop = document.getElementById("st-list-backdrop");
+      if (!backdrop || backdrop.hidden) return;
+      backdrop.hidden = true;
+      backdrop.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      if (LAST_FOCUS_BEFORE_MODAL && typeof LAST_FOCUS_BEFORE_MODAL.focus === "function") {
+        LAST_FOCUS_BEFORE_MODAL.focus();
+      }
+    }
+
+    function bindSetterLists() {
+      document.querySelectorAll("#root [data-st-list]").forEach(el => {
+        el.addEventListener("click", () => openSetterList(el.getAttribute("data-st-list"), el.getAttribute("data-st-month"), el));
+      });
+      const backdrop = document.getElementById("st-list-backdrop");
+      const closeBtn = document.getElementById("st-list-close");
+      if (!backdrop || !closeBtn) return;
+      backdrop.onclick = (event) => { if (event.target === backdrop) closeSetterList(); };
+      closeBtn.onclick = () => closeSetterList();
+      if (window.__primeSetterListKeydownBound) return;
+      document.addEventListener("keydown", (event) => {
+        const active = document.getElementById("st-list-backdrop");
+        if (!active || active.hidden) return;
+        if (event.key === "Escape") { event.preventDefault(); closeSetterList(); return; }
+        if (event.key !== "Tab") return;
+        const focusables = [...active.querySelectorAll('button, [href], [tabindex]:not([tabindex="-1"])')]
+          .filter((el) => !el.hasAttribute("disabled"));
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      });
+      window.__primeSetterListKeydownBound = true;
+    }
+
+    // Absences (no-show + annulés) des mois affichés, avec leur suivi : à relancer d'abord.
+    function setterAbsences(stats) {
+      return stats.meetings
+        .filter(m => SETTER_ABSENCES.includes(m.status) && stats.monthsSet.has(m.heldKey.slice(0, 7)))
+        .map(m => ({ m, next: setterRebooked(m, stats.meetings) }))
+        .sort((a, b) => timeOf(b.m.startTime) - timeOf(a.m.startTime));
+    }
+
+    function renderSetterFollowCard(stats) {
+      const all = setterAbsences(stats);
+      const todo = all.filter(x => !x.next);
+      const done = all.length - todo.length;
+      const items = todo.map(({ m }) => `
+        <div class="st-follow-item">
+          <div class="who">${setterAccountLink(m)}<div class="when">${esc(SETTER_STATUS_ONE[m.status])} · réunion ${esc(fmtParisSlot(m.startTime))} · closer ${esc(closerName(m.closerOwnerId))} · pris le ${esc(fmtParisDate(m.createdAt))}</div></div>
+          <span class="pill ko">À relancer</span>
+        </div>`).join("");
+      const body = todo.length
+        ? `<div class="st-follow-list">${items}</div>`
+        : `<div class="st-acc-empty">${all.length ? "Tous les no-show et annulés ont un nouveau R1 posé ✓" : "Aucun no-show ni annulé pour l'instant ✓"}</div>`;
+      return `
+        <div class="glass reveal" id="st-follow-card" style="animation-delay:.4s">
+          <div class="card-head">
+            <h3><span class="head-ico">🔁</span>No-show à relancer · ${fmtNum(todo.length)}</h3>
+            <span class="meta">no-show et annulés depuis ${esc(monthLabelLong(stats.months[0] || stats.nowMonth))} sans nouveau R1 posé sur la société${done ? ` · ${plural(done, "déjà re-posé", "déjà re-posés")}` : ""} · clic sur un compte = fiche HubSpot</span>
+          </div>
+          <div class="card-body">${body}</div>
+        </div>`;
+    }
+
     // ── Définitions & contexte IA ─────────────────────────────────────────────
     function setterDefinitionGroups(config) {
       const maxPct = Math.round((config.noShowMax ?? 0.30) * 100);
@@ -4016,11 +4312,13 @@
         {
           title: "Condition qualité",
           items: [
-            { term: "Taux de no-show", text: `(no-show + annulés) / (effectués + no-show + annulés), sur les R1 pris dans le mois dont la réunion a déjà eu lieu et dont le résultat est saisi. Au-delà de ${maxPct} %, la prime RDV du mois passe à 0 (la prime sur signature reste due).`, example: `10 R1 au résultat saisi dont 2 no-show et 1 annulé → 30 % : prime versée si le seuil est ${maxPct} %.` },
+            { term: "Taux de no-show", text: `(no-show + annulés) / (effectués + no-show + annulés), sur les R1 dont la réunion a eu lieu dans le mois (quel que soit le mois où tu les as posés) et dont le résultat est saisi. Au-delà de ${maxPct} %, la prime RDV du mois passe à 0 (la prime sur signature reste due).`, example: `Un R1 posé le 23 septembre pour le 5 octobre compte comme RDV pris en septembre ; s'il finit en no-show, il pèse sur le taux d'octobre. 10 réunions au résultat saisi dont 2 no-show et 1 annulé → 30 % : prime versée si le seuil est ${maxPct} %.` },
             { term: "Annulé", text: "Compte comme RDV pris. Une fois la date de la réunion passée, il pèse comme une absence dans le taux ; annulé à l'avance, il reste « à venir » (hors taux) jusqu'à sa date." },
             { term: "Décalé", text: "Compte comme RDV pris, mais ce n'est ni une absence ni un effectué : il reste hors du taux." },
-            { term: "À renseigner", text: "R1 dont la date est passée sans résultat saisi dans HubSpot. Hors du taux tant que le closer ne l'a pas saisi : le taux affiché est provisoire." },
+            { term: "À renseigner", text: "R1 dont la date est passée sans résultat saisi dans HubSpot, ou sans date de réunion (rangé alors dans son mois de prise). Hors du taux tant que le closer ne l'a pas saisi : le taux affiché est provisoire." },
             { term: "À venir", text: "R1 dont la date n'est pas encore passée, même s'il est déjà marqué annulé (sauf décalé). Hors du taux jusqu'à sa date." },
+            { term: "Listes de comptes", text: "Clique sur un nombre de RDV pris, sur une pastille de résultat ou sur le no-show d'un mois (passés compris) : la liste des comptes s'ouvre, avec le lien vers la société HubSpot." },
+            { term: "No-show à relancer", text: "No-show et annulés pour lesquels tu n'as pas re-posé de R1 sur la même société. Dès que tu en re-poses un, le compte sort de la liste (un R1 re-posé par l'AE n'est pas vu)." },
           ],
         },
         {
@@ -4053,6 +4351,11 @@
         atteinte_pct: setterAttainmentPct(r),
         palier_atteint_pct: r.palier ? r.palier.pct : null,
         prime_palier: round2(r.primePalier),
+        // Seuls les comptes absents sont nommés : prime-ai-query tronque le contexte à 24 000 caractères.
+        resultats_rattaches_a: "mois de la réunion (quel que soit le mois de prise) : effectues, no_show, annules, decales, a_renseigner, a_venir, taux_no_show_pct",
+        reunions_du_mois: r.held.length,
+        comptes_no_show: r.held.filter(m => m.status === "noShow").map(setterAccountName),
+        comptes_annules: r.held.filter(m => m.status === "canceled").map(setterAccountName),
         effectues: r.counts.done,
         no_show: r.counts.noShow,
         annules: r.counts.canceled,
@@ -4060,6 +4363,7 @@
         a_renseigner: r.counts.pending,
         a_venir: r.counts.upcoming,
         a_venir_deja_annules: r.canceledAhead,
+        ...(r.isCurrent ? { a_venir_mois_suivants: r.upcomingLater } : {}),
         taux_no_show_pct: r.noShowRate == null ? null : Number((r.noShowRate * 100).toFixed(1)),
         condition_no_show_ok: r.qualityOk,
         prime_rdv: round2(r.primeRdv),
@@ -4100,7 +4404,8 @@
             palier_rule: "prime du palier le plus haut atteint : RDV pris × 100 ≥ objectif × pourcentage du palier",
           },
           quality_rule: {
-            formula: "(no-show + annulés) / (effectués + no-show + annulés), sur les R1 pris dans le mois dont la réunion a déjà eu lieu et au résultat saisi",
+            formula: "(no-show + annulés) / (effectués + no-show + annulés), sur les R1 dont la réunion a lieu dans le mois (quel que soit leur mois de prise), déjà passés et au résultat saisi",
+            month_assignment: "mois de la RÉUNION (Europe/Paris) : un R1 pris le 23/09 et tenu le 05/10 compte comme RDV pris en septembre, son résultat pèse sur le taux d'octobre (décision du 12/10/2026)",
             max_no_show_rate: config.noShowMax,
             absences: ["no-show", "annulé (une fois la date de la réunion passée)"],
             hors_taux: ["décalé", "à renseigner (date passée sans résultat)", "à venir (date pas encore passée, même si déjà marqué annulé : a_venir_deja_annules)"],
@@ -4118,6 +4423,13 @@
           prime_rdv_cumulee: round2(stats.totalPrimeRdv),
           prime_signature_cumulee: round2(stats.totalSignature),
           prime_totale_cumulee: round2(stats.total),
+          no_show_a_relancer: setterAbsences(stats).filter(x => !x.next).map(({ m }) => ({
+            compte: setterAccountName(m),
+            resultat: SETTER_STATUS_ONE[m.status],
+            reunion: parisDayKey(m.startTime),
+            pris_le: parisDayKey(m.createdAt),
+            closer: closerName(m.closerOwnerId),
+          })),
         },
         monthly,
         monthly_by_key: Object.fromEntries(monthly.map(m => [m.mois, m])),
@@ -4159,6 +4471,7 @@
       // Horloge de référence : celle du serveur si fournie, sinon celle du navigateur.
       const serverNow = Date.parse(setter.now || "");
       const nowMs = Number.isFinite(serverNow) ? serverNow : MS_NOW;
+      SETTER_CLOSERS = setter.closers && typeof setter.closers === "object" ? setter.closers : {};
       const stats = computeSetter(setter, config, nowMs, json);
       if (!stats.current) { renderError("Aucun mois à afficher pour ce setter."); return; }
       const act = computeSetterActivity(setter, stats);
@@ -4197,6 +4510,8 @@
 
           ${renderSetterMonthCard(config, r, stats)}
 
+          ${renderSetterFollowCard(stats)}
+
           <div class="st-indicators">
             ${renderSetterWeekCard(act)}
             ${renderSetterCallsCard(act)}
@@ -4219,11 +4534,14 @@
           ${renderPrimeAiCard(config)}
 
           <div class="footer">
-            Calculé en direct depuis HubSpot · RDV pris = R1 (« Présentation ») posés par ${esc(firstName)} dans l'agenda d'un AE, comptés le jour de la prise (heure de Paris), annulés et décalés compris · No-show = (no-show + annulés) / (effectués + no-show + annulés), décalés hors taux · Signature = ${Math.round(stats.rate * 100)} % HT des deals signés après un R1 sur la même société · Prime d'équipe = tous les closedwon HubSpot, cumulés par trimestre en HT (remise à zéro chaque trimestre) · Information interne, sans valeur contractuelle.
+            Calculé en direct depuis HubSpot · RDV pris = R1 (« Présentation ») posés par ${esc(firstName)} dans l'agenda d'un AE, comptés le jour de la prise (heure de Paris), annulés et décalés compris · No-show = (no-show + annulés) / (effectués + no-show + annulés) sur les réunions du mois, quel que soit le mois de prise, décalés hors taux · Signature = ${Math.round(stats.rate * 100)} % HT des deals signés après un R1 sur la même société · Prime d'équipe = tous les closedwon HubSpot, cumulés par trimestre en HT (remise à zéro chaque trimestre) · Information interne, sans valeur contractuelle.
           </div>
         </div>
         ${renderDefinitionsModal(config)}
+        ${renderSetterListModal()}
       `;
+      SETTER_DRILL = stats;
+      bindSetterLists();
 
       const formatters = { num: fmtNum, prime: fmtPrime, pct: fmtPct };
       document.querySelectorAll("[data-countup]").forEach(el => {
