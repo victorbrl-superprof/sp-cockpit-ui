@@ -8,35 +8,38 @@
 <title>Bilan Spliiit · Superprof</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=Urbanist:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Inter:wght@400;500;600;700&family=Urbanist:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   /* Bilan Spliiit d'un CSE, à imprimer en PDF (A4 portrait).
-     DA Superprof : tokens repris de superprof-landing (app/globals.css). */
+     DA Superprof V8 : rose #FF6363 et déclinaisons, noir #121212 et gris ; Buenos Aires
+     (chargée depuis le bucket privé bilan-assets, repli Inter/Urbanist) ; Caveat en accent.
+     Texte toujours #121212 sur rose (blanc sur #FF6363 = 2,9:1, insuffisant). */
   :root {
-    --coral: #ff6363; --coral-d: #f54e4e; --pink: #fa6484; --pink-soft: #ffe9eb; --pink-pale: #fff5f6;
-    --orange: #ffb347; --violet: #7684ff; --green: #5bca8d; --blue: #157dfe;
-    --ink: #1d2026; --ink-soft: #3a3f4a; --muted: #6b7280; --line: #e7e3dc;
-    --cream: #faf6ef; --cream-deep: #f3ede1; --paper: #ffffff;
-    --sans: "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
-    --display: "Urbanist", "Inter", system-ui, sans-serif;
-    --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+    --coral: #FF6363; --coral-d: #F25555; --pink: #FF9292; --pink-soft: #FFC8C8; --pink-pale: #FFF1F1;
+    --orange: #FFCB3F; --green: #5BCA8D; --blue: #5D5DEC;
+    --ink: #121212; --ink-soft: #3D3D3D; --muted: #6B6B6B; --line: #EBEBEB;
+    --cream: #F7F7F7; --cream-deep: #FFF1F1; --paper: #FFFFFF;
+    --sans: "Buenos Aires", "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    --display: "Buenos Aires", "Urbanist", "Inter", system-ui, sans-serif;
+    --accent: "Caveat", "Segoe Script", cursive;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  body { font-family: var(--sans); color: var(--ink); background: #e9e3d9; -webkit-font-smoothing: antialiased; }
+  body { font-family: var(--sans); color: var(--ink); background: #ECECEC; -webkit-font-smoothing: antialiased; }
   .sp-logo { display: block; height: 100%; width: auto; }
 
   /* ── Barre d'outils (écran seulement) ── */
   .toolbar { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    padding: 12px 20px; background: rgba(29,32,38,0.92); color: #fff; backdrop-filter: blur(10px); }
+    padding: 12px 20px; background: rgba(18,18,18,0.92); color: #fff; backdrop-filter: blur(10px); }
   .toolbar .tb-title { font-family: var(--display); font-weight: 700; font-size: 15px; letter-spacing: -0.01em; display: flex; align-items: center; gap: 10px; min-width: 0; }
   .toolbar .tb-title span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .toolbar .tb-logo { height: 16px; color: #fff; flex: 0 0 auto; }
   .toolbar .tb-actions { display: flex; gap: 8px; flex: 0 0 auto; }
+  .toolbar .tb-note { font-size: 12.5px; font-weight: 600; color: var(--ink); background: var(--pink-soft); border-radius: 999px; padding: 7px 12px; }
   .btn { appearance: none; border: 0; cursor: pointer; font: 600 13px/1 var(--sans); border-radius: 999px; padding: 10px 16px; transition: transform .15s, background .15s, box-shadow .15s; }
-  .btn:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
-  .btn-primary { background: var(--coral); color: #fff; box-shadow: 0 8px 20px -10px rgba(255,99,99,.9); }
-  .btn-primary:hover { background: var(--coral-d); transform: translateY(-1px); }
+  .btn:focus-visible { outline: 2px solid var(--coral); outline-offset: 2px; }
+  .btn-primary { background: var(--coral); color: var(--ink); box-shadow: 0 8px 20px -10px rgba(255,99,99,.9); }
+  .btn-primary:hover { background: var(--pink); transform: translateY(-1px); }
   .btn-ghost { background: rgba(255,255,255,.12); color: #fff; }
   .btn-ghost:hover { background: rgba(255,255,255,.2); }
   .btn-light { background: var(--cream); color: var(--ink); border: 1px solid var(--line); }
@@ -48,16 +51,17 @@
 
   /* ── Page A4 ── */
   .page { width: 210mm; height: 297mm; position: relative; overflow: hidden; background: var(--paper);
-    padding: 17mm 16mm 22mm; box-shadow: 0 30px 60px -30px rgba(29,32,38,.35), 0 2px 8px rgba(29,32,38,.06);
+    padding: 17mm 16mm 22mm; box-shadow: 0 30px 60px -30px rgba(18,18,18,.35), 0 2px 8px rgba(18,18,18,.06);
     display: flex; flex-direction: column; }
   .page-foot { position: absolute; left: 16mm; right: 16mm; bottom: 9mm; display: flex; align-items: center; justify-content: space-between;
     font-size: 8.5pt; color: var(--muted); border-top: 1px solid var(--line); padding-top: 3.5mm; }
   .page-foot .pf-logo { height: 9px; color: var(--coral); }
   .page-foot .pf-left { display: flex; align-items: center; gap: 8px; }
 
-  .eyebrow { font: 700 8.5pt/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--coral); }
+  .eyebrow { display: inline-flex; align-items: center; gap: 2.4mm; font: 700 8.5pt/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); }
+  .eyebrow::before { content: ""; width: 5mm; height: 1.6mm; border-radius: 1mm; background: var(--coral); flex: 0 0 auto; }
   .h-page { font-family: var(--display); font-weight: 800; font-size: 26pt; line-height: 1.05; letter-spacing: -0.025em; margin: 3mm 0 2mm; text-wrap: balance; }
-  .h-page em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -0.01em; color: var(--coral); }
+  .h-page em { font-family: var(--accent); font-style: normal; font-weight: 700; font-size: 1.14em; line-height: .9; letter-spacing: 0; color: var(--coral); }
   .lead { font-size: 10.5pt; line-height: 1.55; color: var(--ink-soft); max-width: 150mm; }
   .section-title { font-family: var(--display); font-weight: 700; font-size: 12.5pt; letter-spacing: -0.01em; margin-bottom: 3mm; }
   .section-title small { display: block; margin-top: 1mm; font: 500 8.5pt var(--sans); color: var(--muted); letter-spacing: 0; }
@@ -65,26 +69,26 @@
   .num { font-variant-numeric: tabular-nums; }
 
   /* ── Couverture ── */
-  .cover { background: var(--cream); padding: 16mm 16mm 18mm; }
+  .cover { background: var(--pink-pale); padding: 16mm 16mm 18mm; }
   .cover::before, .cover::after { content: ""; position: absolute; border-radius: 50%; pointer-events: none; }
-  .cover::before { width: 150mm; height: 150mm; right: -48mm; top: -40mm; background: radial-gradient(circle at 35% 35%, #ffb2b2 0%, var(--pink) 45%, var(--coral) 75%); opacity: .95; }
-  .cover::after { width: 90mm; height: 90mm; left: -30mm; bottom: 34mm; background: radial-gradient(circle at 60% 40%, var(--pink-soft) 0%, #ffd3d9 60%, rgba(250,100,132,.35) 100%); }
+  .cover::before { width: 150mm; height: 150mm; right: -48mm; top: -40mm; background: radial-gradient(circle at 35% 35%, var(--pink-soft) 0%, var(--pink) 45%, var(--coral) 78%); }
+  .cover::after { width: 90mm; height: 90mm; left: -30mm; bottom: 34mm; background: radial-gradient(circle at 60% 40%, var(--pink-pale) 0%, var(--pink-soft) 70%, rgba(255,146,146,.45) 100%); }
   .cover > * { position: relative; z-index: 1; }
   .cover-top { display: flex; align-items: center; gap: 12px; }
   .cover-top .ct-logo { height: 20px; color: var(--coral); }
   .cover-top .ct-x { font: 500 14pt var(--display); color: var(--ink-soft); }
-  .cover-top .ct-spliiit { height: 30px; width: 30px; border-radius: 8px; background: #fff; padding: 3px; box-shadow: 0 6px 14px -8px rgba(29,32,38,.4); }
+  .cover-top .ct-spliiit { height: 30px; width: 30px; border-radius: 8px; background: #fff; padding: 3px; box-shadow: 0 6px 14px -8px rgba(18,18,18,.4); }
   .cover-top .ct-spliiit img { width: 100%; height: 100%; object-fit: contain; display: block; }
   .cover-top .ct-name { font: 700 12pt var(--display); }
   .cover-body { margin-top: 44mm; max-width: 140mm; }
-  .cover-kicker { display: inline-flex; align-items: center; gap: 8px; background: #fff; border-radius: 999px; padding: 6px 12px; font: 600 9pt var(--sans); color: var(--ink-soft); box-shadow: 0 6px 16px -10px rgba(29,32,38,.35); }
+  .cover-kicker { display: inline-flex; align-items: center; gap: 8px; background: #fff; border-radius: 999px; padding: 6px 12px; font: 600 9pt var(--sans); color: var(--ink-soft); box-shadow: 0 6px 16px -10px rgba(18,18,18,.35); }
   .cover-kicker i { width: 7px; height: 7px; border-radius: 50%; background: var(--green); display: inline-block; }
   .cover-title { font-family: var(--display); font-weight: 900; font-size: 46pt; line-height: .98; letter-spacing: -0.035em; margin: 7mm 0 5mm; text-wrap: balance; }
-  .cover-title em { font-family: var(--serif); font-weight: 400; font-style: italic; color: var(--coral); letter-spacing: -0.015em; }
+  .cover-title em { font-family: var(--accent); font-weight: 700; font-style: normal; font-size: 1.14em; line-height: .9; color: var(--coral); letter-spacing: 0; }
   .cover-cse { font: 800 17pt/1.15 var(--display); letter-spacing: -0.015em; }
   .cover-period { margin-top: 2mm; font-size: 11pt; color: var(--ink-soft); }
   .cover-hero { position: absolute; left: 16mm; right: 16mm; bottom: 26mm; display: grid; grid-template-columns: repeat(3, 1fr); gap: 5mm; }
-  .hero-card { background: #fff; border-radius: 16px; padding: 6mm 5mm 5mm; box-shadow: 0 18px 36px -24px rgba(29,32,38,.45); }
+  .hero-card { background: #fff; border-radius: 16px; padding: 6mm 5mm 5mm; box-shadow: 0 18px 36px -24px rgba(18,18,18,.45); }
   .hero-card .hv { font: 900 25pt/1 var(--display); letter-spacing: -0.03em; color: var(--ink); }
   .hero-card .hv small { font-size: 13pt; font-weight: 800; }
   .hero-card .hl { margin-top: 2.5mm; font-size: 9pt; line-height: 1.4; color: var(--ink-soft); }
@@ -94,20 +98,20 @@
   /* ── Grille de chiffres clés ── */
   .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4mm; margin-top: 7mm; }
   .kpi { border-radius: 14px; padding: 5mm 4.5mm 4.5mm; background: var(--cream); border: 1px solid var(--line); display: flex; flex-direction: column; min-height: 33mm; }
-  .kpi.accent { background: linear-gradient(150deg, var(--coral) 0%, var(--pink) 100%); border-color: transparent; color: #fff; }
-  .kpi.accent .kl, .kpi.accent .ks { color: rgba(255,255,255,.88); }
+  .kpi.accent { background: var(--coral); border-color: transparent; color: var(--ink); }
+  .kpi.accent .kl, .kpi.accent .ks { color: rgba(18,18,18,.8); }
   .kpi .kv { font: 900 21pt/1 var(--display); letter-spacing: -0.03em; }
   .kpi .kv small { font-size: 11pt; font-weight: 800; margin-left: 1px; }
   .kpi .kl { margin-top: 2.5mm; font: 600 8.8pt/1.3 var(--sans); color: var(--ink); }
   .kpi .ks { margin-top: auto; padding-top: 2mm; font-size: 7.8pt; line-height: 1.35; color: var(--muted); }
 
   .takeaways { margin-top: 8mm; background: var(--ink); color: #fff; border-radius: 18px; padding: 7mm 7mm 6mm; position: relative; overflow: hidden; }
-  .takeaways::after { content: ""; position: absolute; right: -18mm; top: -18mm; width: 55mm; height: 55mm; border-radius: 50%; background: radial-gradient(circle, rgba(250,100,132,.55), rgba(255,99,99,0) 70%); }
+  .takeaways::after { content: ""; position: absolute; right: -18mm; top: -18mm; width: 55mm; height: 55mm; border-radius: 50%; background: radial-gradient(circle, rgba(255,99,99,.5), rgba(255,99,99,0) 70%); }
   .takeaways h3 { font: 800 13pt var(--display); letter-spacing: -0.01em; margin-bottom: 4mm; position: relative; z-index: 1; }
-  .takeaways h3 em { font-family: var(--serif); font-style: italic; font-weight: 400; color: #ffb2b2; }
+  .takeaways h3 em { font-family: var(--accent); font-style: normal; font-weight: 700; font-size: 1.14em; color: var(--pink); }
   .takeaways ol { list-style: none; display: grid; gap: 3.2mm; counter-reset: tk; position: relative; z-index: 1; }
   .takeaways li { counter-increment: tk; display: grid; grid-template-columns: 8mm 1fr; align-items: start; font-size: 10pt; line-height: 1.5; color: rgba(255,255,255,.92); }
-  .takeaways li::before { content: counter(tk); font: 800 9pt var(--display); width: 6mm; height: 6mm; border-radius: 50%; background: var(--coral); color: #fff; display: grid; place-items: center; margin-top: .3mm; }
+  .takeaways li::before { content: counter(tk); font: 800 9pt var(--display); width: 6mm; height: 6mm; border-radius: 50%; background: var(--coral); color: var(--ink); display: grid; place-items: center; margin-top: .3mm; }
   .takeaways b { color: #fff; font-weight: 700; }
 
   /* ── Entonnoir ── */
@@ -116,7 +120,7 @@
   .fn-label { font-size: 9.5pt; font-weight: 600; line-height: 1.3; }
   .fn-label small { display: block; font-weight: 400; font-size: 7.8pt; color: var(--muted); }
   .fn-track { height: 11mm; background: var(--cream); border-radius: 10px; overflow: hidden; }
-  .fn-fill { height: 100%; border-radius: 10px; display: flex; align-items: center; justify-content: flex-end; padding-right: 3mm; color: #fff; font: 800 10.5pt var(--display); }
+  .fn-fill { height: 100%; border-radius: 10px; display: flex; align-items: center; justify-content: flex-end; padding-right: 3mm; color: var(--ink); font: 800 10.5pt var(--display); }
   .fn-pct { text-align: right; font: 800 13pt var(--display); letter-spacing: -0.02em; }
   .fn-pct small { display: block; font: 500 7.5pt var(--sans); color: var(--muted); letter-spacing: 0; }
 
@@ -142,10 +146,10 @@
 
   /* Argent */
   .money-hero { display: grid; grid-template-columns: 1.15fr 1fr; gap: 6mm; margin-top: 7mm; }
-  .mh-main { border-radius: 18px; padding: 7mm 6mm; background: linear-gradient(150deg, var(--coral), var(--pink)); color: #fff; position: relative; overflow: hidden; }
-  .mh-main::after { content: ""; position: absolute; right: -14mm; bottom: -14mm; width: 45mm; height: 45mm; border-radius: 50%; background: rgba(255,255,255,.14); }
+  .mh-main { border-radius: 18px; padding: 7mm 6mm; background: var(--coral); color: var(--ink); position: relative; overflow: hidden; }
+  .mh-main::after { content: ""; position: absolute; right: -14mm; bottom: -14mm; width: 45mm; height: 45mm; border-radius: 50%; background: rgba(255,255,255,.2); }
   .mh-main .mv { font: 900 36pt/1 var(--display); letter-spacing: -0.035em; position: relative; z-index: 1; }
-  .mh-main .ml { margin-top: 3mm; font-size: 10.5pt; line-height: 1.45; color: rgba(255,255,255,.95); position: relative; z-index: 1; max-width: 80mm; }
+  .mh-main .ml { margin-top: 3mm; font-size: 10.5pt; line-height: 1.45; color: rgba(18,18,18,.86); position: relative; z-index: 1; max-width: 80mm; }
   .mh-side { display: grid; gap: 4mm; }
   .mh-mini { border-radius: 14px; background: var(--cream); border: 1px solid var(--line); padding: 4.5mm 5mm; }
   .mh-mini .mv { font: 900 17pt/1 var(--display); letter-spacing: -0.02em; }
@@ -156,19 +160,20 @@
   .st-fill { height: 100%; border-radius: 8px; }
   .st-v { text-align: right; font: 800 11pt var(--display); }
   .contract { margin-top: 6mm; display: flex; align-items: center; gap: 4mm; border: 1.5px dashed var(--pink); border-radius: 14px; padding: 4mm 5mm; background: var(--pink-pale); font-size: 9.5pt; line-height: 1.45; }
-  .contract .cv { font: 900 18pt/1 var(--display); color: var(--coral); white-space: nowrap; }
+  .contract .cv { font: 900 18pt/1 var(--display); color: var(--ink); white-space: nowrap; }
 
   /* Services */
   .services { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm 8mm; margin-top: 5mm; }
   .svc { display: grid; grid-template-columns: 8mm 1fr 12mm; align-items: center; gap: 3mm; }
-  .svc-badge { width: 8mm; height: 8mm; border-radius: 9px; display: grid; place-items: center; color: #fff; font: 800 9pt var(--display); }
+  .svc-badge { width: 8mm; height: 8mm; border-radius: 9px; display: grid; place-items: center; color: var(--ink); font: 800 9pt var(--display); }
+  .svc-badge.ini { background: var(--pink-pale); border: 1px solid var(--pink-soft); }
   .svc-name { font-size: 9.2pt; font-weight: 600; display: flex; flex-direction: column; gap: 1.2mm; min-width: 0; }
   .svc-name span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .svc-track { height: 2.2mm; border-radius: 3px; background: var(--cream); overflow: hidden; }
   .svc-fill { height: 100%; border-radius: 3px; }
   .svc-v { text-align: right; font: 800 11pt var(--display); }
   .podium { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin-top: 7mm; }
-  .pd { border-radius: 16px; padding: 5mm; color: #fff; position: relative; overflow: hidden; min-height: 30mm; display: flex; flex-direction: column; justify-content: space-between; }
+  .pd { border-radius: 16px; padding: 5mm; color: var(--ink); position: relative; overflow: hidden; min-height: 30mm; display: flex; flex-direction: column; justify-content: space-between; }
   .pd .pd-rank { font: 800 8.5pt var(--sans); letter-spacing: .12em; text-transform: uppercase; opacity: .9; }
   .pd .pd-name { font: 900 16pt/1.05 var(--display); letter-spacing: -0.02em; }
   .pd .pd-v { font-size: 9pt; opacity: .95; }
@@ -183,10 +188,10 @@
   table.months tr.base td { background: var(--cream); color: var(--ink-soft); font-style: italic; }
   table.months tr.base td:first-child { text-transform: none; white-space: normal; }
   .potential { margin-top: 6mm; display: flex; align-items: center; gap: 5mm; border-radius: 16px; padding: 5mm 6mm; background: var(--pink-pale); border: 1px solid var(--pink-soft); }
-  .potential .pv { font: 900 20pt/1 var(--display); letter-spacing: -0.02em; color: var(--coral); white-space: nowrap; }
+  .potential .pv { font: 900 20pt/1 var(--display); letter-spacing: -0.02em; color: var(--ink); white-space: nowrap; }
   .potential p { font-size: 9.5pt; line-height: 1.5; color: var(--ink-soft); }
   table.months tr.total td { font-weight: 800; border-bottom: 0; border-top: 1.5px solid var(--ink); font-family: var(--display); font-size: 10pt; }
-  .delta { color: var(--green); font-weight: 700; }
+  .delta { color: var(--ink); font-weight: 700; }
   .chart { margin-top: 6mm; }
   .chart svg { width: 100%; height: auto; display: block; }
   .legend { display: flex; gap: 5mm; font-size: 8.5pt; color: var(--ink-soft); margin-top: 2mm; }
@@ -200,9 +205,9 @@
   .note-box b { color: var(--ink); }
 
   /* ── Modale des chiffres de référence ── */
-  .modal-back { position: fixed; inset: 0; z-index: 100; background: rgba(29,32,38,.55); backdrop-filter: blur(6px); display: grid; place-items: center; padding: 16px; }
+  .modal-back { position: fixed; inset: 0; z-index: 100; background: rgba(18,18,18,.55); backdrop-filter: blur(6px); display: grid; place-items: center; padding: 16px; }
   .modal-back[hidden] { display: none; }
-  .modal { width: min(620px, 100%); max-height: calc(100vh - 32px); overflow: auto; background: #fff; border-radius: 22px; box-shadow: 0 40px 80px -30px rgba(29,32,38,.6); }
+  .modal { width: min(620px, 100%); max-height: calc(100vh - 32px); overflow: auto; background: #fff; border-radius: 22px; box-shadow: 0 40px 80px -30px rgba(18,18,18,.6); }
   .modal-head { padding: 22px 24px 10px; position: relative; }
   .modal-head .eyebrow { margin-bottom: 8px; display: block; }
   .modal-head h2 { font: 800 21px/1.15 var(--display); letter-spacing: -0.02em; }
@@ -221,7 +226,19 @@
   .field .err { font-size: 11.5px; font-weight: 600; color: #b42318; line-height: 1.4; }
   .field .err:empty { display: none; }
   .field .measured { font-size: 11.5px; color: var(--muted); }
-  .field .measured button { border: 0; background: none; color: var(--coral); font: 600 11.5px var(--sans); cursor: pointer; padding: 0; text-decoration: underline; }
+  .field .measured button { border: 0; background: none; color: var(--ink); font: 600 11.5px var(--sans); cursor: pointer; padding: 0; text-decoration: underline; }
+  .rates-info { display: block; font-size: 12.5px; line-height: 1.5; color: var(--ink-soft); background: var(--cream); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+  .rates-info b { color: var(--ink); }
+  body.embed .toolbar { display: none; }
+  body.embed .doc { padding: 0; }
+  /* Logos des services : vectoriel sur fond de marque, sinon icône officielle sur tuile blanche. */
+  .svc-badge.logo { background: #fff !important; border: 1px solid var(--line); padding: 1.3mm; }
+  .svc-badge img { width: 100%; height: 100%; object-fit: contain; display: block; border-radius: 3px; }
+  .svc-badge.glyph img { width: 62%; height: 62%; border-radius: 0; }
+  .pd-logo { width: 12mm; height: 12mm; border-radius: 10px; background: #fff; display: grid; place-items: center; overflow: hidden; margin-bottom: 3mm; }
+  .pd-logo img { width: 70%; height: 70%; object-fit: contain; display: block; }
+  .pd-logo.glyph { background: var(--glyph-bg, #fff); }
+  .pd-logo.glyph img { width: 58%; height: 58%; }
   .fsep { grid-column: 1 / -1; font: 700 11px var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding-top: 6px; border-top: 1px solid var(--line); }
   .field label.check { display: flex; gap: 10px; align-items: flex-start; font: 400 12.5px/1.45 var(--sans); color: var(--ink-soft); cursor: pointer; }
   .field .check input { width: 16px; height: 16px; flex: 0 0 auto; margin-top: 1px; padding: 0; border: 0; box-shadow: none; accent-color: var(--coral); }
@@ -247,6 +264,7 @@
 <body>
   <div class="toolbar" role="toolbar" aria-label="Actions du bilan">
     <div class="tb-title"><div class="tb-logo"><svg class="sp-logo" viewBox="0 0 120 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M40.3946 7.60882C40.8711 8.23326 41.2275 8.94163 41.4456 9.69761C41.6793 10.485 41.7977 11.3023 41.7965 12.1241C41.8207 13.1773 41.6185 14.2232 41.2038 15.1906C40.8462 16.0054 40.3222 16.7355 39.6659 17.3334C39.0457 17.8883 38.3212 18.3126 37.5353 18.5813C36.7794 18.8462 35.9852 18.9837 35.1847 18.9883C34.676 18.998 34.1679 18.9413 33.6736 18.8194C33.2774 18.7068 32.9176 18.5982 32.594 18.4935V24H28.7324L28.7508 5.85944H32.4731C32.5084 6.09415 32.5353 6.3238 32.5537 6.55007C32.5722 6.77634 32.589 7.00768 32.6074 7.2424C33.0287 6.71184 33.5762 6.29661 34.1991 6.03505C34.8351 5.75778 35.5208 5.61459 36.2139 5.61459C37.8444 5.56917 39.3981 6.31029 40.3946 7.60882ZM80.7741 7.60882C81.2504 8.23326 81.6068 8.94163 81.8251 9.69761C82.0588 10.485 82.177 11.3023 82.176 12.1241C82.2002 13.1773 81.998 14.2232 81.5833 15.1906C81.2257 16.0054 80.7017 16.7355 80.0454 17.3334C79.4267 17.8878 78.7039 18.3121 77.9198 18.5813C77.1639 18.8462 76.3696 18.9837 75.5692 18.9883C75.0603 18.998 74.5524 18.9413 74.0581 18.8194C73.6619 18.7068 73.3019 18.5982 72.9785 18.4935V24H69.1169L69.1253 5.85944H72.8476C72.8828 6.09415 72.9097 6.3238 72.9282 6.55007C72.9466 6.77634 72.9651 7.00768 72.9819 7.2424C73.4035 6.71218 73.9508 6.29695 74.5736 6.03505C75.2094 5.75778 75.8953 5.61459 76.5884 5.61459C78.2205 5.56748 79.7764 6.30877 80.7741 7.60882ZM5.96038 5.41535C6.91773 5.40387 7.8719 5.53187 8.79282 5.79529C9.58949 6.03439 10.3444 6.39609 11.0309 6.86755L9.38717 9.44434C8.93905 9.15542 8.46441 8.91007 7.97011 8.71149C7.39893 8.48775 6.78996 8.37765 6.17697 8.38728C5.58429 8.38728 5.15111 8.4734 4.88247 8.64394C4.6318 8.78292 4.47666 9.04836 4.47784 9.33627C4.47784 9.75166 4.75772 10.059 5.31732 10.2582C5.87693 10.4575 6.63197 10.6826 7.58227 10.9337C8.87626 11.295 9.81581 11.792 10.4013 12.4247C10.9867 13.0573 11.2789 13.8982 11.2777 14.9475C11.2957 15.5885 11.1308 16.2213 10.8026 16.7711C10.4817 17.2836 10.048 17.7151 9.53492 18.0325C8.97767 18.3794 8.36719 18.6315 7.72834 18.7789C7.05255 18.9417 6.35997 19.0237 5.66488 19.0237C4.57807 19.0296 3.49647 18.8743 2.45467 18.5627C1.53257 18.3046 0.688885 17.8194 0 17.1511L1.91572 14.6469C2.39423 15.0658 2.94829 15.3885 3.54768 15.5976C4.17126 15.8407 4.83328 15.9689 5.50202 15.9758C5.98791 15.9902 6.47263 15.9164 6.93251 15.758C7.29214 15.6415 7.52586 15.2926 7.49832 14.9137C7.49966 14.7561 7.45786 14.6013 7.37743 14.4662C7.26427 14.3029 7.11098 14.1719 6.93251 14.0863C6.64255 13.938 6.34033 13.8154 6.02921 13.7199C5.64137 13.5932 5.15111 13.4497 4.55843 13.2859C4.06531 13.155 3.58311 12.9857 3.11619 12.7793C2.65917 12.5836 2.2322 12.3232 1.84856 12.0059C1.47952 11.7 1.1768 11.3212 0.958699 10.8932C0.486067 9.89739 0.51108 8.73513 1.02586 7.76081C1.30557 7.26909 1.68687 6.84357 2.14406 6.51294C2.65799 6.14246 3.23338 5.86688 3.84318 5.69904C4.53224 5.50553 5.24496 5.40995 5.96038 5.41535ZM100.767 5.43052C101.71 5.41768 102.646 5.59752 103.517 5.95905C104.318 6.29288 105.043 6.78629 105.648 7.40955C106.246 8.03095 106.718 8.7633 107.038 9.56588C107.703 11.266 107.703 13.1562 107.038 14.8562C106.393 16.4891 105.122 17.7932 103.512 18.4766C102.643 18.8472 101.706 19.0325 100.762 19.0203C99.8133 19.0315 98.872 18.8462 97.9969 18.4766C97.1927 18.1367 96.4639 17.6389 95.8529 17.0126C95.2557 16.391 94.7841 15.6587 94.4644 14.8562C94.1286 14.0158 93.9592 13.1177 93.9657 12.2119C93.9609 11.3053 94.1319 10.4065 94.4694 9.56588C94.7891 8.76346 95.2607 8.03112 95.8579 7.40955C96.4672 6.7846 97.1967 6.29103 98.002 5.95905C98.8793 5.59836 99.8196 5.4187 100.767 5.43052ZM50.0588 5.42547C50.9859 5.40453 51.9063 5.58859 52.7552 5.96413C53.5104 6.31215 54.1783 6.82633 54.7095 7.46867C55.2599 8.1485 55.6682 8.93302 55.91 9.77529C56.1886 10.7309 56.3249 11.7227 56.3146 12.7185V13.3686H47.3069C47.3237 14.0554 47.6248 14.657 48.2102 15.1737C48.7957 15.6904 49.6004 15.9476 50.6246 15.9454C51.632 15.9454 52.4501 15.7963 53.0793 15.4979C53.5605 15.284 54.0207 15.0256 54.4543 14.7262L56.046 17.1967C55.9016 17.2878 55.6855 17.4369 55.3979 17.6441C55.0474 17.8876 54.6721 18.0925 54.278 18.2554C53.7502 18.4769 53.2048 18.6537 52.6478 18.7839C51.9396 18.9465 51.2149 19.0241 50.4886 19.0153C49.4948 19.0284 48.5072 18.8567 47.5756 18.5087C46.7542 18.2005 46.0057 17.7238 45.3778 17.1088C44.7688 16.5023 44.2999 15.7684 44.0044 14.9593C43.6815 14.0684 43.5217 13.1261 43.5326 12.1782C43.5304 11.3041 43.681 10.4365 43.9775 9.61487C44.2594 8.81836 44.6948 8.08551 45.2586 7.45854C45.8348 6.83072 46.5324 6.32802 47.3086 5.98102C48.175 5.59906 49.113 5.4096 50.0588 5.42547ZM17.4513 5.85944V13.1829C17.4513 13.9056 17.6264 14.4751 17.9768 14.8917C18.3271 15.3083 18.8437 15.516 19.5265 15.5148C19.8904 15.5222 20.251 15.4436 20.5793 15.2852C21.1916 14.9821 21.651 14.4363 21.8469 13.7789C21.9565 13.4373 22.0131 13.0809 22.0148 12.7219V5.85944H25.8764V18.5813H22.1441L22.0349 17.2304C21.5851 17.7471 21.0289 18.1592 20.4046 18.4378C19.7423 18.751 19.0193 18.9131 18.2875 18.9123C16.8323 18.9123 15.6812 18.4783 14.8338 17.6104C13.9864 16.7424 13.564 15.4586 13.5662 13.7587V5.85944H17.4513ZM65.9234 5.61459C66.2166 5.61172 66.5094 5.62979 66.7998 5.66863C67.044 5.70578 67.2832 5.76977 67.5134 5.85944L66.8939 9.30417C66.439 9.16891 65.9662 9.10458 65.4919 9.11336C64.5752 9.11336 63.8331 9.38911 63.2656 9.94077C62.6981 10.4924 62.415 11.2748 62.416 12.2879V18.5813H58.5258V5.85944H62.2481L62.3824 7.45854C62.7617 6.97374 63.2152 6.55261 63.7256 6.21067C64.2909 5.81334 65.0235 5.61459 65.9234 5.61459ZM91.8653 5.61459C92.1583 5.61172 92.4513 5.62979 92.7418 5.66863C92.9864 5.70594 93.2262 5.76994 93.457 5.85944L92.8358 9.30417C92.381 9.16891 91.908 9.10458 91.4339 9.11336C90.5171 9.11336 89.7755 9.38911 89.2092 9.94077C88.6429 10.4924 88.3596 11.2748 88.3596 12.2879V18.5813H84.4678V5.85944H88.1901L88.3244 7.45854C88.7037 6.97374 89.1572 6.55261 89.6676 6.21067C90.2339 5.81334 90.9666 5.61459 91.8653 5.61459ZM116.009 0C116.712 0.0028706 117.411 0.103343 118.086 0.298882C118.79 0.499994 119.443 0.85122 120 1.32892C119.731 1.74432 119.457 2.15583 119.177 2.56329C118.897 2.97074 118.623 3.38225 118.355 3.79765C118.084 3.59755 117.784 3.44203 117.465 3.33666C117.144 3.22572 116.807 3.16882 116.467 3.1678C115.982 3.14585 115.511 3.33396 115.173 3.68451C114.849 4.02223 114.688 4.51023 114.688 5.14852V5.85436H117.681V8.91915H114.688V18.5762H110.826L110.828 8.92422H108.778V5.85942H110.828V5.20762C110.807 4.40723 110.959 3.61156 111.273 2.87567C111.544 2.25866 111.945 1.70801 112.448 1.26138C112.933 0.837205 113.497 0.514684 114.107 0.312391C114.72 0.105538 115.362 0 116.009 0ZM75.6582 8.94281C75.2625 8.93487 74.8703 9.01812 74.5115 9.18597C74.1884 9.3403 73.9023 9.56269 73.672 9.83776C73.446 10.1106 73.2724 10.4232 73.1599 10.7597C73.0459 11.1008 72.9891 11.4586 72.992 11.8185L72.9869 15.2176C73.4906 15.5553 74.2371 15.7242 75.2267 15.7242C76.1792 15.7242 76.9297 15.4034 77.4782 14.7617C78.0267 14.12 78.3009 13.2656 78.3009 12.1984C78.3009 11.7869 78.2514 11.3769 78.1532 10.9776C78.0643 10.6039 77.9085 10.2496 77.6931 9.93233C77.4841 9.63226 77.2072 9.3864 76.8855 9.21467C76.5052 9.02285 76.0833 8.92947 75.6582 8.94281ZM35.2837 8.94281C34.8882 8.93487 34.4958 9.01812 34.137 9.18597C33.8141 9.3403 33.5279 9.56269 33.2975 9.83776C33.0715 10.1106 32.8979 10.4232 32.7854 10.7597C32.6714 11.1008 32.6147 11.4586 32.6175 11.8185L32.6125 15.2176C33.1162 15.5553 33.8628 15.7242 34.8522 15.7242C35.8037 15.7242 36.5542 15.4034 37.1038 14.7617C37.6533 14.12 37.9276 13.2656 37.9265 12.1984C37.9268 11.7869 37.8768 11.3767 37.777 10.9776C37.6896 10.6037 37.5341 10.2494 37.3187 9.93233C37.1095 9.63175 36.8319 9.3859 36.5094 9.21467C36.1298 9.02268 35.7084 8.9293 35.2837 8.94281ZM100.762 8.82121C100.31 8.81378 99.863 8.91088 99.4543 9.1049C99.0827 9.28287 98.7555 9.54241 98.4973 9.86477C98.2404 10.1886 98.0436 10.5566 97.9164 10.9505C97.6477 11.7698 97.6477 12.654 97.9164 13.4733C98.0458 13.8701 98.2422 14.2414 98.4973 14.5709C98.7516 14.9005 99.0796 15.1653 99.4543 15.3443C99.8633 15.5371 100.311 15.633 100.762 15.6246V15.6296C101.21 15.6374 101.653 15.5398 102.057 15.3443C102.428 15.16 102.755 14.8959 103.014 14.5709C103.274 14.245 103.471 13.8726 103.595 13.4733C103.846 12.6513 103.846 11.7725 103.595 10.9505C103.473 10.5539 103.276 10.1849 103.014 9.86477C102.751 9.54714 102.425 9.28811 102.057 9.1049C101.653 8.91003 101.21 8.81277 100.762 8.82121ZM50.0252 8.46325C49.6184 8.45464 49.2144 8.53299 48.8398 8.6929C48.5215 8.83018 48.2329 9.02859 47.9903 9.27715C47.7727 9.50005 47.5986 9.76161 47.4765 10.0488C47.3669 10.3107 47.3099 10.5919 47.3086 10.8762H52.6478C52.6431 10.5924 52.586 10.3119 52.4799 10.0488C52.3684 9.76279 52.2037 9.50089 51.9946 9.27715C51.7648 9.0318 51.4899 8.83339 51.1854 8.6929C50.8204 8.53096 50.424 8.45244 50.0252 8.46325Z" fill="currentColor"/></svg></div><span id="tb-cse">Bilan Spliiit</span></div>
+    <div class="tb-note" id="tb-note" role="status" hidden></div>
     <div class="tb-actions">
       <button class="btn btn-ghost" type="button" id="btn-edit" disabled>Modifier les chiffres</button>
       <button class="btn btn-primary" type="button" id="btn-pdf" disabled>Télécharger en PDF</button>
@@ -260,7 +278,7 @@
       <div class="modal-head">
         <span class="eyebrow">Export du bilan</span>
         <h2 id="modal-title">Chiffres de référence</h2>
-        <p>Les valeurs sont pré-remplies avec les données Spliiit. Si le CSE ou Spliiit vous a communiqué d'autres chiffres de référence, saisissez-les : les taux et moyennes du bilan sont recalculés à partir d'eux. Les montants, les services et l'activité mensuelle restent les données mesurées.</p>
+        <p>Les valeurs sont pré-remplies avec les données Spliiit. Vous pouvez les remplacer par les chiffres communiqués par Spliiit ou par le CSE : les taux et moyennes du bilan sont calculés à partir d'eux.</p>
         <button class="modal-close" type="button" id="modal-x" aria-label="Fermer">×</button>
       </div>
       <form class="modal-body" id="ref-form" novalidate>
@@ -269,12 +287,10 @@
           <div class="fsep">Chiffres de référence</div>
           <div class="field" data-key="inscrits"><label for="f-inscrits">Salariés inscrits</label><input id="f-inscrits" name="inscrits" type="number" min="0" step="1" inputmode="numeric" aria-describedby="e-inscrits"><div class="hint">Mesuré : codes cagnotte générés (un par salarié inscrit, plus les éventuels réassorts).</div><div class="measured"></div><div class="err" id="e-inscrits" role="alert"></div></div>
           <div class="field" data-key="utilisateurs"><label for="f-utilisateurs">Bénéficiaires</label><input id="f-utilisateurs" name="utilisateurs" type="number" min="0" step="1" inputmode="numeric" aria-describedby="e-utilisateurs"><div class="hint">Salariés qui ont activé leur cagnotte. C'est le chiffre « Bénéficiaires » du cockpit, pas « Utilisateurs actifs » de Spliiit (ce sont les abonnés en cours).</div><div class="measured"></div><div class="err" id="e-utilisateurs" role="alert"></div></div>
-          <div class="field" data-key="abonnes"><label for="f-abonnes">Abonnés en cours</label><input id="f-abonnes" name="abonnes" type="number" min="0" step="1" inputmode="numeric" aria-describedby="e-abonnes"><div class="hint">Au moins un abonnement actif à la date des données (« Utilisateurs actifs » chez Spliiit).</div><div class="measured"></div><div class="err" id="e-abonnes" role="alert"></div></div>
-          <div class="field" data-key="videes"><label for="f-videes">Cagnottes vidées</label><input id="f-videes" name="videes" type="number" min="0" step="1" inputmode="numeric" aria-describedby="e-videes"><div class="hint">Bénéficiaires ayant utilisé 100 % de leur crédit.</div><div class="measured"></div><div class="err" id="e-videes" role="alert"></div></div>
+          <div class="field full rates-info" id="rates-info" aria-live="polite"></div>
           <div class="fsep">Contrat et période</div>
           <div class="field" data-key="contrat"><label for="f-contrat">Cagnotte par salarié selon le contrat (€)</label><input id="f-contrat" name="contrat" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Optionnel, ex. 160" aria-describedby="e-contrat"><div class="hint">Affichée comme montant prévu au contrat, à côté des montants mesurés.</div><div class="err" id="e-contrat" role="alert"></div></div>
-          <div class="field" data-key="debut"><label for="f-debut">Début de la période</label><input id="f-debut" name="debut" type="month"><div class="measured"></div></div>
-          <div class="field full"><label class="check"><input type="checkbox" id="f-signaler" checked> Signaler dans la note « Sources et méthode » les chiffres de référence saisis à la main</label></div>
+          <div class="field" data-key="debut"><label for="f-debut">Début du partenariat</label><input id="f-debut" name="debut" type="month"><div class="measured"></div></div>
         </div>
       </form>
       <div class="modal-foot">
@@ -293,16 +309,54 @@
   const P = new URLSearchParams(location.search);
   const CSE_ID = P.get("cse_id") || "";
   const HUBSPOT_ID = P.get("hubspot_company_id") || "";
-  // Le secret du cockpit arrive dans l'URL : on le garde pour cet onglet (rechargement
-  // compris) puis on le retire de la barre d'adresse et de l'historique.
+  // embed=1 : page chargée en coulisse par le cockpit pour imprimer (pas de barre, pas de modale).
+  const EMBED = P.get("embed") === "1";
+  if (EMBED) document.body.classList.add("embed");
+  // Le secret du cockpit n'est plus mis dans l'URL : la page le demande au cockpit qui l'a
+  // ouverte (iframe : parent ; onglet de repli : opener) par postMessage, même origine.
+  // Ancien lien ?token= encore accepté. Un onglet le garde en sessionStorage (rechargement).
+  const CLE_JETON = "bilan-spliiit-token";
+  const CLE_REF = `bilan-spliiit-ref:${CSE_ID || HUBSPOT_ID}`;
   let TOKEN = P.get("token") || "";
   try {
-    if (TOKEN) sessionStorage.setItem("bilan-spliiit-token", TOKEN);
-    else TOKEN = sessionStorage.getItem("bilan-spliiit-token") || "";
+    if (TOKEN && !EMBED) sessionStorage.setItem(CLE_JETON, TOKEN);
+    else if (!TOKEN && !EMBED) TOKEN = sessionStorage.getItem(CLE_JETON) || "";
   } catch (_) { /* stockage indisponible : le jeton reste en mémoire */ }
-  if (P.has("token")) {
+  function demanderJeton() {
+    let source = null;
+    try { source = EMBED ? (parent !== window ? parent : null) : window.opener; } catch (_) { source = null; }
+    if (!source) return Promise.resolve("");
+    return new Promise((res) => {
+      const ecoute = (e) => {
+        if (e.source !== source || e.origin !== location.origin || e.data?.type !== "bilan-jeton" || typeof e.data.token !== "string") return;
+        clearTimeout(minuterie); window.removeEventListener("message", ecoute); res(e.data.token);
+      };
+      const minuterie = setTimeout(() => { window.removeEventListener("message", ecoute); res(""); }, 5000);
+      window.addEventListener("message", ecoute);
+      try { source.postMessage({ type: "bilan-jeton?" }, location.origin); } catch (_) { clearTimeout(minuterie); window.removeEventListener("message", ecoute); res(""); }
+    });
+  }
+
+  // Chiffres de référence transmis par le cockpit : #r=<base64url(JSON)>.
+  function lireHash() {
+    const m = location.hash.match(/[#&]r=([A-Za-z0-9_-]+)/);
+    if (!m) return null;
+    try {
+      const b64 = m[1].replace(/-/g, "+").replace(/_/g, "/");
+      const bin = atob(b64 + "===".slice((b64.length + 3) % 4));
+      const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+      const o = JSON.parse(new TextDecoder().decode(bytes));
+      return o && typeof o === "object" ? o : null;
+    } catch (_) { return null; }
+  }
+  let HASH_REF = lireHash();
+  try {
+    if (!EMBED && HASH_REF) { const { print: _p, ...sansImpression } = HASH_REF; sessionStorage.setItem(CLE_REF, JSON.stringify(sansImpression)); }
+    else if (!EMBED && !HASH_REF) { const s = JSON.parse(sessionStorage.getItem(CLE_REF) || "null"); if (s && typeof s === "object") HASH_REF = s; }
+  } catch (_) { /* stockage indisponible */ }
+  if (P.has("token") || location.hash) {
     P.delete("token");
-    try { history.replaceState(null, "", `${location.pathname}${P.toString() ? `?${P}` : ""}${location.hash}`); } catch (_) { /* file:// ou bac à sable */ }
+    try { history.replaceState(null, "", `${location.pathname}${P.toString() ? `?${P}` : ""}`); } catch (_) { /* bac à sable */ }
   }
 
   const $ = (sel) => document.querySelector(sel);
@@ -316,8 +370,10 @@
   const eur2 = (n) => `${nf2.format(+n || 0)} €`;
   const pctOf = (a, b) => (b > 0 ? (100 * a) / b : 0);
   const pct0 = (a, b) => (b > 0 ? `${nf0.format(Math.round(pctOf(a, b)))} %` : "–");
-  // Accord en nombre : pl(1, "abonnement", "abonnements") → « 1 abonnement ».
+  const pctR = (r) => `${nf0.format(Math.round(100 * (+r || 0)))} %`; // taux 0..1 → « 69 % »
   const pl = (n, one, many) => `${int(n)} ${Math.round(+n || 0) >= 2 ? many : one}`;
+  const acc = (n, one, many) => (Math.round(+n || 0) >= 2 ? many : one); // accord seul, sans le nombre
+  const acc1 = (x, one, many) => (Math.round(10 * (+x || 0)) / 10 >= 2 ? many : one); // valeur affichée à 1 décimale
   const MONTHS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
   const COURT = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."];
   const parseDay = (s) => { const m = String(s || "").match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? { y: +m[1], m: +m[2], d: +m[3] } : null; };
@@ -327,31 +383,76 @@
   const elide = (word) => /^[aeiouyàâéèêîôûh]/i.test(word);
   const deMot = (word, majuscule) => `${majuscule ? (elide(word) ? "D'" : "De ") : (elide(word) ? "d'" : "de ")}${word}`;
   const lastDay = (p) => new Date(Date.UTC(p.y, p.m, 0)).getUTCDate();
+  // Un relevé est pris le matin : il décrit l'état de la veille au soir.
+  const veille = (s) => { const p = parseDay(s); return p ? new Date(Date.UTC(p.y, p.m - 1, p.d - 1)).toISOString().slice(0, 10) : ""; };
   const parisToday = () => new Intl.DateTimeFormat("fr-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
 
-  // Couleurs des services (approximation des marques) ; sinon une teinte de la DA.
-  const SERVICE_COLORS = {
-    "netflix": "#e50914", "spotify": "#1db954", "disney+": "#113ccf", "deezer": "#a238ff", "youtube premium": "#ff0033",
-    "hbo max": "#5822b4", "canal+": "#111111", "prime video": "#00a8e1", "amazon prime": "#00a8e1", "strava": "#fc4c02",
-    "duolingo": "#58cc02", "crunchyroll": "#f47521", "nintendo switch": "#e60012", "snapchat+": "#f7c600", "microsoft 365": "#d83b01",
-    "nordvpn": "#4687ff", "uber one": "#000000", "apple tv+": "#111111", "apple one": "#111111", "icloud": "#3693f3",
-    "google one": "#4285f4", "amazon music": "#25d1da", "paramount+": "#0064ff", "ligue1+": "#091c3e", "tf1+": "#0b3b8c", "m6+": "#e2001a",
+  // ── Logos des services ────────────────────────────────────────────────────
+  // 1. Vectoriel simple-icons (version figée) sur la couleur de la marque ;
+  // 2. sinon l'icône officielle du site (service de favicons) sur tuile blanche ;
+  // 3. sinon l'initiale (onerror).
+  const SI = "https://cdn.jsdelivr.net/npm/simple-icons@16.35.0/icons/";
+  const LOGOS = {
+    "netflix": { si: "netflix", hex: "E50914" }, "spotify": { si: "spotify", hex: "1ED760", fg: "000" },
+    "deezer": { si: "deezer", hex: "A238FF" }, "youtube premium": { si: "youtube", hex: "FF0000" }, "youtube": { si: "youtube", hex: "FF0000" },
+    "hbo max": { si: "hbomax", hex: "000000" }, "max": { si: "max", hex: "002BE7" }, "strava": { si: "strava", hex: "FC4C02" },
+    "duolingo": { si: "duolingo", hex: "58CC02" }, "crunchyroll": { si: "crunchyroll", hex: "FF5E00" },
+    "snapchat+": { si: "snapchat", hex: "FFFC00", fg: "000" }, "nordvpn": { si: "nordvpn", hex: "4687FF" }, "uber one": { si: "uber", hex: "000000" },
+    "paramount+": { si: "paramountplus", hex: "0064FF" }, "l'équipe": { si: "lequipe", hex: "E42829" }, "apple arcade": { si: "applearcade", hex: "000000" },
+    "apple tv+": { si: "appletv", hex: "000000" }, "icloud": { si: "icloud", hex: "3693F3" }, "apple one": { si: "apple", hex: "000000" },
+    "bitdefender": { si: "bitdefender", hex: "ED1C24" }, "audible": { si: "audible", hex: "F8991C" }, "apple music": { si: "applemusic", hex: "FA243C" },
+    "playstation plus": { si: "playstation", hex: "0070D1" }, "headspace": { si: "headspace", hex: "F47D31" },
+    "disney+": { domain: "disneyplus.com" }, "canal+": { domain: "canalplus.com" }, "prime video": { domain: "primevideo.com" },
+    "nintendo switch": { domain: "nintendo.com" }, "ligue1+": { domain: "ligue1.fr" }, "microsoft 365": { domain: "microsoft365.com" },
+    "amazon prime": { domain: "amazon.fr" }, "cdiscount": { domain: "cdiscount.com" }, "tf1+": { domain: "tf1.fr" }, "m6+": { domain: "m6plus.fr" },
+    "google one": { domain: "one.google.com" }, "amazon music": { domain: "music.amazon.fr" }, "adn": { domain: "animationdigitalnetwork.com" },
+    "cyber ghost": { domain: "cyberghostvpn.com" }, "molotov tv": { domain: "molotov.tv" }, "molotov": { domain: "molotov.tv" },
+    "calm": { domain: "calm.com" }, "nextory": { domain: "nextory.com" }, "mediapart": { domain: "mediapart.fr" }, "truecaller": { domain: "truecaller.com" },
+    "ouest france": { domain: "ouest-france.fr" }, "bayam": { domain: "bayam.tv" }, "sciences et avenir": { domain: "sciencesetavenir.fr" },
   };
-  const PALETTE = ["#ff6363", "#fa6484", "#7684ff", "#ffb347", "#5bca8d", "#157dfe"];
-  const svcColor = (name, i) => SERVICE_COLORS[String(name).toLowerCase()] || PALETTE[i % PALETTE.length];
+  const PALETTE = ["#FF6363", "#121212", "#FF9292", "#5D5DEC", "#5BCA8D", "#FFCB3F"];
+  const initialeDe = (name) => String(name).replace(/[^A-Za-zÀ-ÿ0-9]/g, "").charAt(0).toUpperCase() || "•";
+  function logoDe(name) {
+    const l = LOGOS[String(name).toLowerCase().trim()];
+    if (l?.si) return { type: "glyph", src: `${SI}${l.si}.svg`, bg: `#${l.hex}`, white: (l.fg || "fff") === "fff" };
+    if (l?.domain) return { type: "logo", src: `https://www.google.com/s2/favicons?domain=${encodeURIComponent(l.domain)}&sz=128` };
+    return null;
+  }
+  const svcColor = (name, i) => { const l = LOGOS[String(name).toLowerCase().trim()]; return l?.hex ? `#${l.hex}` : PALETTE[i % PALETTE.length]; };
+  // Tuile de logo ; en cas d'échec de chargement, retombe sur l'initiale.
+  function badge(name, i) {
+    const lg = logoDe(name);
+    const ini = esc(initialeDe(name));
+    const fallback = `this.parentNode.className='svc-badge ini';this.parentNode.removeAttribute('style');this.parentNode.textContent='${ini}'`;
+    if (lg?.type === "glyph") {
+      return `<div class="svc-badge glyph" style="background:${lg.bg}"><img src="${lg.src}" alt="" style="${lg.white ? "filter:brightness(0) invert(1)" : ""}" onerror="${fallback}"></div>`;
+    }
+    if (lg?.type === "logo") return `<div class="svc-badge logo"><img src="${lg.src}" alt="" referrerpolicy="no-referrer" onerror="${fallback}"></div>`;
+    return `<div class="svc-badge ini">${ini}</div>`;
+  }
+  function podiumLogo(name) {
+    const lg = logoDe(name);
+    if (lg?.type === "glyph") return `<div class="pd-logo glyph" style="--glyph-bg:${lg.bg}"><img src="${lg.src}" alt="" style="${lg.white ? "filter:brightness(0) invert(1)" : ""}" onerror="this.parentNode.remove()"></div>`;
+    if (lg?.type === "logo") return `<div class="pd-logo"><img src="${lg.src}" alt="" referrerpolicy="no-referrer" onerror="this.parentNode.remove()"></div>`;
+    return "";
+  }
 
   let REPORT = null;   // réponse de cse-spliit-report
   let MEASURED = null; // valeurs mesurées pré-remplies
   let REF = null;      // valeurs de référence retenues
-  let SIGNALER = true;
 
   function fail(title, text) {
     $("#doc").innerHTML = `<div class="state"><h2>${esc(title)}</h2><p>${esc(text)}</p></div>`;
+    if (EMBED) try { parent.postMessage({ type: "bilan-erreur", message: text }, "*"); } catch (_) {}
   }
 
   async function load() {
+    if (!TOKEN && (CSE_ID || HUBSPOT_ID)) {
+      TOKEN = await demanderJeton();
+      if (TOKEN && !EMBED) try { sessionStorage.setItem(CLE_JETON, TOKEN); } catch (_) {}
+    }
     if (!TOKEN || (!CSE_ID && !HUBSPOT_ID)) {
-      fail("Lien incomplet", "Ouvrez le bilan depuis le bouton « Exporter le bilan » de la carte Spliiit du cockpit.");
+      fail("Lien incomplet", "Ouvrez le bilan depuis le bouton d'export de la carte Spliiit du cockpit.");
       return;
     }
     const qs = CSE_ID ? `cse_id=${encodeURIComponent(CSE_ID)}` : `hubspot_company_id=${encodeURIComponent(HUBSPOT_ID)}`;
@@ -363,6 +464,7 @@
         return;
       }
       REPORT = j.report;
+      await chargerPolices(j.fonts);
     } catch (e) {
       fail("Bilan indisponible", "Connexion impossible au serveur. Réessayez dans un instant.");
       return;
@@ -374,38 +476,119 @@
       nom: String(REPORT.cse?.name || REPORT.dernier_releve.cse_name || "CSE").trim(),
       inscrits: +REPORT.dernier_releve.codes_generes || 0,
       utilisateurs: +u.beneficiaires || 0,
-      abonnes: +u.actifs || 0,
-      videes: +u.cagnottes_videes || 0,
       contrat: null,
       debut: created ? `${created.y}-${String(created.m).padStart(2, "0")}` : (REPORT.mois?.[0]?.mois || ""),
     };
     REF = { ...MEASURED };
+    if (HASH_REF) {
+      const v = valider(HASH_REF);
+      if (v.ok) REF = v.ref;
+      else if (EMBED || HASH_REF.print) {
+        fail("Chiffres à revoir", "Les chiffres saisis ne sont plus compatibles avec les dernières données Spliiit. Rouvrez l'export depuis le cockpit.");
+        return;
+      }
+    }
     $("#btn-edit").disabled = false;
     $("#btn-pdf").disabled = false;
     render();
-    openModal();
+    if (EMBED) { await pret(); try { parent.postMessage({ type: "bilan-pret" }, "*"); } catch (_) {} return; }
+    if (HASH_REF?.print) { await pret(); imprimerOnglet(); return; }
+    if (!HASH_REF) openModal();
   }
 
-  // ── Modale ──────────────────────────────────────────────────────────────
-  const FIELDS = ["nom", "inscrits", "utilisateurs", "abonnes", "videes", "contrat", "debut"];
+  // Buenos Aires (charte) : liens signés courts du bucket privé, émis par cse-spliit-report.
+  // Échec ou délai dépassé : les polices de repli (Inter, Urbanist) prennent le relais.
+  const POLICES_HOTE = "https://yhtxrjegdeuwkcjvkfkt.supabase.co/storage/v1/object/sign/bilan-assets/fonts/";
+  async function chargerPolices(liste) {
+    if (!Array.isArray(liste) || typeof FontFace !== "function") return;
+    const charges = liste
+      .filter(f => f && typeof f.url === "string" && f.url.startsWith(POLICES_HOTE) && !/["'\\()\s]/.test(f.url) && [400, 600, 700, 900].includes(+f.weight))
+      .map(f => {
+        try {
+          const face = new FontFace("Buenos Aires", `url("${f.url}") format("opentype")`, { weight: String(+f.weight), style: "normal" });
+          document.fonts.add(face);
+          return face.load().catch(() => null);
+        } catch (_) { return null; }
+      });
+    await Promise.race([Promise.all(charges), new Promise(res => setTimeout(res, 6000))]);
+  }
+
+  // Polices et logos chargés avant d'imprimer (sinon logos manquants dans le PDF).
+  async function pret() {
+    try { await document.fonts.ready; } catch (_) {}
+    const imgs = [...document.querySelectorAll("#doc img")].filter(i => !i.complete);
+    await Promise.race([
+      Promise.all(imgs.map(i => new Promise(res => { i.addEventListener("load", res, { once: true }); i.addEventListener("error", res, { once: true }); }))),
+      new Promise(res => setTimeout(res, 5000)),
+    ]);
+  }
+  function imprimer() {
+    const t0 = performance.now();
+    window.print();
+    return Math.round(performance.now() - t0);
+  }
+  function imprimerOnglet() {
+    if (imprimer() >= 400) return;
+    const note = $("#tb-note");
+    if (note) { note.textContent = `Pour enregistrer en PDF : ${/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent) ? "Cmd" : "Ctrl"} + P, puis « Enregistrer au format PDF ».`; note.hidden = false; }
+  }
+  // Le cockpit demande l'impression ; on répond la durée de print() (≈ 0 ms = bloqué par la page hôte).
+  window.addEventListener("message", (e) => {
+    if (e.data?.type !== "bilan-imprimer" || e.source !== parent || e.origin !== location.origin) return;
+    const ms = imprimer();
+    try { e.source?.postMessage({ type: "bilan-imprime", ms }, "*"); } catch (_) {}
+  });
+
+  // Contrôle des chiffres de référence (cockpit ou modale).
+  function valider(o) {
+    const erreurs = {};
+    const entier = (k) => {
+      const raw = o[k];
+      if (raw === undefined || raw === null || raw === "") return MEASURED[k];
+      const n = Number(raw);
+      if (!Number.isFinite(n) || n < 0 || !Number.isInteger(n)) { erreurs[k] = "Saisissez un nombre entier positif."; return MEASURED[k]; }
+      return n;
+    };
+    const inscrits = entier("inscrits"), utilisateurs = entier("utilisateurs");
+    let contrat = null;
+    if (o.contrat !== undefined && o.contrat !== null && String(o.contrat).trim() !== "") {
+      const n = Number(String(o.contrat).replace(",", "."));
+      if (!Number.isFinite(n) || n <= 0) erreurs.contrat = "Saisissez un montant positif, ou laissez vide.";
+      else contrat = Math.round(n * 100) / 100;
+    }
+    if (!erreurs.inscrits && inscrits <= 0) erreurs.inscrits = "Il faut au moins un salarié inscrit.";
+    if (!erreurs.inscrits && !erreurs.utilisateurs && utilisateurs > inscrits) erreurs.utilisateurs = `Ne peut pas dépasser les salariés inscrits (${int(inscrits)}).`;
+    if (!erreurs.utilisateurs && utilisateurs <= 0) erreurs.utilisateurs = "Il faut au moins un bénéficiaire.";
+    const moisDonnees = veille(REPORT.dernier_releve.snapshot_date).slice(0, 7);
+    const debut = /^\d{4}-\d{2}$/.test(String(o.debut || "")) && String(o.debut) <= moisDonnees ? o.debut : MEASURED.debut;
+    const nom = String(o.nom || "").trim().slice(0, 120) || MEASURED.nom;
+    return { ok: Object.keys(erreurs).length === 0, erreurs, ref: { nom, inscrits, utilisateurs, contrat, debut } };
+  }
+
+  // ── Modale (ouverture directe de la page, hors cockpit) ─────────────────
+  const FIELDS = ["nom", "inscrits", "utilisateurs", "contrat", "debut"];
   let lastFocus = null;
 
   function measuredText(key) {
     if (key === "nom" || key === "contrat") return "";
-    if (key === "debut") return MEASURED.debut ? `Début du contrat : ${monthLabel(MEASURED.debut)}` : "";
+    if (key === "debut") return MEASURED.debut ? `Par défaut : ${monthLabel(MEASURED.debut)}` : "";
     return `Mesuré : ${int(MEASURED[key])}`;
   }
-
   function setError(key, msg) {
     const input = $(`#f-${key}`);
+    if (!input) return;
     const box = input.closest(".field");
     box.classList.toggle("error", !!msg);
     input.setAttribute("aria-invalid", msg ? "true" : "false");
     const e = box.querySelector(".err");
     if (e) e.textContent = msg || "";
   }
-
+  function ratesInfo() {
+    const c = compute();
+    $("#rates-info").innerHTML = `Calculés à partir des données Spliiit : <b>${pctR(c.tauxAbonnes)}</b> des bénéficiaires ont un abonnement en cours, <b>${c.pctVidees} %</b> ont vidé leur cagnotte.`;
+  }
   function fillForm() {
+    $("#f-debut").max = veille(REPORT.dernier_releve.snapshot_date).slice(0, 7);
     for (const k of FIELDS) {
       const input = $(`#f-${k}`);
       input.value = REF[k] ?? "";
@@ -413,19 +596,16 @@
       const m = box.querySelector(".measured");
       if (m) m.innerHTML = measuredText(k) ? `${esc(measuredText(k))} · <button type="button" data-reset="${k}">rétablir</button>` : "";
       markChanged(k);
-      if (box.querySelector(".err")) setError(k, "");
+      setError(k, "");
     }
-    $("#f-signaler").checked = SIGNALER;
+    ratesInfo();
   }
-
   function markChanged(k) {
     const input = $(`#f-${k}`);
     const box = input.closest(".field");
     const val = input.value === "" ? null : (input.type === "number" ? +input.value : input.value.trim());
     box.classList.toggle("changed", k !== "contrat" && k !== "nom" && val !== null && String(val) !== String(MEASURED[k] ?? ""));
   }
-
-  // Fond inerte pendant la modale : ni clic ni tabulation derrière elle.
   function setBackgroundInert(on) {
     for (const el of [document.querySelector(".toolbar"), $("#doc")]) {
       if (!el) continue;
@@ -433,7 +613,6 @@
       else { el.removeAttribute("inert"); el.removeAttribute("aria-hidden"); }
     }
   }
-
   function openModal() {
     fillForm();
     lastFocus = document.activeElement;
@@ -447,53 +626,20 @@
     if (lastFocus && typeof lastFocus.focus === "function" && document.contains(lastFocus)) lastFocus.focus();
     else $("#btn-edit").focus();
   }
-
-  // Lit et valide la saisie : renvoie null (et affiche les erreurs) si incohérente.
-  function readForm() {
-    let ok = true;
-    const entier = (k) => {
-      const raw = $(`#f-${k}`).value.trim();
-      if (raw === "") return MEASURED[k];
-      const n = Number(raw);
-      if (!Number.isFinite(n) || n < 0 || !Number.isInteger(n)) { setError(k, "Saisissez un nombre entier positif."); ok = false; return MEASURED[k]; }
-      setError(k, "");
-      return n;
-    };
-    const v = { inscrits: entier("inscrits"), utilisateurs: entier("utilisateurs"), abonnes: entier("abonnes"), videes: entier("videes") };
-    const contratRaw = $("#f-contrat").value.trim();
-    let contrat = null;
-    if (contratRaw !== "") {
-      const n = Number(contratRaw.replace(",", "."));
-      if (!Number.isFinite(n) || n <= 0) { setError("contrat", "Saisissez un montant positif, ou laissez vide."); ok = false; }
-      else { contrat = Math.round(n * 100) / 100; setError("contrat", ""); }
-    } else setError("contrat", "");
-    if (ok) {
-      if (v.inscrits <= 0) { setError("inscrits", "Il faut au moins un salarié inscrit."); ok = false; }
-      else if (v.utilisateurs > v.inscrits) { setError("utilisateurs", `Ne peut pas dépasser les salariés inscrits (${int(v.inscrits)}).`); ok = false; }
-      if (ok && v.abonnes > v.utilisateurs) { setError("abonnes", `Ne peut pas dépasser les bénéficiaires (${int(v.utilisateurs)}).`); ok = false; }
-      if (ok && v.videes > v.utilisateurs) { setError("videes", `Ne peut pas dépasser les bénéficiaires (${int(v.utilisateurs)}).`); ok = false; }
-    }
-    if (!ok) return null;
-    return {
-      nom: $("#f-nom").value.trim() || MEASURED.nom,
-      ...v,
-      contrat,
-      debut: /^\d{4}-\d{2}$/.test($("#f-debut").value) ? $("#f-debut").value : MEASURED.debut,
-    };
-  }
-
-  $("#modal").addEventListener("input", (e) => { const k = e.target?.name; if (FIELDS.includes(k)) { markChanged(k); if (e.target.closest(".field")?.querySelector(".err")) setError(k, ""); } });
+  $("#modal").addEventListener("input", (e) => { const k = e.target?.name; if (FIELDS.includes(k)) { markChanged(k); setError(k, ""); } });
   $("#modal").addEventListener("click", (e) => {
     const k = e.target?.getAttribute?.("data-reset");
-    if (k) { $(`#f-${k}`).value = MEASURED[k] ?? ""; markChanged(k); if ($(`#e-${k}`)) setError(k, ""); return; }
+    if (k) { $(`#f-${k}`).value = MEASURED[k] ?? ""; markChanged(k); setError(k, ""); return; }
     if (e.target === $("#modal")) closeModal();
   });
   $("#modal-x").addEventListener("click", closeModal);
   $("#modal-cancel").addEventListener("click", closeModal);
   $("#modal-ok").addEventListener("click", () => {
-    const ref = readForm();
-    if (!ref) { const first = document.querySelector(".field.error input"); if (first) first.focus(); return; }
-    REF = ref; SIGNALER = $("#f-signaler").checked; render(); closeModal();
+    const o = {}; for (const k of FIELDS) o[k] = $(`#f-${k}`).value;
+    const v = valider(o);
+    for (const k of FIELDS) setError(k, v.erreurs[k] || "");
+    if (!v.ok) { const first = document.querySelector(".field.error input"); if (first) first.focus(); return; }
+    REF = v.ref; render(); closeModal();
   });
   $("#ref-form").addEventListener("submit", (e) => { e.preventDefault(); $("#modal-ok").click(); });
   document.addEventListener("keydown", (e) => {
@@ -502,37 +648,55 @@
     if (e.key === "Enter" && e.target?.tagName === "INPUT" && e.target.type !== "checkbox") { e.preventDefault(); $("#modal-ok").click(); }
   });
   $("#btn-edit").addEventListener("click", openModal);
-  $("#btn-pdf").addEventListener("click", () => window.print());
+  $("#btn-pdf").addEventListener("click", () => imprimerOnglet());
 
   // ── Calculs ─────────────────────────────────────────────────────────────
+  // Parts en % arrondies pour totaliser exactement 100 (méthode du plus fort reste).
+  function partsArrondies(valeurs) {
+    const total = valeurs.reduce((a, b) => a + b, 0);
+    if (total <= 0) return valeurs.map(() => 0);
+    const brut = valeurs.map(v => (100 * v) / total);
+    const parts = brut.map(Math.floor);
+    let reste = 100 - parts.reduce((a, b) => a + b, 0);
+    brut.map((b, i) => [b - Math.floor(b), i]).sort((a, b) => b[0] - a[0]).forEach(([, i]) => { if (reste > 0) { parts[i] += 1; reste -= 1; } });
+    return parts;
+  }
+  // Effectifs de référence (inscrits, bénéficiaires) ; abonnés en cours et cagnottes vidées
+  // = taux mesurés par Spliiit (part des bénéficiaires), affichés en effectifs seulement
+  // quand le nombre de bénéficiaires est celui mesuré.
   function compute() {
     const R = REPORT, u = R.utilisateurs, last = R.dernier_releve;
     const ref = REF;
+    const benefMesures = +u.beneficiaires || 0;
     const credite = +u.montant_credite || 0;
     const utilisee = +u.cagnotte_utilisee || 0;
     const depense = +u.depense_spliiit || 0;
-    const genere = +last.montant_genere || 0;
     const souscrits = +u.abonnements_souscrits || 0;
     const services = (R.services || []).filter(s => +s.abonnements > 0);
     const premier = R.premier_releve;
-    // Mois clos après le premier relevé : un mois clos par le premier relevé lui-même
-    // n'a pas d'écart à montrer (tout est dans la ligne « du lancement »).
     const mois = (R.mois || []).filter(m => !premier || m.snapshot_date > premier.date);
+    const rep = Array.isArray(u.repartition_utilisation) ? u.repartition_utilisation.map(Number) : [0, 0, 0, 0, 0, 0];
+    const parts = rep.some(v => v > 0) ? partsArrondies(rep) : [0, 0, 0, 0, 0, Math.round(pctOf(+u.cagnottes_videes || 0, benefMesures))];
     return {
-      ref, credite, utilisee, depense, genere, souscrits, services, mois, premier,
+      ref, credite, utilisee, depense, souscrits, services, mois, premier, rep, parts,
+      genere: +last.montant_genere || 0,
+      effectifsMesures: ref.utilisateurs === benefMesures,
+      tauxAbonnes: benefMesures > 0 ? (+u.actifs || 0) / benefMesures : 0,
+      tauxVidees: parts[5] / 100,
+      abonnesMesures: +u.actifs || 0,
+      videesMesures: +u.cagnottes_videes || 0,
+      benefMesures,
       abonnementsReels: +u.abonnements_en_cours || 0,
       abosParUtilisateur: ref.utilisateurs > 0 ? souscrits / ref.utilisateurs : 0,
       cagnotteMoy: ref.utilisateurs > 0 ? utilisee / ref.utilisateurs : 0,
       tauxConso: pctOf(utilisee, credite),
       ratioDepense: utilisee > 0 ? depense / utilisee : 0,
-      // Détail mesuré (jamais extrapolé à partir des chiffres de référence).
-      rep: Array.isArray(u.repartition_utilisation) ? u.repartition_utilisation.map(Number) : [0, 0, 0, 0, 0, 0],
-      beneficiairesMesures: +u.beneficiaires || 0,
       creditRestant: +u.credit_restant || 0,
-      aFinir: +u.a_finir || 0,
-      pasEntamees: +u.pas_entamees || 0,
       totalServices: services.reduce((a, s) => a + (+s.abonnements || 0), 0),
-      dateDonnees: last.snapshot_date,
+      dateDonnees: veille(last.snapshot_date),
+      pctVidees: parts[5],
+      pctAFinir: 100 - parts[5],
+      pctPasEntamees: parts[0],
     };
   }
 
@@ -540,10 +704,9 @@
   function foot(n, c) {
     return `<div class="page-foot"><div class="pf-left"><div class="pf-logo">${SP_LOGO}</div><span>Bilan Spliiit · ${esc(c.ref.nom)}</span></div><span class="num">${n} / __TOTAL__</span></div>`;
   }
-
   function periodeTxt(c) {
     const debut = monthLabel(c.ref.debut);
-    const fin = monthLabel((c.dateDonnees || "").slice(0, 7));
+    const fin = monthLabel(c.dateDonnees.slice(0, 7));
     return debut === fin ? cap(fin) : `${deMot(debut, true)} à ${fin}`;
   }
 
@@ -558,14 +721,13 @@
       </div>
       <div class="cover-hero">
         <div class="hero-card"><div class="hbar" style="background:var(--coral)"></div><div class="hv num">${int(c.ref.utilisateurs)}</div><div class="hl">${c.ref.utilisateurs >= 2 ? "salariés ont activé leur cagnotte" : "salarié a activé sa cagnotte"}, sur ${pl(c.ref.inscrits, "inscrit", "inscrits")}</div></div>
-        <div class="hero-card"><div class="hbar" style="background:var(--violet)"></div><div class="hv num">${int(c.souscrits)}</div><div class="hl">${c.souscrits >= 2 ? "abonnements souscrits" : "abonnement souscrit"} sur Spliiit par les bénéficiaires</div></div>
-        <div class="hero-card"><div class="hbar" style="background:var(--green)"></div><div class="hv num">${int(c.utilisee)}<small> €</small></div><div class="hl">de cagnotte utilisés par les salariés</div></div>
+        <div class="hero-card"><div class="hbar" style="background:var(--ink)"></div><div class="hv num">${int(c.souscrits)}</div><div class="hl">${c.souscrits >= 2 ? "abonnements souscrits" : "abonnement souscrit"} sur Spliiit par les bénéficiaires</div></div>
+        <div class="hero-card"><div class="hbar" style="background:var(--green)"></div><div class="hv num">${int(c.utilisee)}<small> €</small></div><div class="hl">de cagnotte ${acc(c.utilisee, "utilisé", "utilisés")} par les salariés</div></div>
       </div>
-      <div class="cover-edition"><span>Données Spliiit du ${esc(dayLabel(c.dateDonnees))}</span><span>Édité le ${esc(dayLabel(parisToday()))}</span></div>
+      <div class="cover-edition"><span>Données Spliiit au ${esc(dayLabel(c.dateDonnees))}</span><span>Édité le ${esc(dayLabel(parisToday()))}</span></div>
     </section>`;
   }
 
-  // Services en tête : ceux qui devancent strictement le suivant (pas de fausse 3e place).
   function leaders(services, max) {
     const out = [];
     for (let i = 0; i < Math.min(max, services.length); i++) {
@@ -573,7 +735,6 @@
       if (next && +next.abonnements === +services[i].abonnements && i + 1 >= max) break;
       out.push(services[i]);
     }
-    // Retirer en fin de liste les ex aequo coupés par la limite.
     while (out.length && services[out.length] && +services[out.length].abonnements === +out[out.length - 1].abonnements) out.pop();
     return out;
   }
@@ -582,24 +743,30 @@
     const top = leaders(c.services, 3).map(s => s.service);
     const topTxt = top.length >= 3 ? `${top[0]}, ${top[1]} et ${top[2]}` : top.join(" et ");
     const items = [
-      `<b>${int(c.ref.utilisateurs)} ${c.ref.utilisateurs >= 2 ? "salariés" : "salarié"} sur ${int(c.ref.inscrits)}</b> ${c.ref.utilisateurs >= 2 ? "ont" : "a"} activé leur cagnotte Spliiit, soit <b>${pct0(c.ref.utilisateurs, c.ref.inscrits)}</b> des inscrits.`,
-      c.ref.videes > 0 ? `<b>${pl(c.ref.videes, "cagnotte", "cagnottes")}</b> ${c.ref.videes >= 2 ? "ont été utilisées" : "a été utilisée"} en totalité, soit ${pct0(c.ref.videes, c.ref.utilisateurs)} des bénéficiaires.` : null,
+      `<b>${int(c.ref.utilisateurs)} ${c.ref.utilisateurs >= 2 ? "salariés" : "salarié"} sur ${int(c.ref.inscrits)}</b> ${c.ref.utilisateurs >= 2 ? "ont" : "a"} activé ${acc(c.ref.utilisateurs, "sa", "leur")} cagnotte Spliiit, soit <b>${pct0(c.ref.utilisateurs, c.ref.inscrits)}</b> des inscrits.`,
+      c.tauxVidees > 0 ? `<b>${pctR(c.tauxVidees)} des bénéficiaires</b> ont utilisé leur cagnotte en totalité, et <b>${pctR(c.tauxAbonnes)}</b> ont un abonnement en cours.` : null,
       c.ratioDepense >= 1.2 ? `Les bénéficiaires ont dépensé au total <b>${eur0(c.depense)} sur Spliiit</b>, cagnotte comprise : <b>${dec1(c.ratioDepense)} € pour 1 € de cagnotte utilisé</b>.` : null,
-      c.souscrits > 0 ? `<b>${dec1(c.abosParUtilisateur)} ${c.abosParUtilisateur >= 2 ? "abonnements" : "abonnement"}</b> souscrits en moyenne par bénéficiaire${top.length ? `, ${esc(topTxt)} en tête` : ""}.` : null,
+      c.souscrits > 0 ? `<b>${dec1(c.abosParUtilisateur)} ${acc1(c.abosParUtilisateur, "abonnement souscrit", "abonnements souscrits")}</b> en moyenne par bénéficiaire${top.length ? `, ${esc(topTxt)} en tête` : ""}.` : null,
     ].filter(Boolean);
+    const kpiAbonnes = c.effectifsMesures
+      ? `<div class="kv num">${int(c.abonnesMesures)}</div><div class="kl">${acc(c.abonnesMesures, "abonné en cours", "abonnés en cours")}</div><div class="ks">${pctR(c.tauxAbonnes)} des bénéficiaires</div>`
+      : `<div class="kv num">${nf0.format(Math.round(100 * c.tauxAbonnes))}<small>%</small></div><div class="kl">des bénéficiaires ont un abonnement en cours</div><div class="ks">à la date des données</div>`;
+    const kpiVidees = c.effectifsMesures
+      ? `<div class="kv num">${int(c.videesMesures)}</div><div class="kl">${acc(c.videesMesures, "cagnotte vidée", "cagnottes vidées")}</div><div class="ks">${c.pctVidees} % des bénéficiaires</div>`
+      : `<div class="kv num">${c.pctVidees}<small>%</small></div><div class="kl">des bénéficiaires ont vidé leur cagnotte</div><div class="ks">100 % du crédit utilisé</div>`;
     return `<section class="page">
       <span class="eyebrow">L'essentiel</span>
       <h2 class="h-page">Une cagnotte <em>adoptée</em> par vos salariés</h2>
-      <p class="lead">Chiffres clés du partenariat Spliiit de ${esc(c.ref.nom)}. Spliiit permet aux salariés de s'abonner à leurs services préférés (streaming, musique, sport, langues) en utilisant la cagnotte offerte par le CSE.</p>
+      <p class="lead">Chiffres clés du partenariat Spliiit ${esc(deMot(c.ref.nom))}. Spliiit permet aux salariés de s'abonner à leurs services préférés (streaming, musique, sport, langues) en utilisant la cagnotte offerte par le CSE.</p>
       <div class="kpis">
-        <div class="kpi"><div class="kv num">${int(c.ref.inscrits)}</div><div class="kl">salariés inscrits</div><div class="ks">ont reçu un code cagnotte</div></div>
-        <div class="kpi accent"><div class="kv num">${int(c.ref.utilisateurs)}</div><div class="kl">bénéficiaires</div><div class="ks">ont activé leur cagnotte, ${pct0(c.ref.utilisateurs, c.ref.inscrits)} des inscrits</div></div>
-        <div class="kpi"><div class="kv num">${int(c.ref.abonnes)}</div><div class="kl">abonnés en cours</div><div class="ks">au moins un abonnement actif à la date des données</div></div>
-        <div class="kpi"><div class="kv num">${int(c.ref.videes)}</div><div class="kl">cagnottes vidées</div><div class="ks">100 % du crédit utilisé</div></div>
-        <div class="kpi"><div class="kv num">${dec1(c.abosParUtilisateur)}</div><div class="kl">abonnements par bénéficiaire</div><div class="ks">${int(c.souscrits)} souscrits sur Spliiit</div></div>
-        <div class="kpi"><div class="kv num">${nf2.format(c.cagnotteMoy)}<small>€</small></div><div class="kl">de cagnotte utilisés par bénéficiaire</div><div class="ks">en moyenne</div></div>
+        <div class="kpi"><div class="kv num">${int(c.ref.inscrits)}</div><div class="kl">${acc(c.ref.inscrits, "salarié inscrit", "salariés inscrits")}</div><div class="ks">ont reçu un code cagnotte</div></div>
+        <div class="kpi accent"><div class="kv num">${int(c.ref.utilisateurs)}</div><div class="kl">${acc(c.ref.utilisateurs, "bénéficiaire", "bénéficiaires")}</div><div class="ks">${acc(c.ref.utilisateurs, "a activé sa", "ont activé leur")} cagnotte, ${pct0(c.ref.utilisateurs, c.ref.inscrits)} des inscrits</div></div>
+        <div class="kpi">${kpiAbonnes}</div>
+        <div class="kpi">${kpiVidees}</div>
+        <div class="kpi"><div class="kv num">${dec1(c.abosParUtilisateur)}</div><div class="kl">${acc1(c.abosParUtilisateur, "abonnement", "abonnements")} par bénéficiaire</div><div class="ks">${int(c.souscrits)} ${acc(c.souscrits, "souscrit", "souscrits")} sur Spliiit</div></div>
+        <div class="kpi"><div class="kv num">${nf2.format(c.cagnotteMoy)}<small>€</small></div><div class="kl">de cagnotte ${acc(c.cagnotteMoy, "utilisé", "utilisés")} par bénéficiaire</div><div class="ks">en moyenne</div></div>
         <div class="kpi"><div class="kv num">${nf0.format(Math.round(c.tauxConso))}<small>%</small></div><div class="kl">du crédit consommé</div><div class="ks">${eur0(c.utilisee)} sur ${eur0(c.credite)} activés</div></div>
-        <div class="kpi"><div class="kv num">${int(c.services.length)}</div><div class="kl">services différents</div><div class="ks">souscrits par les bénéficiaires</div></div>
+        <div class="kpi"><div class="kv num">${int(c.services.length)}</div><div class="kl">${acc(c.services.length, "service", "services différents")}</div><div class="ks">souscrits par les bénéficiaires</div></div>
       </div>
       <div class="takeaways"><h3>Ce qu'il faut <em>retenir</em></h3><ol>${items.map(t => `<li><span>${t}</span></li>`).join("")}</ol></div>
       ${foot(n, c)}
@@ -607,41 +774,47 @@
   }
 
   function pageEngagement(c, n) {
-    const steps = [
-      { label: "Salariés inscrits", sub: "ont reçu un code", v: c.ref.inscrits, color: "var(--ink)" },
-      { label: "Bénéficiaires", sub: "ont activé leur cagnotte", v: c.ref.utilisateurs, color: "var(--coral)" },
-      { label: "Abonnés en cours", sub: "abonnement actif à la date des données", v: c.ref.abonnes, color: "var(--pink)" },
-      { label: "Cagnottes vidées", sub: "100 % du crédit utilisé", v: c.ref.videes, color: "var(--violet)" },
-    ];
     const base = Math.max(1, c.ref.inscrits);
-    const funnel = steps.map((s, i) => `<div class="fn-row">
+    const effectifs = [
+      { label: "Salariés inscrits", sub: "ont reçu un code", v: c.ref.inscrits, color: "var(--ink)", text: "#fff", pct: "100 %", pctSub: "base" },
+      { label: "Bénéficiaires", sub: "ont activé leur cagnotte", v: c.ref.utilisateurs, color: "var(--coral)", text: "var(--ink)", pct: pct0(c.ref.utilisateurs, c.ref.inscrits), pctSub: "des inscrits" },
+    ].map(s => `<div class="fn-row">
         <div class="fn-label">${esc(s.label)}<small>${esc(s.sub)}</small></div>
-        <div class="fn-track"><div class="fn-fill" style="width:${Math.min(100, Math.max(6, pctOf(s.v, base))).toFixed(1)}%;background:${s.color}">${int(s.v)}</div></div>
-        <div class="fn-pct num">${i === 0 ? "100 %" : pct0(s.v, c.ref.inscrits)}<small>${i === 0 ? "base" : "des inscrits"}</small></div>
+        <div class="fn-track"><div class="fn-fill" style="width:${Math.min(100, Math.max(6, pctOf(s.v, base))).toFixed(1)}%;background:${s.color};color:${s.text}">${int(s.v)}</div></div>
+        <div class="fn-pct num">${s.pct}<small>${s.pctSub}</small></div>
+      </div>`).join("");
+    const parmi = [
+      { label: "Abonnés en cours", sub: "abonnement actif à la date des données", t: c.tauxAbonnes, n: c.abonnesMesures, color: "var(--pink)", text: "var(--ink)" },
+      { label: "Cagnottes vidées", sub: "100 % du crédit utilisé", t: c.tauxVidees, n: c.videesMesures, color: "var(--ink)", text: "#fff" },
+    ].map(s => `<div class="fn-row">
+        <div class="fn-label">${esc(s.label)}<small>${esc(s.sub)}</small></div>
+        <div class="fn-track"><div class="fn-fill" style="width:${Math.min(100, Math.max(6, 100 * s.t)).toFixed(1)}%;background:${s.color};color:${s.text}">${c.effectifsMesures ? int(s.n) : ""}</div></div>
+        <div class="fn-pct num">${pctR(s.t)}<small>des bénéficiaires</small></div>
       </div>`).join("");
     const tranches = ["Pas encore", "< 25 %", "25 à 50 %", "50 à 75 %", "75 à 99 %", "100 %"];
-    const maxRep = Math.max(1, ...c.rep);
-    const cols = c.rep.map((v, i) => `<div class="col${i === 5 ? " top" : ""}"><span class="cv num">${int(v)}</span><div class="cb" style="height:${(85 * v / maxRep).toFixed(1)}%"></div></div>`).join("");
+    const parts = c.parts;
+    const maxPart = Math.max(1, ...parts);
+    const cols = parts.map((p, i) => `<div class="col${i === 5 ? " top" : ""}"><span class="cv num">${p} %</span><div class="cb" style="height:${(85 * p / maxPart).toFixed(1)}%"></div></div>`).join("");
     const credits = (REPORT.credits || []).filter(x => +x.personnes > 0);
     const totalCredits = credits.reduce((a, x) => a + (+x.personnes || 0), 0);
-    // Montants portés par au moins 2 % des bénéficiaires ; le reste est regroupé.
     const principaux = credits.filter(x => pctOf(+x.personnes, totalCredits) >= 2).slice(0, 4);
     const autres = credits.filter(x => !principaux.includes(x)).reduce((a, x) => a + (+x.personnes || 0), 0);
     const maxC = Math.max(1, ...principaux.map(x => +x.personnes), autres);
     const partTxt = (v) => (v > 0 && pctOf(v, totalCredits) < 0.5 ? "< 1 %" : pct0(v, totalCredits));
     const creditBars = principaux.map(x => `<div class="hb"><span>Cagnotte de ${eur0(x.montant)}</span><div class="hb-track"><div class="hb-fill" style="width:${(100 * x.personnes / maxC).toFixed(1)}%"></div></div><span class="hb-v num">${partTxt(+x.personnes)}</span></div>`).join("")
       + (autres ? `<div class="hb"><span>Autres montants</span><div class="hb-track"><div class="hb-fill" style="width:${Math.max(2, 100 * autres / maxC).toFixed(1)}%"></div></div><span class="hb-v num">${partTxt(autres)}</span></div>` : "");
-    const potentiel = c.creditRestant > 0 && c.aFinir > 0
-      ? `<div class="potential"><span class="pv num">${eur0(c.creditRestant)}</span><p>de cagnotte activée ${c.creditRestant >= 2 ? "restent" : "reste"} à utiliser par <b>${pl(c.aFinir, "bénéficiaire", "bénéficiaires")}</b>${c.pasEntamees > 0 ? `, dont ${int(c.pasEntamees)} qui ne ${c.pasEntamees >= 2 ? "l'ont" : "l'a"} pas encore entamée` : ""}. Une relance auprès des salariés peut les aider à en profiter.</p></div>`
+    const potentiel = c.creditRestant > 0 && c.pctAFinir > 0
+      ? `<div class="potential"><span class="pv num">${eur0(c.creditRestant)}</span><p>de cagnotte activée ${c.creditRestant >= 2 ? "restent" : "reste"} à utiliser : <b>${c.pctAFinir} % des bénéficiaires</b> n'ont pas encore vidé leur cagnotte${c.pctPasEntamees > 0 ? `, dont ${c.pctPasEntamees} % qui ne l'ont pas entamée` : ""}. Une relance auprès des salariés peut les aider à en profiter.</p></div>`
       : "";
     return `<section class="page">
       <span class="eyebrow">Engagement</span>
       <h2 class="h-page">De l'inscription à l'<em>abonnement</em></h2>
-      <p class="lead">Chaque barre est rapportée au nombre de salariés inscrits.</p>
-      <div class="block"><div class="funnel">${funnel}</div></div>
+      <p class="lead">Des salariés inscrits aux bénéficiaires, puis l'usage de la cagnotte parmi les bénéficiaires.</p>
+      <div class="block"><div class="funnel">${effectifs}</div></div>
+      <div class="block"><div class="section-title">Parmi les bénéficiaires</div><div class="funnel">${parmi}</div></div>
       <div class="two block">
         <div class="panel">
-          <div class="section-title">Part de la cagnotte utilisée<small>${pl(c.beneficiairesMesures, "bénéficiaire mesuré", "bénéficiaires mesurés")} par Spliiit</small></div>
+          <div class="section-title">Part de la cagnotte utilisée<small>répartition des bénéficiaires</small></div>
           <div class="cols">${cols}</div>
           <div class="col-labels">${tranches.map(t => `<span>${esc(t)}</span>`).join("")}</div>
         </div>
@@ -659,21 +832,21 @@
   function pageArgent(c, n) {
     const rows = [
       { l: "Cagnotte émise", s: "codes générés pour les salariés", v: c.genere, color: "var(--ink)" },
-      { l: "Cagnotte activée", s: "codes activés sur Spliiit", v: c.credite, color: "var(--violet)" },
+      { l: "Cagnotte activée", s: "codes activés sur Spliiit", v: c.credite, color: "var(--pink)" },
       { l: "Cagnotte utilisée", s: "dépensée en abonnements", v: c.utilisee, color: "var(--coral)" },
     ];
     const max = Math.max(1, c.genere, c.credite);
     const stack = rows.map(r => `<div class="st-row"><div><b>${esc(r.l)}</b><div class="muted" style="font-size:8pt">${esc(r.s)}</div></div><div class="st-track"><div class="st-fill" style="width:${pctOf(r.v, max).toFixed(1)}%;background:${r.color}"></div></div><div class="st-v num">${eur0(r.v)}</div></div>`).join("");
-    const contrat = c.ref.contrat ? `<div class="contract"><span class="cv num">${Number.isInteger(c.ref.contrat) ? eur0(c.ref.contrat) : eur2(c.ref.contrat)}</span><span>de cagnotte prévue par salarié au contrat, soit jusqu'à <b>${eur0(c.ref.contrat * c.ref.inscrits)}</b> pour ${pl(c.ref.inscrits, "salarié inscrit", "salariés inscrits")}. Les montants ci-dessus sont ceux enregistrés par Spliiit.</span></div>` : "";
+    const contrat = c.ref.contrat ? `<div class="contract"><span class="cv num">${Number.isInteger(c.ref.contrat) ? eur0(c.ref.contrat) : eur2(c.ref.contrat)}</span><span>de cagnotte prévue par salarié au contrat, soit jusqu'à <b>${eur0(c.ref.contrat * c.ref.inscrits)}</b> pour ${pl(c.ref.inscrits, "salarié inscrit", "salariés inscrits")}.</span></div>` : "";
     return `<section class="page">
       <span class="eyebrow">Gain monétaire</span>
       <h2 class="h-page">Du <em>pouvoir d'achat</em> concret pour vos salariés</h2>
       <p class="lead">La cagnotte finance directement des abonnements du quotidien. Chaque euro utilisé est un euro que le salarié n'a pas payé de sa poche.</p>
       <div class="money-hero">
-        <div class="mh-main"><div class="mv num">${eur0(c.utilisee)}</div><div class="ml">de cagnotte utilisés en abonnements par les salariés, soit <b>${eur2(c.cagnotteMoy)}</b> en moyenne par bénéficiaire.</div></div>
+        <div class="mh-main"><div class="mv num">${eur0(c.utilisee)}</div><div class="ml">de cagnotte ${acc(c.utilisee, "utilisé", "utilisés")} en abonnements par les salariés, soit <b>${eur2(c.cagnotteMoy)}</b> en moyenne par bénéficiaire.</div></div>
         <div class="mh-side">
           <div class="mh-mini"><div class="mv num">${nf0.format(Math.round(c.tauxConso))} %</div><div class="ml">du crédit activé a déjà été consommé</div></div>
-          <div class="mh-mini"><div class="mv num">${c.ratioDepense >= 1 ? `${dec1(c.ratioDepense)} €` : "–"}</div><div class="ml">dépensés sur Spliiit, cagnotte comprise, pour 1 € de cagnotte utilisé (${eur0(c.depense)} au total)</div></div>
+          <div class="mh-mini"><div class="mv num">${c.ratioDepense >= 1 ? `${dec1(c.ratioDepense)} €` : "–"}</div><div class="ml">${acc1(c.ratioDepense, "dépensé", "dépensés")} sur Spliiit, cagnotte comprise, pour 1 € de cagnotte utilisé (${eur0(c.depense)} au total)</div></div>
         </div>
       </div>
       <div class="block panel"><div class="section-title">Du budget émis au budget utilisé</div><div class="stack">${stack}</div></div>
@@ -687,7 +860,7 @@
       return `<section class="page">
         <span class="eyebrow">Services souscrits</span>
         <h2 class="h-page">Les <em>abonnements</em> de vos salariés</h2>
-        <p class="lead">Aucun abonnement en cours n'est enregistré par Spliiit au ${esc(dayLabel(c.dateDonnees))}. ${pl(c.souscrits, "abonnement a", "abonnements ont")} été souscrits sur la durée du partenariat.</p>
+        <p class="lead">Aucun abonnement en cours n'est enregistré par Spliiit au ${esc(dayLabel(c.dateDonnees))}. ${pl(c.souscrits, "abonnement a été souscrit", "abonnements ont été souscrits")} sur la durée du partenariat.</p>
         ${foot(n, c)}
       </section>`;
     }
@@ -695,21 +868,20 @@
     const max = Math.max(1, ...list.map(s => +s.abonnements));
     const rest = c.services.slice(20);
     const restTotal = rest.reduce((a, s) => a + (+s.abonnements || 0), 0);
-    const podiumColors = ["linear-gradient(150deg,#ff6363,#fa6484)", "linear-gradient(150deg,#7684ff,#9aa4ff)", "linear-gradient(150deg,#1d2026,#3a3f4a)"];
+    const podiumColors = [{ bg: "var(--coral)", fg: "var(--ink)" }, { bg: "var(--pink-soft)", fg: "var(--ink)" }, { bg: "var(--ink)", fg: "#fff" }];
     const podiumList = leaders(c.services, 3);
-    // Rang réel (ex aequo = même rang).
     const rangDe = (s) => 1 + c.services.filter(o => +o.abonnements > +s.abonnements).length;
     const exAequo = (s) => c.services.filter(o => +o.abonnements === +s.abonnements).length > 1;
-    const podium = podiumList.map((s, i) => { const r = rangDe(s); return `<div class="pd" style="background:${podiumColors[i]}"><span class="pd-rank">${r}${r === 1 ? "er" : "e"} service${exAequo(s) ? " ex aequo" : ""}</span><div><div class="pd-name">${esc(s.service)}</div><div class="pd-v num">${pl(+s.abonnements, "abonnement", "abonnements")} · ${pct0(+s.abonnements, c.totalServices)}</div></div></div>`; }).join("");
+    const podium = podiumList.map((s, i) => { const r = rangDe(s); return `<div class="pd" style="background:${podiumColors[i].bg};color:${podiumColors[i].fg}">${podiumLogo(s.service)}<span class="pd-rank">${r}${r === 1 ? "er" : "e"} service${exAequo(s) ? " ex aequo" : ""}</span><div><div class="pd-name">${esc(s.service)}</div><div class="pd-v num">${pl(+s.abonnements, "abonnement", "abonnements")} · ${pct0(+s.abonnements, c.totalServices)}</div></div></div>`; }).join("");
     const items = list.map((s, i) => `<div class="svc">
-        <div class="svc-badge" style="background:${svcColor(s.service, i)}">${esc(String(s.service).replace(/[^A-Za-zÀ-ÿ0-9]/g, "").charAt(0).toUpperCase() || "•")}</div>
+        ${badge(s.service, i)}
         <div class="svc-name"><span>${esc(s.service)}</span><div class="svc-track"><div class="svc-fill" style="width:${(100 * s.abonnements / max).toFixed(1)}%;background:${svcColor(s.service, i)}"></div></div></div>
         <div class="svc-v num">${int(s.abonnements)}</div>
       </div>`).join("");
     return `<section class="page">
       <span class="eyebrow">Services souscrits</span>
       <h2 class="h-page">Les <em>abonnements</em> préférés de vos salariés</h2>
-      <p class="lead">${pl(c.abonnementsReels, "abonnement en cours", "abonnements en cours")} sur ${pl(c.services.length, "service", "services différents")} au ${esc(dayLabel(c.dateDonnees))}. Par service, les nombres sont ceux comptés par Spliiit.</p>
+      <p class="lead">${pl(c.services.length, "service souscrit", "services différents souscrits")} par les bénéficiaires, au ${esc(dayLabel(c.dateDonnees))}. Nombre d'abonnements en cours par service.</p>
       ${podium ? `<div class="podium" style="grid-template-columns:repeat(${podiumList.length}, 1fr)">${podium}</div>` : ""}
       <div class="services">${items}</div>
       ${rest.length ? `<p class="muted" style="font-size:8.5pt;margin-top:4mm">Et ${pl(rest.length, "autre service", "autres services")} (${pl(restTotal, "abonnement", "abonnements")}) : ${esc(rest.map(s => s.service).join(", "))}.</p>` : ""}
@@ -717,97 +889,106 @@
     </section>`;
   }
 
-  function chartSvg(mois) {
+  function chartSvg(mois, series, format) {
     if (mois.length < 2) return "";
     const W = 640, H = 210, L = 40, Rr = 14, T = 16, B = 34;
-    const series = [
-      // utilisateurs_actifs de Spliiit = statut « actif » (abonnement en cours) : nos « abonnés en cours ».
-      { key: "utilisateurs_actifs", color: "#ff6363", label: "Abonnés en cours" },
-      { key: "codes_utilises", color: "#7684ff", label: "Codes activés (cumul)" },
-    ];
-    const vals = mois.flatMap(m => series.map(s => +m[s.key] || 0));
-    const vmax = Math.max(10, ...vals);
+    const vals = mois.flatMap(m => series.map(s => s.v(m)));
+    const vmax = Math.max(format === "pct" ? 10 : 10, ...vals);
     const mag = Math.pow(10, Math.floor(Math.log10(vmax)));
     const step = vmax / mag < 3 ? mag / 2 : mag;
-    const top = Math.ceil(vmax / step) * step;
+    const top = format === "pct" ? Math.min(100, Math.ceil(vmax / step) * step) : Math.ceil(vmax / step) * step;
+    const fmt = (v) => (format === "pct" ? `${nf0.format(v)} %` : nf0.format(v));
     const x = (i) => L + (i * (W - L - Rr)) / (mois.length - 1);
     const y = (v) => T + (H - T - B) * (1 - v / top);
     const grid = [];
-    for (let v = 0; v <= top + 1e-9; v += step) grid.push(`<line x1="${L}" x2="${W - Rr}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" stroke="#e7e3dc" stroke-width="1"/><text x="${L - 8}" y="${(y(v) + 3.5).toFixed(1)}" text-anchor="end" font-size="10" fill="#6b7280" font-family="Inter, sans-serif">${nf0.format(v)}</text>`);
-    const xs = mois.map((m, i) => `<text x="${x(i).toFixed(1)}" y="${H - 12}" text-anchor="middle" font-size="10" fill="#6b7280" font-family="Inter, sans-serif">${esc(cap(COURT[(+String(m.mois).slice(5, 7) || 1) - 1]))}</text>`);
+    for (let v = 0; v <= top + 1e-9; v += step) grid.push(`<line x1="${L}" x2="${W - Rr}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" stroke="#EBEBEB" stroke-width="1"/><text x="${L - 8}" y="${(y(v) + 3.5).toFixed(1)}" text-anchor="end" font-size="10" fill="#6B6B6B" font-family="'Buenos Aires', Inter, sans-serif">${fmt(v)}</text>`);
+    const xs = mois.map((m, i) => `<text x="${x(i).toFixed(1)}" y="${H - 12}" text-anchor="middle" font-size="10" fill="#6B6B6B" font-family="'Buenos Aires', Inter, sans-serif">${esc(cap(COURT[(+String(m.mois).slice(5, 7) || 1) - 1]))}</text>`);
     const lines = series.map(s => {
-      const pts = mois.map((m, i) => `${x(i).toFixed(1)},${y(+m[s.key] || 0).toFixed(1)}`).join(" ");
-      const dots = mois.map((m, i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(+m[s.key] || 0).toFixed(1)}" r="3.5" fill="#fff" stroke="${s.color}" stroke-width="2"/>`).join("");
+      const pts = mois.map((m, i) => `${x(i).toFixed(1)},${y(s.v(m)).toFixed(1)}`).join(" ");
+      const dots = mois.map((m, i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(s.v(m)).toFixed(1)}" r="3.5" fill="#fff" stroke="${s.color}" stroke-width="2"/>`).join("");
       const lastI = mois.length - 1;
-      const lastV = +mois[lastI][s.key] || 0;
-      return `<polyline points="${pts}" fill="none" stroke="${s.color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>${dots}<text x="${(x(lastI) - 6).toFixed(1)}" y="${(y(lastV) - 9).toFixed(1)}" text-anchor="end" font-size="11" font-weight="700" fill="${s.color}" font-family="Urbanist, Inter, sans-serif">${nf0.format(lastV)}</text>`;
+      const lastV = s.v(mois[lastI]);
+      return `<polyline points="${pts}" fill="none" stroke="${s.color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>${dots}<text x="${(x(lastI) - 6).toFixed(1)}" y="${(y(lastV) - 9).toFixed(1)}" text-anchor="end" font-size="11" font-weight="700" fill="${s.color}" font-family="'Buenos Aires', Urbanist, Inter, sans-serif">${fmt(Math.round(lastV))}</text>`;
     }).join("");
-    return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Abonnés en cours et codes activés, fin de chaque mois">${grid.join("")}${xs.join("")}${lines}</svg>
+    return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(series.map(s => s.label).join(" et "))}, fin de chaque mois">${grid.join("")}${xs.join("")}${lines}</svg>
       <div class="legend">${series.map(s => `<span><i style="background:${s.color}"></i>${esc(s.label)}</span>`).join("")}</div>`;
   }
 
-  const MAX_MOIS = 12; // la page A4 tient environ 13 lignes
+  const MAX_MOIS = 12;
   function pageMois(c, n) {
     const p = c.premier;
     const tous = c.mois;
     const mois = tous.slice(-MAX_MOIS);
     const coupes = tous.length - mois.length;
-    // Écarts : depuis le mois précédent affiché, ou le premier relevé pour le premier mois.
     const avant = coupes > 0 ? tous[coupes - 1] : p;
+    // Taux d'abonnés en cours = abonnés (« utilisateurs actifs » Spliiit) / bénéficiaires du mois.
+    // Les relevés mensuels comptent des codes activés (un salarié peut en avoir deux) : on les
+    // ramène en personnes avec le ratio du dernier relevé, pour que le dernier mois égale le KPI.
+    const codesDernier = +REPORT.dernier_releve.codes_utilises || 0;
+    const parCode = c.benefMesures > 0 && codesDernier > 0 ? Math.min(1, c.benefMesures / codesDernier) : 1;
+    const taux = (m) => { const d = (+m.codes_utilises || 0) * parCode; return d > 0 ? Math.min(100, (100 * (+m.utilisateurs_actifs || 0)) / d) : 0; };
+    const enTaux = !c.effectifsMesures;
+    const sansCumul = enTaux || codesDernier > c.ref.inscrits;
     let prev = avant ? { codes_utilises: +avant.codes_utilises, montant_credite: +avant.montant_credite } : null;
     const rows = mois.map((m) => {
       const nouv = prev ? Math.max(0, (+m.codes_utilises) - prev.codes_utilises) : null;
       const credit = prev ? Math.max(0, (+m.montant_credite) - prev.montant_credite) : null;
       prev = { codes_utilises: +m.codes_utilises, montant_credite: +m.montant_credite };
-      // Mois en cours : état arrêté avant son dernier jour → « (au 13) ».
       const a = parseDay(m.arrete_au || m.snapshot_date);
       const enCours = !!a && lastDay(a) > a.d;
       return `<tr><td>${esc(monthLabel(m.mois))}${enCours ? ` <span class="muted" style="font-weight:400;text-transform:none">(au ${a.d === 1 ? "1er" : a.d})</span>` : ""}</td>
         <td class="num">${nouv === null ? "–" : `<span class="delta">+${int(nouv)}</span>`}</td>
-        <td class="num">${int(m.codes_utilises)}</td>
-        <td class="num">${int(m.utilisateurs_actifs)}</td>
+        ${sansCumul ? "" : `<td class="num">${int(m.codes_utilises)}</td>`}
+        <td class="num">${enTaux ? `${nf0.format(Math.round(taux(m)))} %` : int(m.utilisateurs_actifs)}</td>
         <td class="num">${credit === null ? "–" : `+${eur0(credit)}`}</td>
         <td class="num">${eur0(m.montant_credite)}</td></tr>`;
     }).join("");
-    const base = p && coupes === 0 ? `<tr class="base"><td>Du lancement au ${esc(dayLabel(p.arrete_au || p.date))}</td><td class="num">–</td><td class="num">${int(p.codes_utilises)}</td><td class="num">${int(p.utilisateurs_actifs)}</td><td class="num">–</td><td class="num">${eur0(p.montant_credite)}</td></tr>` : "";
+    const base = p && coupes === 0
+      ? `<tr class="base"><td>Du lancement au ${esc(dayLabel(p.arrete_au || p.date))}</td><td class="num">–</td>${sansCumul ? "" : `<td class="num">${int(p.codes_utilises)}</td>`}<td class="num">${enTaux ? `${nf0.format(Math.round(taux(p)))} %` : int(p.utilisateurs_actifs)}</td><td class="num">–</td><td class="num">${eur0(p.montant_credite)}</td></tr>`
+      : "";
     const first = mois[0], lastM = mois[mois.length - 1];
-    const chart = chartSvg(mois);
+    const chart = enTaux
+      ? chartSvg(mois, [{ v: taux, color: "#FF6363", label: "Part des bénéficiaires abonnés en cours" }], "pct")
+      : chartSvg(mois, [
+          { v: (m) => +m.utilisateurs_actifs || 0, color: "#FF6363", label: "Abonnés en cours" },
+          ...(sansCumul ? [] : [{ v: (m) => +m.codes_utilises || 0, color: "#121212", label: "Codes activés (cumul)" }]),
+        ], "num");
+    const resume = first && lastM && first !== lastM
+      ? (enTaux
+        ? `Entre fin ${esc(monthLabel(first.mois))} et le ${esc(dayLabel(lastM.arrete_au || lastM.snapshot_date))} : part des bénéficiaires abonnés en cours ${nf0.format(Math.round(taux(first)))} % → ${nf0.format(Math.round(taux(lastM)))} %.`
+        : `Entre fin ${esc(monthLabel(first.mois))} et le ${esc(dayLabel(lastM.arrete_au || lastM.snapshot_date))} : abonnés en cours ${int(first.utilisateurs_actifs)} → ${int(lastM.utilisateurs_actifs)}${sansCumul ? "" : `, codes activés ${int(first.codes_utilises)} → ${int(lastM.codes_utilises)}`}.`)
+      : "";
     return `<section class="page">
       <span class="eyebrow">Activité mois par mois</span>
       <h2 class="h-page">Une utilisation <em>régulière</em> dans la durée</h2>
       <p class="lead">État de fin de mois d'après les relevés Spliiit${p ? `, disponibles depuis le ${esc(dayLabel(p.date))}` : ""}. Avant, seul le cumul depuis le lancement est connu.${coupes > 0 ? ` Les ${int(MAX_MOIS)} derniers mois sont détaillés.` : ""}</p>
       <table class="months">
-        <thead><tr><th>Mois</th><th>Nouveaux codes activés</th><th>Codes activés (cumul)</th><th>Abonnés en cours</th><th>Cagnotte activée</th><th>Cagnotte activée (cumul)</th></tr></thead>
+        <thead><tr><th>Mois</th><th>Nouveaux codes activés</th>${sansCumul ? "" : "<th>Codes activés (cumul)</th>"}<th>${enTaux ? "Bénéficiaires abonnés en cours" : "Abonnés en cours"}</th><th>Cagnotte activée</th><th>Cagnotte activée (cumul)</th></tr></thead>
         <tbody>${base}${rows}</tbody>
       </table>
       ${chart ? `<div class="chart panel" style="padding:5mm 5mm 3mm">${chart}</div>` : ""}
-      ${first && lastM && first !== lastM ? `<p class="muted" style="font-size:8.5pt;margin-top:4mm">Entre fin ${esc(monthLabel(first.mois))} et le ${esc(dayLabel(lastM.arrete_au || lastM.snapshot_date))} : abonnés en cours ${int(first.utilisateurs_actifs)} → ${int(lastM.utilisateurs_actifs)}, codes activés ${int(first.codes_utilises)} → ${int(lastM.codes_utilises)}.</p>` : ""}
+      ${resume ? `<p class="muted" style="font-size:8.5pt;margin-top:4mm">${resume}</p>` : ""}
       ${foot(n, c)}
     </section>`;
   }
 
   function pageMethode(c, n) {
-    const ajustes = [];
-    if (SIGNALER) {
-      const labels = { inscrits: "salariés inscrits", utilisateurs: "bénéficiaires", abonnes: "abonnés en cours", videes: "cagnottes vidées" };
-      for (const k of Object.keys(labels)) if (+c.ref[k] !== +MEASURED[k]) ajustes.push(labels[k]);
-    }
     return `<section class="page">
       <span class="eyebrow">Sources et méthode</span>
       <h2 class="h-page">Comment lire ce <em>bilan</em></h2>
       <dl class="method">
-        <dt>Source des données</dt><dd>Relevés quotidiens transmis par Spliiit à Superprof, pris chaque matin : un relevé décrit l'état de la veille au soir. Données du ${esc(dayLabel(c.dateDonnees))}. Le détail mensuel commence au premier relevé reçu${c.premier ? `, le ${esc(dayLabel(c.premier.date))}` : ""}.</dd>
-        <dt>Salariés inscrits</dt><dd>Salariés ayant reçu un code cagnotte Spliiit (mesuré par le nombre de codes générés).</dd>
+        <dt>Source des données</dt><dd>Relevés quotidiens transmis par Spliiit à Superprof, pris chaque matin : un relevé décrit l'état de la veille au soir. Données arrêtées au ${esc(dayLabel(c.dateDonnees))}. Le détail mensuel commence au premier relevé reçu${c.premier ? `, le ${esc(dayLabel(c.premier.date))}` : ""}.</dd>
+        <dt>Salariés inscrits</dt><dd>Salariés ayant reçu un code cagnotte Spliiit.</dd>
         <dt>Bénéficiaires</dt><dd>Salariés ayant activé leur cagnotte sur Spliiit.</dd>
-        <dt>Abonnés en cours</dt><dd>Bénéficiaires ayant au moins un abonnement actif à la date des données (« utilisateurs actifs » dans les relevés Spliiit).</dd>
+        <dt>Codes activés</dt><dd>Codes cagnotte activés sur Spliiit. Un salarié peut en activer plusieurs (cagnotte rechargée) : les codes peuvent donc dépasser le nombre de bénéficiaires.</dd>
+        <dt>Abonnés en cours</dt><dd>Bénéficiaires ayant au moins un abonnement actif à la date des données.</dd>
         <dt>Cagnottes vidées</dt><dd>Bénéficiaires ayant utilisé 100 % du crédit de leur cagnotte.</dd>
         <dt>Abonnements par bénéficiaire</dt><dd>Abonnements souscrits sur le compte Spliiit des bénéficiaires (avec ou sans la cagnotte), divisés par le nombre de bénéficiaires.</dd>
         <dt>Cagnotte utilisée</dt><dd>Pour chaque bénéficiaire, sa dépense sur Spliiit plafonnée au crédit de sa cagnotte, puis additionnée.</dd>
         <dt>Dépense sur Spliiit</dt><dd>Toutes les dépenses des bénéficiaires sur Spliiit, cagnotte comprise. La part au-delà de la cagnotte est payée par le salarié.</dd>
-        <dt>Services souscrits</dt><dd>Abonnements en cours par service, comptés par Spliiit (un abonnement compté par code activé). Le total réel des abonnements en cours est de ${int(c.abonnementsReels)}.</dd>
+        <dt>Services souscrits</dt><dd>Abonnements en cours par service, tels que comptés par Spliiit à la date des données.</dd>
       </dl>
-      ${ajustes.length ? `<div class="note-box"><b>Chiffres de référence.</b> Les valeurs suivantes ont été saisies comme chiffres de référence pour ce bilan : ${esc(ajustes.join(", "))}. Les taux et moyennes qui en dépendent sont calculés à partir d'elles ; les montants, la répartition de l'utilisation, les services et l'activité mensuelle sont les données transmises par Spliiit.</div>` : ""}
-      <div class="note-box" style="margin-top:4mm">Document établi par Superprof pour ${esc(c.ref.nom)}. Pour toute question sur ce bilan, contactez votre interlocuteur Superprof.</div>
+      <div class="note-box" style="margin-top:6mm">Document établi par Superprof pour ${esc(c.ref.nom)}. Pour toute question sur ce bilan, contactez votre interlocuteur Superprof.</div>
       ${foot(n, c)}
     </section>`;
   }
