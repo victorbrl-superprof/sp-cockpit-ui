@@ -310,10 +310,12 @@
 
     /* ── Card toggle ── */
     .card-toggle { border:none; background:none; cursor:pointer; font-size:13px; opacity:.3; transition:opacity .2s; padding:2px 4px; line-height:1; }
-    /* Export du bilan Spliiit (couleurs Superprof) */
-    .spliit-export-btn { border:none; cursor:pointer; border-radius:999px; padding:5px 11px; font-family:inherit; font-size:11.5px; font-weight:600; line-height:1; color:#fff; background:#d9363e; box-shadow:0 4px 12px -6px rgba(217,54,62,.9); transition:background .15s, transform .15s; white-space:nowrap; }
-    .spliit-export-btn:hover { background:#c22f36; transform:translateY(-1px); }
-    .spliit-export-btn:focus-visible { outline:2px solid #fa6484; outline-offset:2px; }
+    /* Export du bilan Spliiit (bouton icône, DA du tableau de bord) */
+    .spliit-export-btn { flex:none; width:26px; height:26px; padding:0; border:none; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; color:#4338ca; background:#e0e7ff; transition:background .15s, color .15s, transform .15s; }
+    .spliit-export-btn:hover { background:var(--indigo); color:#fff; transform:translateY(-1px); }
+    .spliit-export-btn:focus-visible { outline:2px solid var(--indigo); outline-offset:2px; }
+    body.dark .spliit-export-btn { background:#3730a3; color:#a5b4fc; }
+    body.dark .spliit-export-btn:hover { background:var(--indigo); color:#fff; }
     .card-toggle:hover { opacity:.8; }
     .card.card-hidden { display:none; }
 
@@ -416,7 +418,7 @@
     function spliitUsageShell(cardId, title, u, inner, note, withToggle, withExport = false) {
       return `<div class="card col-full" data-card="${cardId}"><div class="card-accent accent-cyan"></div>
         <div class="card-header"><div class="card-title-wrap"><div class="card-icon icon-spliit">${SPLIIT_ICON}</div><span class="card-title">${esc(title)}</span></div>
-        <div style="display:flex;align-items:center;gap:6px"><span class="badge badge-cyan">${fmt(u.taux_consommation,1)} % consommé</span>${withExport ? `<button type="button" class="spliit-export-btn" onclick="exportBilanSpliiit()" title="Bilan PDF du partenariat Spliiit de ce CSE">Exporter le bilan</button>` : ''}${withToggle ? `<button class="card-toggle" onclick="toggleCard('${cardId}')" title="Masquer">👁</button>` : ''}</div></div>
+        <div style="display:flex;align-items:center;gap:6px"><span class="badge badge-cyan">${fmt(u.taux_consommation,1)} % consommé</span>${withExport ? `<button type="button" class="spliit-export-btn" onclick="exportBilanSpliiit()" aria-label="Exporter le bilan Spliiit (PDF)" title="Exporter le bilan Spliiit (PDF)"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" aria-hidden="true"><path d="M6 21H18M12 3V17M7 12L12 17L17 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>` : ''}${withToggle ? `<button class="card-toggle" onclick="toggleCard('${cardId}')" title="Masquer">👁</button>` : ''}</div></div>
         <div class="card-body"><div style="${USAGE_GRID}">${inner}</div>
         <p class="ai-desc" style="margin-top:10px">${u.min_snapshot_date && u.min_snapshot_date !== u.snapshot_date ? `Du ${esc(fmtDateFr(u.min_snapshot_date))} au ${esc(fmtDateFr(u.snapshot_date))}` : `Au ${esc(fmtDateFr(u.snapshot_date))}`} · ${esc(note)} « % consommé » = total consommé ÷ total crédité ; « part moyenne » = moyenne des parts individuelles des actifs.</p></div></div>`;
     }
@@ -433,20 +435,10 @@
         'crédit consommé = dépense Spliiit plafonnée au crédit de chaque bénéficiaire.', withToggle, true);
     }
 
-    // Bilan PDF Spliiit de ce CSE (bilan-spliiit.html, nouvel onglet) : la page ouvre
-    // d'abord la modale des chiffres de référence, puis propose le téléchargement.
+    // Bilan PDF Spliiit de ce CSE : modale des chiffres de référence dans le cockpit,
+    // puis impression du bilan (bilan-export.js).
     function exportBilanSpliiit() {
-      const q = new URLSearchParams({ token: TOKEN });
-      if (currentCseId) q.set('cse_id', currentCseId);
-      else if (CID) q.set('hubspot_company_id', CID);
-      else return;
-      const a = document.createElement('a');
-      a.href = `bilan-spliiit.html?${q}`;
-      a.target = '_blank';
-      a.rel = 'noopener';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+      if (window.BilanSpliiit) BilanSpliiit.ouvrir({ token: TOKEN, cseId: currentCseId, hubspotId: CID });
     }
 
     /* ── Render ── */
@@ -824,5 +816,6 @@
       await loadData();
     })();
   </script>
+  <script src="bilan-export.js?v=3"></script>
 </body>
 </html>
