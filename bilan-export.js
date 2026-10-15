@@ -125,7 +125,7 @@
   // Champs numériques modifiables : clé du modèle, onglet, libellé, explication, où, enregistré ?
   var CHAMPS = [
     { k: 'membres', t: 'sp', l: 'Utilisateurs inscrits', d: 'Salariés qui ont <b>activé leur compte Superprof</b> dans l\'espace du CSE.', o: 'Pages 1 à 4 (base des pourcentages).', saved: true, src: 'base du cockpit' },
-    { k: 'mer', t: 'sp', l: 'Mises en relation', d: 'Demandes de cours envoyées par les salariés à un professeur, <b>depuis le début</b> du partenariat.', o: 'Page 2.', saved: true, src: 'base du cockpit' },
+    { k: 'mer', t: 'sp', l: 'Mises en relation', d: 'Demandes de cours envoyées par les salariés à un professeur, <b>depuis le début</b> du partenariat.', o: 'Page 2 (Superprof).', saved: true, src: 'base du cockpit' },
     { k: 'adressables', t: 'sl', l: 'Salariés adressables', d: 'Salariés <b>couverts par l\'offre</b> (quota de la fiche CSE).', o: 'Page 3 : part des salariés inscrits.', src: 'fiche CSE' },
     { k: 'beneficiaires', t: 'sl', l: 'Bénéficiaires Spliiit', d: 'Salariés qui ont <b>activé leur cagnotte</b> Spliiit.', o: 'Pages 1 à 5 (économies par bénéficiaire).', src: 'Spliiit' },
     { k: 'abonnes', t: 'sl', l: 'Abonnés en cours', d: 'Bénéficiaires avec <b>au moins un abonnement actif</b> (« utilisateurs actifs » chez Spliiit).', o: 'Pages 3 à 5 (moyennes par abonné).', src: 'Spliiit' }
@@ -276,7 +276,7 @@
         return '<button type="button" class="bsx-tab" role="tab" data-onglet="' + o.id + '" aria-selected="false">' + o.l + '<span class="n" id="bsx-n-' + o.id + '"></span></button>';
       }).join('') + '</div>' +
       '<div class="bsx-panel" data-panel="sp" role="tabpanel">' +
-        '<div class="bsx-intro">Chiffres de la page « Le partenariat ». Ils sont <b>enregistrés pour ce CSE</b> et repris au prochain export.</div>' +
+        '<div class="bsx-intro">Chiffres de la page Superprof (page 2). Ils sont <b>enregistrés pour ce CSE</b> et repris au prochain export.</div>' +
         '<div class="bsx-grp">' + parOnglet('sp') +
           '<div class="bsx-f" data-k="accesFin"><label for="bsx-accesFin">Accès Superprof + Spliiit jusqu\'au</label><input id="bsx-accesFin" name="accesFin" type="date" value="' + esc(v.accesFin) + '"><div class="bsx-d"><b>Où :</b> page 2. Laissez vide pour ne pas l\'afficher.</div>' + meta('accesFin', 'Fiche CSE : ' + (mesure.accesFin ? esc(window.BilanDoc.jourTxt(mesure.accesFin)) : 'non renseignée'), enregistre('accesFin')) + '<div class="bsx-e" role="alert"></div></div>' +
           '<div class="bsx-f full" data-k="thematiques"><label>Top 3 des thématiques demandées</label><div class="bsx-th">' + th + '</div><div class="bsx-d">Une thématique par ligne, au format « Catégorie - détail » (la catégorie s\'affiche en gras). <b>Où :</b> page 2.</div>' +
