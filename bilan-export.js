@@ -20,9 +20,9 @@
   var ICO_OK = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" aria-hidden="true"><path d="M5 12.5L10 17.5L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
   var CSS = [
-    '.bsx-back{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(15,23,42,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);font-family:inherit;font-size:13px;line-height:1.5}',
+    '.bsx-back{position:fixed;inset:0;z-index:10000;display:flex;align-items:flex-start;justify-content:center;padding:clamp(12px,4vh,40px) 16px 16px;background:rgba(15,23,42,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);font-family:inherit;font-size:13px;line-height:1.5}',
     '.bsx-back[hidden]{display:none!important}',
-    '.bsx-box{width:min(660px,100%);max-height:calc(100vh - 32px);background:#fff;color:var(--slate-900,#0f172a);border-radius:18px;box-shadow:0 30px 80px -20px rgba(15,23,42,.45),0 0 0 1px rgba(15,23,42,.06);display:flex;flex-direction:column;overflow:hidden;animation:bsxIn .22s cubic-bezier(.2,.8,.2,1) both}',
+    '.bsx-box{width:min(760px,100%);max-height:calc(100vh - clamp(24px,6vh,56px));background:#fff;color:var(--slate-900,#0f172a);border-radius:18px;box-shadow:0 30px 80px -20px rgba(15,23,42,.45),0 0 0 1px rgba(15,23,42,.06);display:flex;flex-direction:column;overflow:hidden;animation:bsxIn .22s cubic-bezier(.2,.8,.2,1) both}',
     '@keyframes bsxIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}',
     '.bsx-head{position:relative;flex:none;padding:18px 20px 16px;color:#fff;background:linear-gradient(135deg,#4f46e5 0%,#6366f1 50%,#8b5cf6 100%);overflow:hidden}',
     '.bsx-head:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 85% 0%,rgba(255,255,255,.22) 0%,transparent 55%)}',
@@ -83,9 +83,20 @@
     '.bsx-prix a{color:var(--indigo-dark,#4f46e5);text-decoration:none;font-size:11px}',
     '.bsx-prix .o{display:block;font-size:10.5px;color:var(--slate-400,#94a3b8)}',
     '.bsx-prix-wrap{max-height:280px;overflow:auto;border:1px solid var(--slate-200,#e2e8f0);border-radius:12px;padding:6px 4px 2px}',
-    '.bsx-foot{flex:none;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 20px 16px;border-top:1px solid var(--slate-100,#f1f5f9);background:#fff}',
-    '.bsx-status{flex:1 1 220px;font-size:11.5px;line-height:1.45;color:var(--slate-600,#475569);min-height:16px}',
-    '.bsx-status button{font:inherit;font-size:11.5px;border:none;background:none;padding:0;color:var(--indigo-dark,#4f46e5);font-weight:700;cursor:pointer;text-decoration:underline}',
+    '.bsx-foot{flex:none;display:flex;flex-direction:column;gap:10px;padding:12px 20px 16px;border-top:1px solid var(--slate-100,#f1f5f9);background:#fff}',
+    '.bsx-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}',
+    '.bsx-status{font-size:11.5px;line-height:1.45;color:var(--slate-600,#475569);overflow-wrap:anywhere}',
+    '.bsx-status:empty{display:none}',
+    '.bsx-pret{display:flex;flex-direction:column;gap:10px;border-radius:12px;padding:12px 14px;background:#ecfdf5;border:1px solid #a7f3d0}',
+    '.bsx-pret-t{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:800;color:#047857}',
+    '.bsx-pret-n{font-size:11.5px;color:var(--slate-600,#475569);overflow-wrap:anywhere}',
+    '.bsx-pret-a{display:flex;flex-wrap:wrap;gap:8px;align-items:center}',
+    '.bsx-pret-a a{text-decoration:none}',
+    '.bsx-lienpdf{width:100%;font-family:inherit;font-size:11px;color:var(--slate-600,#475569);background:#fff;border:1px solid var(--slate-200,#e2e8f0);border-radius:8px;padding:6px 8px}',
+    'body.dark .bsx-pret{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.35)}',
+    'body.dark .bsx-pret-t{color:#6ee7b7}',
+    'body.dark .bsx-lienpdf{background:#0f172a;border-color:#334155;color:#cbd5e1}',
+    '.bsx-status button:not(.bsx-btn){font:inherit;font-size:11.5px;border:none;background:none;padding:0;color:var(--indigo-dark,#4f46e5);font-weight:700;cursor:pointer;text-decoration:underline}',
     '.bsx-status .ok{display:inline-flex;align-items:center;gap:5px;color:#059669;font-weight:700}',
     '.bsx-prog{height:4px;border-radius:999px;background:var(--slate-100,#f1f5f9);overflow:hidden;margin-top:6px}',
     '.bsx-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#818cf8,#8b5cf6);transition:width .25s}',
@@ -118,7 +129,7 @@
     'body.dark .bsx-prix td,body.dark .bsx-foot{border-color:#334155}',
     'body.dark .bsx-prix-wrap{border-color:#334155}',
     'body.dark .bsx-tag{background:rgba(99,102,241,.2);color:#c7d2fe}',
-    'body.dark .bsx-lien,body.dark .bsx-m button,body.dark .bsx-status button,body.dark .bsx-prix a{color:#a5b4fc}',
+    'body.dark .bsx-lien,body.dark .bsx-m button,body.dark .bsx-status button:not(.bsx-btn),body.dark .bsx-prix a{color:#a5b4fc}',
     'body.dark .bsx-e{color:#fb7185}'
   ].join('\n');
 
@@ -178,8 +189,8 @@
         '<button type="button" class="bsx-x" data-bsx="fermer" aria-label="Fermer">×</button></div>' +
         '<form class="bsx-scroll" novalidate><div class="bsx-load">Lecture des données…</div></form>' +
         '<div class="bsx-foot"><div class="bsx-status" role="status" aria-live="polite"></div>' +
-          '<button type="button" class="bsx-btn bsx-light" data-bsx="fermer">Fermer</button>' +
-          '<button type="button" class="bsx-btn bsx-primary" data-bsx="generer" disabled>' + ICONE + 'Générer le PDF</button></div>' +
+          '<div class="bsx-actions"><button type="button" class="bsx-btn bsx-light" data-bsx="fermer">Fermer</button>' +
+          '<button type="button" class="bsx-btn bsx-primary" data-bsx="generer" disabled>' + ICONE + 'Générer le PDF</button></div></div>' +
       '</div>';
     document.body.appendChild(el);
     el.addEventListener('pointerdown', function (e) { cibleAppui = e.target; });
@@ -193,8 +204,8 @@
       var a = t.getAttribute('data-bsx');
       if (a === 'fermer') fermer();
       if (a === 'generer') generer();
-      if (a === 'retelecharger' && dernierPdf) telecharger(dernierPdf);
-      if (a === 'ouvrir' && dernierPdf) window.open(dernierPdf.url, '_blank', 'noopener');
+      if (a === 'local' && dernierPdf) telecharger(dernierPdf);
+      if (a === 'copier' && dernierPdf && dernierPdf.lien) copier(dernierPdf.lien);
       if (a === 'prix-reset') reinitPrix();
     });
     // Les contrôles croisés (inscrits ≥ bénéficiaires ≥ abonnés…) dépendent de plusieurs champs :
@@ -478,6 +489,43 @@
     var nom = String(m.nom || 'CSE').replace(/[\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80);
     return 'Bilan partenariat Superprof Spliiit - ' + nom + ' - ' + m.arrete.slice(0, 7) + '.pdf';
   }
+  // Copie du lien : presse-papiers si la page hôte l'autorise, sinon champ sélectionné à copier.
+  function copier(lien) {
+    var champ = $('.bsx-lienpdf');
+    var montrer = function () { if (champ) { champ.hidden = false; champ.focus(); champ.select(); } };
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(lien).then(function () {
+          var b = $('[data-bsx="copier"]'); if (b) b.textContent = 'Lien copié';
+        }, montrer);
+        return;
+      }
+    } catch (_) { /* refusé par la page hôte */ }
+    montrer();
+  }
+  // Le PDF est rangé côté serveur : lien signé d'une heure (téléchargement / affichage).
+  function deposer(blob, nom) {
+    var qs = ctx.cseId ? 'cse_id=' + encodeURIComponent(ctx.cseId) : 'hubspot_company_id=' + encodeURIComponent(ctx.hubspotId);
+    return avecDelai(fetch(API + '?' + qs + '&pdf=1&nom=' + encodeURIComponent(nom), {
+      method: 'POST', headers: { Authorization: 'Bearer ' + ctx.token, 'Content-Type': 'application/pdf' }, body: blob
+    }).then(function (r) { return r.json().then(function (j) { if (!r.ok || !j.ok) throw new Error('depot'); return j; }); }), 60000);
+  }
+  function panneauPret(pdf) {
+    var ko = Math.max(1, Math.round(pdf.taille / 1024));
+    var taille = ko >= 1024 ? (Math.round(ko / 102.4) / 10).toString().replace('.', ',') + ' Mo' : ko + ' Ko';
+    statut('<div class="bsx-pret"><div class="bsx-pret-t">' + ICO_OK + 'PDF prêt</div>' +
+      '<div class="bsx-pret-n">' + esc(pdf.nom) + ' · ' + taille + (pdf.lien ? ' · lien valable 1 heure' : '') + '</div>' +
+      '<div class="bsx-pret-a">' +
+        (pdf.lien
+          ? '<a class="bsx-btn bsx-primary" href="' + esc(pdf.lien) + '" target="_blank" rel="noopener noreferrer">' + ICONE + 'Télécharger le PDF</a>' +
+            '<a class="bsx-btn bsx-light" href="' + esc(pdf.voir) + '" target="_blank" rel="noopener noreferrer">Ouvrir</a>' +
+            '<button type="button" class="bsx-btn bsx-light" data-bsx="copier">Copier le lien</button>'
+          : '<button type="button" class="bsx-btn bsx-primary" data-bsx="local">' + ICONE + 'Télécharger le PDF</button>') +
+      '</div>' +
+      (pdf.lien ? '<input class="bsx-lienpdf" type="text" readonly hidden value="' + esc(pdf.lien) + '" aria-label="Lien du PDF">' : '<div class="bsx-pret-n">Le PDF n\'a pas pu être enregistré sur le serveur ; téléchargement direct seulement.</div>') +
+      (pdf.nonSauve ? '<div class="bsx-pret-n">Les chiffres saisis n\'ont pas pu être enregistrés pour ce CSE.</div>' : '') +
+      '</div>');
+  }
   function telecharger(pdf) {
     var a = document.createElement('a');
     a.href = pdf.url; a.download = pdf.nom; a.rel = 'noopener';
@@ -507,7 +555,8 @@
     if (!ref) return;
     enCours = true; annule = false;
     saisie = ref;
-    $('[data-bsx="generer"]').disabled = true;
+    var g0 = $('[data-bsx="generer"]');
+    g0.disabled = true; g0.classList.add('bsx-primary'); g0.classList.remove('bsx-light'); g0.lastChild.textContent = 'Générer le PDF';
     var frame = null, sauve = true;
     var stop = function (v) { if (annule) throw lisible('Génération annulée.'); return v; };
     statut('Préparation des polices et des logos…', 0.05);
@@ -560,10 +609,16 @@
             pdf.setProperties({ title: 'Bilan du partenariat · ' + o.m.nom, author: 'Superprof', creator: 'Superprof' });
             var blob = pdf.output('blob');
             if (dernierPdf) URL.revokeObjectURL(dernierPdf.url);
-            dernierPdf = { url: URL.createObjectURL(blob), nom: nomFichier(o.m), taille: blob.size };
-            telecharger(dernierPdf);
-            statut('<span class="ok">' + ICO_OK + 'PDF prêt</span> ' + esc(dernierPdf.nom) + ' (' + Math.max(1, Math.round(blob.size / 1024)) + ' Ko). Pas de téléchargement ? <button type="button" data-bsx="retelecharger">Télécharger</button> · <button type="button" data-bsx="ouvrir">ouvrir le PDF</button>' +
-              (sauve ? '' : '<br>Les chiffres saisis n\'ont pas pu être enregistrés pour ce CSE.'));
+            dernierPdf = { url: URL.createObjectURL(blob), nom: nomFichier(o.m), taille: blob.size, nonSauve: !sauve };
+            if (annule) return;
+            statut('Envoi du PDF…', 0.97);
+            return deposer(blob, dernierPdf.nom).then(function (j) {
+              dernierPdf.lien = j.telecharger; dernierPdf.voir = j.ouvrir;
+            }, function () { /* lien serveur indisponible : téléchargement direct proposé */ }).then(function () {
+              if (annule) return;
+              panneauPret(dernierPdf);
+              var b = el.querySelector('.bsx-pret-a .bsx-primary'); if (b) b.focus();
+            });
           });
         });
       })
@@ -575,7 +630,11 @@
       .then(function () {
         if (frame) frame.remove();
         enCours = false;
-        if (el) $('[data-bsx="generer"]').disabled = !rapport;
+        if (el) {
+          var g = $('[data-bsx="generer"]');
+          g.disabled = !rapport;
+          if (el.querySelector('.bsx-pret')) { g.classList.remove('bsx-primary'); g.classList.add('bsx-light'); g.lastChild.textContent = 'Générer à nouveau'; }
+        }
       });
   }
 
@@ -605,6 +664,7 @@
     dernierFocus = document.activeElement;
     el.hidden = false;
     statut('');
+    var g1 = $('[data-bsx="generer"]'); g1.classList.add('bsx-primary'); g1.classList.remove('bsx-light'); g1.lastChild.textContent = 'Générer le PDF';
     if (memeCse) { formulaire(); return; }
     rapport = null; mesure = null; init = null; saisie = null; polices = []; ongletActif = 'sp';
     $('#bsx-titre').textContent = 'Bilan du partenariat';
