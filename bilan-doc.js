@@ -519,7 +519,6 @@
       (corrige ? ligne('sub', 'Total : ' + int(m.nValorises) + ' abonnements comptés par Spliiit', m.brutMois, 12 * m.brutMois) : '') +
       ligne('main', 'Économies des salariés' + (corrige ? ' (× ' + int(m.abonnements) + '/' + int(m.nSpliiit) + ')' : ''), m.ecoMois, m.ecoAn) +
       (m.abonnes > 0 ? ligne('sub', 'Par abonné en cours (÷ ' + int(m.abonnes) + ')', m.parAbonneMois, 12 * m.parAbonneMois) : '') +
-      (m.beneficiaires > 0 ? ligne('sub', 'Par bénéficiaire (÷ ' + int(m.beneficiaires) + ')', m.parBenefMois, 12 * m.parBenefMois) : '') +
       '</div>';
     var notes = [];
     notes.push('Prix public : offre individuelle mensuelle équivalente, en France, TTC' + (m.prixReleve ? ', relevés le ' + esc(jourTxt(m.prixReleve)) : '') + '. Sur un an = mensuel × 12, à abonnements constants.');
@@ -536,7 +535,6 @@
         '<div class="sp-sep"></div>' +
         '<div class="eco-droite">' +
           (m.abonnes > 0 ? '<div><div class="eco-v num">' + eur2(m.parAbonneMois) + '</div><div class="sp-s">par abonné et par mois, soit ' + eur0(12 * m.parAbonneMois) + ' sur un an (' + int(m.abonnes) + ' ' + acc(m.abonnes, 'abonné', 'abonnés') + ')</div></div>' : '') +
-          (m.beneficiaires > 0 ? '<div><div class="eco-v num">' + eur2(m.parBenefMois) + '</div><div class="sp-s">par bénéficiaire et par mois, soit ' + eur0(12 * m.parBenefMois) + ' sur un an (' + int(m.beneficiaires) + ' ' + acc(m.beneficiaires, 'bénéficiaire', 'bénéficiaires') + ')</div></div>' : '') +
         '</div>' +
       '</div>' +
       '<div class="section-title" style="margin:6mm 0 0;font-size:11pt">Détail par service : prix public × abonnés</div>' +
