@@ -955,12 +955,12 @@
       border-top-color: var(--indigo);
     }
 
-    /* ── Export du bilan Spliiit (bouton icône, DA du tableau de bord) ── */
-    .spliit-export-btn { flex:none; width:26px; height:26px; padding:0; border:none; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; color:#4338ca; background:#e0e7ff; transition:background .15s, color .15s, transform .15s; }
-    .spliit-export-btn:hover { background:var(--indigo); color:#fff; transform:translateY(-1px); }
-    .spliit-export-btn:focus-visible { outline:2px solid var(--indigo); outline-offset:2px; }
-    body.dark .spliit-export-btn { background:#3730a3; color:#a5b4fc; }
-    body.dark .spliit-export-btn:hover { background:var(--indigo); color:#fff; }
+    /* ── Export du bilan du partenariat (bouton icône du bandeau CSE) ── */
+    .cse-banner-actions { display: flex; align-items: center; gap: 6px; }
+    .bilan-btn { width: 26px; height: 22px; border: none; border-radius: 6px; background: rgba(255, 255, 255, .2); color: #fff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0; transition: background .15s; }
+    .bilan-btn:hover { background: rgba(255, 255, 255, .35); }
+    .bilan-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+    .bilan-btn[hidden] { display: none; }
 
     /* ── Card toggle ── */
     .card-toggle {
@@ -1445,6 +1445,8 @@
       if (lbl) lbl.textContent = '— Tous les CSE —';
       const banner = document.getElementById('cse-banner');
       if (banner) banner.style.display = 'none';
+      const bilanBtn = document.getElementById('cse-banner-bilan');
+      if (bilanBtn) bilanBtn.hidden = true;
       // Restore global cards
       const cardsEl = document.getElementById('cards-container');
       if (cardsEl) cardsEl.innerHTML = globalCardsHTML;
@@ -1524,7 +1526,7 @@
       if (!u || !u.beneficiaires) return '';
       return spliitUsageShell(cardId, 'Utilisation de la cagnotte', u,
         `<div>${spliitUsageSummary(u)}</div><div>${spliitUsageRepartition(u)}</div>`,
-        'crédit consommé = dépense Spliiit plafonnée au crédit de chaque bénéficiaire.', withToggle, true);
+        'crédit consommé = dépense Spliiit plafonnée au crédit de chaque bénéficiaire.', withToggle);
     }
 
     // Bilan PDF Spliiit du CSE sélectionné : modale des chiffres de référence dans le
@@ -1663,6 +1665,8 @@
       if (cardsEl) {
         cardsEl.innerHTML = `<div class="grid${spliitStatsCard ? ' has-spliit' : ''}">${membCard}${mrCard}${lessCard}${walletCard}${spliitStatsCard}${themesCard}${spliitUsageCard('cse-spliit-usage', spliitUsage, false)}${spliitServicesCard}${cseAiCard}</div>`;
         selectedCseId = f.cse_id || selectedCseId;
+        const bilanBtn = document.getElementById('cse-banner-bilan');
+        if (bilanBtn) bilanBtn.hidden = !(spliitUsage && spliitUsage.beneficiaires);
         bindAI(true);
       }
     }
@@ -1820,7 +1824,10 @@
         </div></div>
         <div id="cse-banner" class="cse-banner" style="display:none">
           <span class="cse-banner-title"></span>
-          <button class="cse-banner-back" onclick="clearCse()">← Vue globale</button>
+          <div class="cse-banner-actions">
+            <button type="button" id="cse-banner-bilan" class="bilan-btn" onclick="exportBilanSpliiit()" aria-label="Exporter le bilan du partenariat (PDF)" title="Exporter le bilan du partenariat (PDF)" hidden><svg viewBox="0 0 24 24" width="15" height="15" fill="none" aria-hidden="true"><path d="M6 21H18M12 3V17M7 12L12 17L17 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button class="cse-banner-back" onclick="clearCse()">← Vue globale</button>
+          </div>
         </div>
         <div id="restore-bar" class="restore-bar"></div>
         <div id="cards-container">${globalCardsHTML}</div>`;
@@ -2054,7 +2061,7 @@
       await loadData();
     })();
   </script>
-  <script src="bilan-export.js?v=4"></script>
+  <script src="bilan-export.js?v=5"></script>
 </body>
 
 </html>
