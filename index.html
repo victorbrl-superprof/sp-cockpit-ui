@@ -310,12 +310,10 @@
 
     /* ── Card toggle ── */
     .card-toggle { border:none; background:none; cursor:pointer; font-size:13px; opacity:.3; transition:opacity .2s; padding:2px 4px; line-height:1; }
-    /* Export du bilan Spliiit (bouton icône, DA du tableau de bord) */
-    .spliit-export-btn { flex:none; width:26px; height:26px; padding:0; border:none; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; color:#4338ca; background:#e0e7ff; transition:background .15s, color .15s, transform .15s; }
-    .spliit-export-btn:hover { background:var(--indigo); color:#fff; transform:translateY(-1px); }
-    .spliit-export-btn:focus-visible { outline:2px solid var(--indigo); outline-offset:2px; }
-    body.dark .spliit-export-btn { background:#3730a3; color:#a5b4fc; }
-    body.dark .spliit-export-btn:hover { background:var(--indigo); color:#fff; }
+    /* Export du bilan du partenariat (bouton icône du hero, même style que le mode sombre) */
+    .bilan-btn { width:32px; height:32px; border:none; border-radius:8px; background:rgba(255,255,255,.15); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .2s, transform .15s; flex-shrink:0; margin-left:10px; }
+    .bilan-btn:hover { background:rgba(255,255,255,.28); transform:translateY(-1px); }
+    .bilan-btn:focus-visible { outline:2px solid #fff; outline-offset:2px; }
     .card-toggle:hover { opacity:.8; }
     .card.card-hidden { display:none; }
 
@@ -432,7 +430,7 @@
       if (!u || !u.beneficiaires) return '';
       return spliitUsageShell(cardId, 'Utilisation de la cagnotte', u,
         `<div>${spliitUsageSummary(u)}</div><div>${spliitUsageRepartition(u)}</div>`,
-        'crédit consommé = dépense Spliiit plafonnée au crédit de chaque bénéficiaire.', withToggle, true);
+        'crédit consommé = dépense Spliiit plafonnée au crédit de chaque bénéficiaire.', withToggle);
     }
 
     // Bilan PDF Spliiit de ce CSE : modale des chiffres de référence dans le cockpit,
@@ -582,6 +580,7 @@
             <div class="hero-stat"><div class="hero-stat-value">${fmtEur(lessCa + passCa)}</div><div class="hero-stat-label">CA total</div></div>
             <div class="hero-sep"></div>
             <div class="hero-stat"><div class="hero-stat-value">${fmt(lessTotal)}</div><div class="hero-stat-label">leçons</div></div>
+            ${spliitUsageCardHtml ? `<button type="button" class="bilan-btn" onclick="exportBilanSpliiit()" aria-label="Exporter le bilan du partenariat (PDF)" title="Exporter le bilan du partenariat (PDF)"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" aria-hidden="true"><path d="M6 21H18M12 3V17M7 12L12 17L17 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>` : ''}
             <button class="dark-toggle" onclick="toggleDark()" title="Mode sombre / clair">${document.body.classList.contains('dark')?'☀️':'🌑'}</button>
           </div>
         </div></div>
@@ -816,6 +815,6 @@
       await loadData();
     })();
   </script>
-  <script src="bilan-export.js?v=4"></script>
+  <script src="bilan-export.js?v=5"></script>
 </body>
 </html>
