@@ -315,6 +315,15 @@
       '.note{margin-top:4mm;font-size:8pt;line-height:1.45;color:var(--muted)}',
       '.access{display:inline-flex;align-items:center;gap:2.5mm;align-self:flex-start;margin-top:1mm;background:var(--pink-pale);border:1px solid var(--pink-soft);border-radius:999px;padding:2mm 4.5mm;font:700 10pt var(--sans)}',
       '.access i{width:2.4mm;height:2.4mm;border-radius:50%;background:var(--green);display:block}',
+      '.eco-chiffres{display:grid;grid-template-columns:1.1fr 1.5mm 1fr;gap:8mm;margin-top:7mm;align-items:start}',
+      '.sp-u{font-size:18pt;font-weight:800;letter-spacing:-.01em}',
+      '.eco-droite{display:grid;gap:5mm}',
+      '.eco-v{font:900 26pt/1 var(--display);letter-spacing:-.03em}',
+      '.cmp{display:grid;grid-template-columns:18mm 1fr 16mm;align-items:center;gap:1.6mm 2.5mm;margin-top:2.5mm;font-size:8.6pt;color:var(--ink-soft)}',
+      '.cmp b{text-align:right;color:var(--ink);font-weight:800}',
+      '.cmp-t{height:2.6mm;border-radius:999px;background:var(--cream);overflow:hidden}',
+      '.cmp-t i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--pink),var(--coral))}',
+      '.cmp-t i.pub{background:#D9D9D9}',
       '.sp-chiffres{display:grid;grid-template-columns:1fr 1.5mm 1fr;gap:8mm;margin-top:20mm;align-items:start}',
       '.sp-sep{width:1.5px;align-self:stretch;background:var(--line)}',
       '.sp-v{font:900 72pt/.9 var(--display);letter-spacing:-.045em;color:var(--coral)}',
@@ -516,11 +525,17 @@
     return '<section class="page">' + sourcil('Spliiit · Économies des salariés') +
       '<h2 class="h-page">Ce que vos salariés <em>économisent</em></h2>' +
       '<p class="lead">Pour chaque service, l\'écart entre le prix public de l\'offre individuelle et la participation payée sur Spliiit, multiplié par le nombre d\'abonnements en cours.</p>' +
-      '<div class="money-hero">' +
-        '<div class="mh-main"><div class="mv num">' + int(m.ecoMois) + '<small> € / mois</small></div><div class="ml">économisés par vos salariés sur leurs abonnements en cours, soit <b>' + eur0(m.ecoAn) + ' sur un an</b>.</div></div>' +
-        '<div class="mh-side">' +
-          '<div class="mh-mini"><div class="mv num">' + eur2(m.parAbonneMois) + '</div><div class="ml">économisés par abonné et par mois, soit ' + eur0(12 * m.parAbonneMois) + ' sur un an (' + int(m.abonnes) + ' ' + acc(m.abonnes, 'abonné', 'abonnés') + ')</div></div>' +
-          '<div class="mh-mini"><div class="mv num">' + pct(m.pctEco, 1) + '</div><div class="ml">moins cher qu\'au prix public : ' + eur0(m.splMois) + ' par mois via Spliiit au lieu de ' + eur0(m.pubMois) + '</div></div>' +
+      '<div class="eco-chiffres">' +
+        '<div><div class="sp-v num">' + int(m.ecoMois) + '<span class="sp-u"> € / mois</span></div>' +
+          '<div class="sp-l">économisés par vos salariés</div>' +
+          '<div class="sp-s">sur leurs abonnements en cours, soit <b>' + eur0(m.ecoAn) + '\u00a0sur\u00a0un\u00a0an</b>.</div></div>' +
+        '<div class="sp-sep"></div>' +
+        '<div class="eco-droite">' +
+          '<div><div class="eco-v num">' + eur2(m.parAbonneMois) + '</div><div class="sp-s">économisés par abonné et par mois, soit ' + eur0(12 * m.parAbonneMois) + ' sur un an (' + int(m.abonnes) + ' ' + acc(m.abonnes, 'abonné', 'abonnés') + ')</div></div>' +
+          '<div><div class="eco-v num">' + pct(m.pctEco, 1) + '</div><div class="sp-s">moins cher qu\'au prix public, chaque mois :</div>' +
+            '<div class="cmp"><span>Prix public</span><div class="cmp-t"><i class="pub" style="width:100%"></i></div><b>' + eur0(m.pubMois) + '</b>' +
+            '<span>Via Spliiit</span><div class="cmp-t"><i style="width:' + (m.pubMois > 0 ? Math.min(100, 100 * m.splMois / m.pubMois) : 0).toFixed(1) + '%"></i></div><b>' + eur0(m.splMois) + '</b></div>' +
+          '</div>' +
         '</div>' +
       '</div>' +
       '<div class="vt-wrap">' + tableEco(lignes.slice(0, moitie)) + tableEco(lignes.slice(moitie)) + '</div>' +
