@@ -315,6 +315,21 @@
       '.note{margin-top:4mm;font-size:8pt;line-height:1.45;color:var(--muted)}',
       '.access{display:inline-flex;align-items:center;gap:2.5mm;align-self:flex-start;margin-top:1mm;background:var(--pink-pale);border:1px solid var(--pink-soft);border-radius:999px;padding:2mm 4.5mm;font:700 10pt var(--sans)}',
       '.access i{width:2.4mm;height:2.4mm;border-radius:50%;background:var(--green);display:block}',
+      '.sp-chiffres{display:grid;grid-template-columns:1fr 1.5mm 1fr;gap:8mm;margin-top:20mm;align-items:start}',
+      '.sp-sep{width:1.5px;align-self:stretch;background:var(--line)}',
+      '.sp-v{font:900 72pt/.9 var(--display);letter-spacing:-.045em;color:var(--coral)}',
+      '.sp-v.ink{color:var(--ink)}',
+      '.sp-l{margin-top:3mm;font:700 12.5pt/1.3 var(--display);letter-spacing:-.01em}',
+      '.sp-s{margin-top:2.5mm;font-size:9.5pt;line-height:1.5;color:var(--ink-soft)}',
+      '.sp-bar{margin-top:5mm;height:3mm;border-radius:999px;background:var(--pink-pale);overflow:hidden}',
+      '.sp-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--pink),var(--coral))}',
+      '.section-title em.acc{font-family:var(--accent);font-style:normal;font-weight:700;font-size:1.2em;color:var(--coral)}',
+      '.th-grid{display:grid;gap:4mm;margin-top:2mm}',
+      '.th-card{position:relative;border-radius:16px;background:var(--cream);padding:7mm 5mm 6mm;min-height:78mm;overflow:hidden}',
+      '.th-rang{position:absolute;right:4mm;top:1mm;font:900 64pt/1 var(--display);color:var(--pink-soft);letter-spacing:-.04em}',
+      '.th-nom{position:relative;font:800 17pt/1.15 var(--display);letter-spacing:-.015em;margin-top:20mm}',
+      '.th-tags{position:relative;display:flex;flex-wrap:wrap;gap:1.6mm;margin-top:4mm}',
+      '.tag{display:inline-block;font-size:8.6pt;font-weight:600;background:#fff;border:1px solid var(--line);border-radius:999px;padding:1.2mm 2.8mm}',
       '.offre{margin-top:7mm;border-radius:18px;border:1.5px solid var(--line);padding:6mm;background:var(--cream)}',
       '.offre.sp{border-color:var(--coral);background:#fff}',
       '.offre-h{display:flex;align-items:center;gap:3mm;margin-bottom:5mm}',
@@ -391,32 +406,30 @@
       '</section>';
   }
 
-  // Page « partenariat » : Superprof (inscrits, mises en relation, thématiques) et Spliiit en bref.
-  function pPartenariat(m, a, n) {
+  // Page Superprof (cours particuliers) : inscrits rapportés aux salariés adressables, mises en
+  // relation, top 3 des thématiques. Volontairement sans chiffre Spliiit (pages suivantes).
+  function pSuperprof(m, a, n) {
+    var part = m.adressables > 0 ? Math.min(100, 100 * m.membres / m.adressables) : 0;
     var themes = m.thematiques.map(function (x, i) {
       var p = String(x).split(/\s+-\s+/);
       var tete = p.shift(), suite = p.join(' - ');
-      return '<div class="theme"><span class="tn">' + (i + 1) + '</span><span><b>' + esc(tete) + '</b>' + (suite ? ' · ' + esc(suite) : '') + '</span></div>';
+      var tags = suite ? suite.split(/\s*,\s*/).filter(Boolean).map(function (s) { return '<span class="tag">' + esc(s) + '</span>'; }).join('') : '';
+      return '<div class="th-card"><span class="th-rang">' + (i + 1) + '</span><div class="th-nom">' + esc(tete) + '</div>' + (tags ? '<div class="th-tags">' + tags + '</div>' : '') + '</div>';
     }).join('');
-    var fin = jour(m.accesFin);
-    return '<section class="page">' + sourcil('Le partenariat') +
-      '<h2 class="h-page">' + esc(m.nom) + '</h2>' +
-      (fin ? '<div class="access"><i></i>Accès Superprof + Spliiit jusqu\'au ' + esc(jourTxt(m.accesFin)) + '</div>' : '') +
-      '<div class="offre sp"><div class="offre-h"><img src="' + a.spLogo + '" alt="Superprof"><span class="s">Cours particuliers</span></div>' +
-        '<div class="duo">' +
-          kpi(int(m.membres), acc(m.membres, 'utilisateur inscrit', 'utilisateurs inscrits'), 'salariés ayant activé leur compte Superprof', true) +
-          kpi(int(m.mer), acc(m.mer, 'mise en relation', 'mises en relation'), 'demandes de cours envoyées à un professeur') +
+    return '<section class="page">' + sourcil('Superprof · Cours particuliers') +
+      '<h2 class="h-page">Superprof pour vos <em>salariés</em></h2>' +
+      (jour(m.accesFin) ? '<div class="access"><i></i>Accès Superprof + Spliiit jusqu\'au ' + esc(jourTxt(m.accesFin)) + '</div>' : '') +
+      '<div class="sp-chiffres">' +
+        '<div class="sp-chiffre"><div class="sp-v num">' + int(m.membres) + '</div><div class="sp-l">' + acc(m.membres, 'utilisateur inscrit', 'utilisateurs inscrits') + ' sur Superprof</div>' +
+          (m.adressables > 0 ? '<div class="sp-bar"><i style="width:' + part.toFixed(1) + '%"></i></div><div class="sp-s">' + pct(m.membres, m.adressables) + ' des ' + int(m.adressables) + ' salariés adressables</div>' : '') +
         '</div>' +
-        (themes ? '<div class="themes"><h4>Top ' + m.thematiques.length + ' des thématiques demandées</h4>' + themes + '</div>' : '') +
+        '<div class="sp-sep"></div>' +
+        '<div class="sp-chiffre"><div class="sp-v num ink">' + int(m.mer) + '</div><div class="sp-l">' + acc(m.mer, 'mise en relation', 'mises en relation') + ' avec un professeur</div>' +
+          '<div class="sp-s">Demandes de cours envoyées par vos salariés à un professeur Superprof depuis le début du partenariat.</div>' +
+        '</div>' +
       '</div>' +
-      '<div class="offre"><div class="offre-h">' + (a.spliiit ? '<img src="' + a.spliiit + '" alt="" style="height:22px">' : '') + '<span class="t">Spliiit</span><span class="s">Cagnotte abonnements</span></div>' +
-        '<div class="duo">' +
-          kpi(int(m.beneficiaires), acc(m.beneficiaires, 'bénéficiaire', 'bénéficiaires'), acc(m.beneficiaires, 'salarié a activé sa', 'salariés ont activé leur') + ' cagnotte') +
-          (m.lignes.length ? kpi(int(m.ecoMois) + '<small>€</small>', 'économisés chaque mois', 'par vos salariés sur leurs abonnements, par rapport au prix public', false, true)
-            : kpi(int(m.abonnements), acc(m.abonnements, 'abonnement en cours', 'abonnements en cours'), 'chez ' + int(m.abonnes) + ' ' + acc(m.abonnes, 'abonné', 'abonnés'))) +
-        '</div>' +
-        '<p class="note" style="margin-top:4mm">Le détail de la cagnotte Spliiit est présenté dans les pages suivantes.</p>' +
-      '</div>' + pied(n, m, a) + '</section>';
+      (themes ? '<div class="section-title" style="margin-top:22mm">Top ' + m.thematiques.length + ' des thématiques <em class="acc">demandées</em></div><div class="th-grid" style="grid-template-columns:repeat(' + m.thematiques.length + ',1fr)">' + themes + '</div>' : '') +
+      pied(n, m, a) + '</section>';
   }
 
   function kpi(v, l, s, accent, eco) {
@@ -430,7 +443,7 @@
       m.ecoMois > 0 ? 'Grâce au partage Spliiit, vos salariés économisent <b>' + eur0(m.ecoMois) + ' par mois</b> par rapport au prix public, soit <b>' + eur0(m.ecoAn) + ' sur un an</b> et <b>' + eur2(m.parAbonneMois) + '</b> par abonné et par mois.' : null,
       m.abonnes > 0 ? '<b>' + dec1(m.abosParAbonne) + ' ' + acc1(m.abosParAbonne, 'abonnement en cours', 'abonnements en cours') + '</b> en moyenne par abonné' + (top ? ', ' + esc(top) + ' en tête' : '') + '.' : null
     ].filter(Boolean);
-    return '<section class="page">' + sourcil("L'essentiel") +
+    return '<section class="page">' + sourcil("Spliiit · L'essentiel") +
       '<h2 class="h-page">Une cagnotte <em>adoptée</em> par vos salariés</h2>' +
       '<p class="lead">Chiffres clés du partenariat Spliiit ' + esc(duNom(m.nom)) + ". Spliiit permet aux salariés de s'abonner à leurs services préférés (streaming, musique, sport, langues) en utilisant la cagnotte offerte par le CSE.</p>" +
       '<div class="kpis">' +
@@ -464,7 +477,7 @@
     var barres = m.repAbos.map(function (p, i) {
       return '<div class="hb"><span>' + libelles[i] + '</span><div class="hb-track"><div class="hb-fill" style="width:' + (100 * p / max).toFixed(1) + '%"></div></div><span class="hb-v num">' + p + ' %</span></div>';
     }).join('');
-    return '<section class="page">' + sourcil('Engagement') +
+    return '<section class="page">' + sourcil('Spliiit · Engagement') +
       '<h2 class="h-page">De l\'inscription à l\'<em>abonnement</em></h2>' +
       '<p class="lead">Des membres Superprof aux bénéficiaires de la cagnotte, puis aux salariés qui ont un abonnement en cours.</p>' +
       '<div class="block"><div class="funnel">' + lignes + '</div></div>' +
@@ -484,7 +497,7 @@
   }
   function pEconomies(m, a, n) {
     if (!m.lignes.length) {
-      return '<section class="page">' + sourcil('Économies des salariés') + '<h2 class="h-page">Ce que vos salariés <em>économisent</em></h2>' +
+      return '<section class="page">' + sourcil('Spliiit · Économies des salariés') + '<h2 class="h-page">Ce que vos salariés <em>économisent</em></h2>' +
         '<p class="lead">Aucun prix public et Spliiit n\'est encore relevé pour les services souscrits : les économies ne sont pas calculées dans ce bilan.</p>' + pied(n, m, a) + '</section>';
     }
     var lignes = m.lignes.slice().sort(function (x, y) { return y.ecoMois - x.ecoMois || x.service.localeCompare(y.service, 'fr'); });
@@ -500,7 +513,7 @@
     if (m.sansEco.length) notes.push('Sans économie, non comptés : ' + m.sansEco.map(function (s) { return esc(s.service) + ' (' + s.n + ', place Spliiit plus chère de ' + eur2(s.ecart) + ' par mois que l\'offre individuelle)'; }).join(', ') + '.');
     if (m.sansPrix.length) notes.push('Sans prix Spliiit relevé, non comptés : ' + m.sansPrix.map(function (s) { return esc(s.service) + ' (' + s.n + ')'; }).join(', ') + '.');
     var contrat = m.contrat ? '<div class="contract"><span class="cv num">' + (Number.isInteger(m.contrat) ? eur0(m.contrat) : eur2(m.contrat)) + '</span><span>de cagnotte par salarié et par an, prévus au contrat.</span></div>' : '';
-    return '<section class="page">' + sourcil('Économies des salariés') +
+    return '<section class="page">' + sourcil('Spliiit · Économies des salariés') +
       '<h2 class="h-page">Ce que vos salariés <em>économisent</em></h2>' +
       '<p class="lead">Pour chaque service, l\'écart entre le prix public de l\'offre individuelle et la participation payée sur Spliiit, multiplié par le nombre d\'abonnements en cours.</p>' +
       '<div class="money-hero">' +
@@ -517,7 +530,7 @@
   function pServices(m, a, n) {
     var tot = m.nSpliiit;
     if (!m.services.length) {
-      return '<section class="page">' + sourcil('Services souscrits') + '<h2 class="h-page">Les <em>abonnements</em> de vos salariés</h2>' +
+      return '<section class="page">' + sourcil('Spliiit · Services souscrits') + '<h2 class="h-page">Les <em>abonnements</em> de vos salariés</h2>' +
         '<p class="lead">Aucun abonnement en cours n\'est enregistré par Spliiit au ' + esc(jourTxt(m.arrete)) + '.</p>' + pied(n, m, a) + '</section>';
     }
     var liste = m.services.slice(0, 20), reste = m.services.slice(20);
@@ -537,7 +550,7 @@
         '<div class="svc-name"><span>' + esc(s.service) + '</span><div class="svc-track"><div class="svc-fill" style="width:' + (100 * s.n / max).toFixed(1) + '%;background:' + couleur(s.service, i) + '"></div></div></div>' +
         '<div class="svc-v num">' + int(s.n) + '</div></div>';
     }).join('');
-    return '<section class="page">' + sourcil('Services souscrits') +
+    return '<section class="page">' + sourcil('Spliiit · Services souscrits') +
       '<h2 class="h-page">Les <em>abonnements</em> préférés de vos salariés</h2>' +
       '<p class="lead">' + int(m.services.length) + ' ' + acc(m.services.length, 'service souscrit', 'services différents souscrits') + ' par les bénéficiaires, au ' + esc(jourTxt(m.arrete)) + '. Nombre d\'abonnements en cours par service.</p>' +
       (podium ? '<div class="podium" style="grid-template-columns:repeat(' + pod.length + ',1fr)">' + podium + '</div>' : '') +
@@ -563,7 +576,7 @@
 
   // Document complet (HTML autonome). a = { fonts:[{weight,src}], caveat, spLogo, spliiit, logos:{service:{type,src,bg}} }
   function html(m, a) {
-    var pages = [pCouverture(m, a), pPartenariat(m, a, 2), pEssentiel(m, a, 3), pEngagement(m, a, 4), pEconomies(m, a, 5), pServices(m, a, 6), pMethode(m, a, 7)];
+    var pages = [pCouverture(m, a), pSuperprof(m, a, 2), pEssentiel(m, a, 3), pEngagement(m, a, 4), pEconomies(m, a, 5), pServices(m, a, 6), pMethode(m, a, 7)];
     return '<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Bilan du partenariat</title><style>' + css(a) + '</style></head><body>' +
       pages.join('').replace(/__TOTAL__/g, String(pages.length)) + '</body></html>';
   }
