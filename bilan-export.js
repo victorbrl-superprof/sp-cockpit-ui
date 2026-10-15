@@ -8,7 +8,7 @@
 (function () {
   'use strict';
   var API = 'https://yhtxrjegdeuwkcjvkfkt.supabase.co/functions/v1/cse-spliit-report';
-  var VERSION = '5';
+  var VERSION = '6';
   var LIBS = {
     jspdf: { src: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', sri: 'sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk' },
     html2canvas: { src: 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', sri: 'sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H' }
@@ -299,11 +299,11 @@
           '<div class="bsx-f"><label>Abonnements en cours</label><input type="text" readonly value="' + int(u.abonnements_en_cours) + '"><div class="bsx-d">Mesuré par Spliiit, <b>non modifiable</b> : base des économies et de la moyenne par abonné.</div></div>' +
         '</div></div>' +
       '<div class="bsx-panel" data-panel="px" role="tabpanel" hidden>' +
-        '<div class="bsx-intro"><b>Prix public</b> : offre individuelle mensuelle équivalente, en France, TTC. <b>Prix Spliiit</b> : participation mensuelle pour une place, frais compris. Économie d\'un service = (prix public − prix Spliiit) × abonnements en cours. Un service sans l\'un des deux prix n\'est pas compté. · <button type="button" class="bsx-lien" data-bsx="prix-reset">rétablir tous les prix</button></div>' +
+        '<div class="bsx-intro"><b>Prix public</b> : offre individuelle mensuelle équivalente, en France, TTC. Économie d\'un service = prix public × abonnements en cours (total corrigé des doublons Spliiit). Un service sans prix public n\'est pas compté. <b>Prix Spliiit</b> : participation mensuelle pour une place, frais compris, pour information (non utilisé dans le document). · <button type="button" class="bsx-lien" data-bsx="prix-reset">rétablir tous les prix</button></div>' +
         '<div class="bsx-prix-wrap"><table class="bsx-prix"><thead><tr><th>Service</th><th style="text-align:right">Abonnés</th><th>Public</th><th>Spliiit</th><th></th></tr></thead><tbody>' + lignesPrix + '</tbody></table></div>' +
       '</div>' +
       '<div class="bsx-panel" data-panel="dc" role="tabpanel" hidden><div class="bsx-grp">' +
-        '<div class="bsx-f" data-k="contrat"><label for="bsx-contrat">Cagnotte au contrat (€ par salarié et par an)</label><input id="bsx-contrat" name="contrat" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Optionnel, ex. 160" value="' + (v.contrat == null ? '' : v.contrat) + '"><div class="bsx-d">Affichée page 5 sous les économies. Laissez vide pour ne pas l\'afficher.</div>' + (enregistre('contrat') ? '<div class="bsx-m"><span class="bsx-tag">enregistré pour ce CSE</span></div>' : '') + '<div class="bsx-e" role="alert"></div></div>' +
+        '<div class="bsx-f" data-k="contrat"><label for="bsx-contrat">Cagnotte du CSE (€ par abonné et par an)</label><input id="bsx-contrat" name="contrat" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Ex. 160" value="' + (v.contrat == null ? '' : v.contrat) + '"><div class="bsx-d">Montant prévu au contrat, versé à chaque abonné en cours. Cité pages 3, 5 et 7 : les abonnements, valorisés au prix public, sont financés par cette cagnotte. Vide = non cité.</div>' + (enregistre('contrat') ? '<div class="bsx-m"><span class="bsx-tag">enregistré pour ce CSE</span></div>' : '') + '<div class="bsx-e" role="alert"></div></div>' +
         '<div class="bsx-f" data-k="debut"><label for="bsx-debut">Début du partenariat</label><input id="bsx-debut" name="debut" type="month" max="' + esc(mesure.moisDonnees) + '" value="' + esc(v.debut) + '"><div class="bsx-d"><b>Où :</b> couverture (« De … à … »). La fin est le mois des données.</div>' + meta('debut', 'Par défaut : création du CSE', enregistre('debut')) + '<div class="bsx-e" role="alert"></div></div>' +
       '</div></div>';
     onglet(ongletActif);
