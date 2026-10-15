@@ -8,7 +8,7 @@
 (function () {
   'use strict';
   var API = 'https://yhtxrjegdeuwkcjvkfkt.supabase.co/functions/v1/cse-spliit-report';
-  var VERSION = '6';
+  var VERSION = '7';
   var LIBS = {
     jspdf: { src: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', sri: 'sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk' },
     html2canvas: { src: 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', sri: 'sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H' }
@@ -138,7 +138,7 @@
     { k: 'membres', t: 'sp', l: 'Utilisateurs inscrits', d: 'Salariés qui ont <b>activé leur compte Superprof</b> dans l\'espace du CSE.', o: 'Pages 1 à 4 (base des pourcentages).', saved: true, src: 'base du cockpit' },
     { k: 'mer', t: 'sp', l: 'Mises en relation', d: 'Demandes de cours envoyées par les salariés à un professeur, <b>depuis le début</b> du partenariat.', o: 'Page 2 (Superprof).', saved: true, src: 'base du cockpit' },
     { k: 'adressables', t: 'sl', l: 'Salariés adressables', d: 'Salariés <b>couverts par l\'offre</b> (quota de la fiche CSE).', o: 'Page 3 : part des salariés inscrits.', src: 'fiche CSE' },
-    { k: 'beneficiaires', t: 'sl', l: 'Bénéficiaires Spliiit', d: 'Salariés qui ont <b>activé leur cagnotte</b> Spliiit.', o: 'Pages 1 à 5 (économies par bénéficiaire).', src: 'Spliiit' },
+    { k: 'beneficiaires', t: 'sl', l: 'Bénéficiaires Spliiit', d: 'Salariés qui ont <b>activé leur cagnotte</b> Spliiit.', o: 'Pages 1, 3 et 4.', src: 'Spliiit' },
     { k: 'abonnes', t: 'sl', l: 'Abonnés en cours', d: 'Bénéficiaires avec <b>au moins un abonnement actif</b> (« utilisateurs actifs » chez Spliiit).', o: 'Pages 3 à 5 (moyennes par abonné).', src: 'Spliiit' }
   ];
   var ONGLETS = [{ id: 'sp', l: 'Superprof' }, { id: 'sl', l: 'Spliiit' }, { id: 'px', l: 'Prix' }, { id: 'dc', l: 'Document' }];
