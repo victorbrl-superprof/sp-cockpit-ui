@@ -492,8 +492,8 @@
   function pEssentiel(m, a, n) {
     var top = m.top.length >= 3 ? m.top[0] + ', ' + m.top[1] + ' et ' + m.top[2] : m.top.join(' et ');
     var items = [
-      m.adressables > 0 ? '<b>' + int(m.membres) + ' ' + acc(m.membres, 'salarié', 'salariés') + ' sur ' + int(m.adressables) + '</b> adressables ' + acc(m.membres, 'est membre', 'sont membres') + ' Superprof, soit <b>' + pct(m.membres, m.adressables) + '</b>.' : null,
-      '<b>' + int(m.beneficiaires) + ' ' + acc(m.beneficiaires, 'membre', 'membres') + '</b> ' + acc(m.beneficiaires, 'a activé sa', 'ont activé leur') + ' cagnotte Spliiit, soit <b>' + pct(m.beneficiaires, m.membres) + '</b> des membres, et <b>' + int(m.abonnes) + '</b> ' + acc(m.abonnes, 'a', 'ont') + ' un abonnement en cours.',
+      '<b>' + int(m.beneficiaires) + ' ' + acc(m.beneficiaires, 'membre', 'membres') + '</b> ' + acc(m.beneficiaires, 'a activé sa', 'ont activé leur') + ' cagnotte Spliiit, soit <b>' + pct(m.beneficiaires, m.membres) + '</b> des membres' +
+        (m.adressables > 0 ? ' (' + int(m.membres) + ' ' + acc(m.membres, 'salarié', 'salariés') + ' sur ' + int(m.adressables) + ' adressables ' + acc(m.membres, 'est membre', 'sont membres') + ' Superprof, soit ' + pct(m.membres, m.adressables) + ')' : '') + ', et <b>' + int(m.abonnes) + '</b> ' + acc(m.abonnes, 'a', 'ont') + ' un abonnement en cours.',
       m.ecoMois > 0 ? (m.contrat > 0 ? 'Grâce à la cagnotte du CSE' + (m.cagnCitee ? ' (' + montant(m.contrat) + ' par abonné et par an)' : '') + ', vos' : 'Vos') + ' salariés économisent <b>' + eur0(m.ecoMois) + ' par mois</b> au prix public, soit <b>' + eur0(m.ecoAn) + ' sur un an</b> et <b>' + eur2(m.parAbonneMois) + '</b> par abonné et par mois.' : null,
       m.abonnes > 0 ? '<b>' + dec1(m.abosParAbonne) + ' ' + acc1(m.abosParAbonne, 'abonnement en cours', 'abonnements en cours') + '</b> en moyenne par abonné' + (top ? ', ' + esc(top) + ' en tête' : '') + '.' : null
     ].filter(Boolean);
