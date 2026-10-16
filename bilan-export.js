@@ -8,7 +8,7 @@
 (function () {
   'use strict';
   var API = 'https://yhtxrjegdeuwkcjvkfkt.supabase.co/functions/v1/cse-spliit-report';
-  var VERSION = '10';
+  var VERSION = '11';
   var LIBS = {
     jspdf: { src: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', sri: 'sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk' },
     html2canvas: { src: 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', sri: 'sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H' }
@@ -139,7 +139,9 @@
     { k: 'mer', t: 'sp', l: 'Mises en relation', d: 'Demandes de cours envoyées par les salariés à un professeur, <b>depuis le début</b> du partenariat.', o: 'Pages 1 et 2 (Superprof).', saved: true, src: 'base du cockpit' },
     { k: 'adressables', t: 'sl', l: 'Salariés adressables', d: 'Salariés <b>couverts par l\'offre</b> (quota de la fiche CSE).', o: 'Pages 2 et 3 : part des salariés inscrits.', src: 'fiche CSE' },
     { k: 'beneficiaires', t: 'sl', l: 'Bénéficiaires Spliiit', d: 'Salariés qui ont <b>activé leur cagnotte</b> Spliiit.', o: 'Pages 1, 3 et 4.', src: 'Spliiit' },
-    { k: 'abonnes', t: 'sl', l: 'Abonnés en cours', d: 'Bénéficiaires avec <b>au moins un abonnement actif</b> (« utilisateurs actifs » chez Spliiit).', o: 'Pages 1 et 3 à 5 (moyennes par abonné).', src: 'Spliiit' }
+    { k: 'abonnes', t: 'sl', l: 'Abonnés en cours', d: 'Bénéficiaires avec <b>au moins un abonnement actif</b> (« utilisateurs actifs » chez Spliiit).', o: 'Pages 1 et 3 à 5 (moyennes par abonné).', src: 'Spliiit' },
+    { k: 'usagePct', t: 'sl', l: 'Cagnotte utilisée (%)', d: 'Part de la cagnotte versée <b>déjà dépensée</b> par les bénéficiaires. Spliiit ne voit pas toujours le dernier réassort : corrigez si besoin (ex. 120 € à 75 % + 40 € à 1/6).', o: 'Page 3 (carte et point à retenir). 0 = non affiché.', saved: true, src: 'Spliiit' },
+    { k: 'cagnotteMoyenne', t: 'sl', l: 'Cagnotte utilisée en moyenne (€ par bénéficiaire)', d: 'Montant moyen <b>déjà dépensé</b> par bénéficiaire, réassorts compris.', o: 'Page 3.', saved: true, src: 'Spliiit' }
   ];
   var ONGLETS = [{ id: 'sp', l: 'Superprof' }, { id: 'sl', l: 'Spliiit' }, { id: 'px', l: 'Prix' }, { id: 'dc', l: 'Document' }];
 
@@ -346,6 +348,7 @@
     if (!err.beneficiaires && ref.beneficiaires <= 0) err.beneficiaires = 'Il faut au moins un bénéficiaire.';
     if (!err.abonnes && !err.beneficiaires && ref.abonnes > ref.beneficiaires) err.abonnes = 'Ne peut pas dépasser les bénéficiaires (' + int(ref.beneficiaires) + ').';
     if (!err.abonnes && ref.abonnes <= 0) err.abonnes = 'Il faut au moins un abonné.';
+    if (!err.usagePct && ref.usagePct > 100) err.usagePct = 'Un pourcentage, entre 0 et 100.';
     var fin = String((($('#bsx-accesFin') || {}).value) || '');
     if (fin && !dateOk(fin)) err.accesFin = 'Choisissez une date valide.';
     ref.accesFin = err.accesFin ? init.accesFin : fin;
@@ -394,7 +397,7 @@
     var kv = function (l) { return l.map(function (x) { return '<div' + (x[2] ? ' class="hl"' : '') + '><b>' + x[0] + '</b><span>' + x[1] + '</span></div>'; }).join(''); };
     $('#bsx-kv-sp').innerHTML = kv([[int(m.membres), 'utilisateurs inscrits'], [int(m.mer), 'mises en relation']]);
     $('#bsx-acces').textContent = m.accesFin ? 'jusqu\'au ' + window.BilanDoc.jourTxt(m.accesFin) : '';
-    $('#bsx-kv-sl').innerHTML = kv([[int(m.beneficiaires), 'bénéficiaires'], [int(m.abonnes), 'abonnés en cours'], [eur(m.ecoMois), 'économisés par mois', true], [eur(m.parAbonneMois, 2), 'par abonné et par mois', true]]);
+    $('#bsx-kv-sl').innerHTML = kv([[int(m.beneficiaires), 'bénéficiaires'], [int(m.abonnes), 'abonnés en cours'], [m.usagePct + ' %', 'cagnotte utilisée' + (m.cagnotteMoyenne > 0 ? ' (' + eur(m.cagnotteMoyenne) + ' en moy.)' : '')], [eur(m.ecoMois), 'économisés par mois', true], [eur(m.parAbonneMois, 2), 'par abonné et par mois', true]]);
     $('#bsx-titre').textContent = 'Bilan du partenariat · ' + m.nom;
   }
 
