@@ -106,6 +106,8 @@
       contrat: null,
       prix: prix,
       mer: +(r.superprof && r.superprof.mises_en_relation) || 0,
+      usagePct: +u.montant_credite > 0 ? Math.round(100 * (+u.cagnotte_utilisee || 0) / +u.montant_credite) : 0,
+      cagnotteMoyenne: +u.beneficiaires > 0 ? Math.round((+u.cagnotte_utilisee || 0) / +u.beneficiaires) : 0,
       thematiques: r.superprof && Array.isArray(r.superprof.top_sujets) ? r.superprof.top_sujets.slice(0, 3) : [],
       accesFin: (r.superprof && r.superprof.acces_fin) || '',
       moisDonnees: veille(last.snapshot_date).slice(0, 7)
@@ -114,7 +116,7 @@
 
   // Valeurs enregistrées pour ce CSE depuis la modale (bilan_cse_valeurs) : prioritaires sur les
   // mesures pour pré-remplir. Clé enregistrée -> champ du modèle.
-  var CLES = { inscrits_superprof: 'membres', mises_en_relation: 'mer', thematiques: 'thematiques', acces_fin: 'accesFin', contrat: 'contrat', debut: 'debut' };
+  var CLES = { inscrits_superprof: 'membres', mises_en_relation: 'mer', thematiques: 'thematiques', acces_fin: 'accesFin', contrat: 'contrat', debut: 'debut', usage_pct: 'usagePct', cagnotte_moyenne: 'cagnotteMoyenne' };
   function enregistrees(r) {
     var v = r.valeurs || {}, o = {};
     Object.keys(CLES).forEach(function (k) { if (v[k] != null) o[CLES[k]] = v[k]; }); // '' = masqué
@@ -160,6 +162,7 @@
     return {
       nom: ref.nom, debut: ref.debut, contrat: ref.contrat,
       mer: +ref.mer || 0, accesFin: ref.accesFin || '',
+      usagePct: Math.max(0, Math.min(100, +ref.usagePct || 0)), cagnotteMoyenne: Math.max(0, +ref.cagnotteMoyenne || 0),
       thematiques: (ref.thematiques || []).filter(function (x) { return String(x || '').trim(); }).slice(0, 3),
       arrete: veille(last.snapshot_date), edition: aujourdhui(),
       prixReleve: dates.length ? dates[dates.length - 1] : '',
@@ -494,14 +497,16 @@
     var items = [
       '<b>' + int(m.beneficiaires) + ' ' + acc(m.beneficiaires, 'membre', 'membres') + '</b> ' + acc(m.beneficiaires, 'a activé sa', 'ont activé leur') + ' cagnotte Spliiit, soit <b>' + pct(m.beneficiaires, m.membres) + '</b> des membres' +
         (m.adressables > 0 ? ' (' + int(m.membres) + ' ' + acc(m.membres, 'salarié', 'salariés') + ' sur ' + int(m.adressables) + ' adressables ' + acc(m.membres, 'est membre', 'sont membres') + ' Superprof, soit ' + pct(m.membres, m.adressables) + ')' : '') + ', et <b>' + int(m.abonnes) + '</b> ' + acc(m.abonnes, 'a', 'ont') + ' un abonnement en cours.',
+      m.usagePct > 0 ? '<b>' + m.usagePct + ' %</b> de la cagnotte déjà utilisée' + (m.cagnotteMoyenne > 0 ? ', soit <b>' + eur0(m.cagnotteMoyenne) + '</b> en moyenne par bénéficiaire' : '') + '.' : null,
       m.ecoMois > 0 ? (m.contrat > 0 ? 'Grâce à la cagnotte du CSE' + (m.cagnCitee ? ' (' + montant(m.contrat) + ' par abonné et par an)' : '') + ', vos' : 'Vos') + ' salariés économisent <b>' + eur0(m.ecoMois) + ' par mois</b> au prix public, soit <b>' + eur0(m.ecoAn) + ' sur un an</b> et <b>' + eur2(m.parAbonneMois) + '</b> par abonné et par mois.' : null,
       m.abonnes > 0 ? '<b>' + dec1(m.abosParAbonne) + ' ' + acc1(m.abosParAbonne, 'abonnement en cours', 'abonnements en cours') + '</b> en moyenne par abonné' + (top ? ', ' + esc(top) + ' en tête' : '') + '.' : null
     ].filter(Boolean);
     return '<section class="page">' + sourcil("Spliiit · L'essentiel") +
       '<h2 class="h-page">Une cagnotte <em>adoptée</em> par vos salariés</h2>' +
       '<p class="lead">Chiffres clés du partenariat Spliiit ' + esc(duNom(m.nom)) + ". Spliiit permet aux salariés de s'abonner à leurs services préférés (streaming, musique, sport, langues) en utilisant la cagnotte offerte par le CSE.</p>" +
-      '<div class="kpis k5">' +
+      '<div class="kpis' + (m.usagePct > 0 ? '' : ' k5') + '">' +
         kpi(int(m.beneficiaires), acc(m.beneficiaires, 'bénéficiaire', 'bénéficiaires') + ' Spliiit', pct(m.beneficiaires, m.membres) + ' des membres ont activé leur cagnotte', true) +
+        (m.usagePct > 0 ? kpi(m.usagePct + '<small> %</small>', 'de la cagnotte utilisée', m.cagnotteMoyenne > 0 ? 'soit ' + eur0(m.cagnotteMoyenne) + ' en moyenne par bénéficiaire' : 'par les bénéficiaires') : '') +
         kpi(int(m.abonnements), acc(m.abonnements, 'abonnement en cours', 'abonnements en cours'), 'chez ' + int(m.abonnes) + ' ' + acc(m.abonnes, 'abonné', 'abonnés')) +
         kpi(dec1(m.abosParAbonne), acc1(m.abosParAbonne, 'abonnement en cours', 'abonnements en cours') + ' par abonné', 'en moyenne') +
         (m.lignes.length ? kpi(fx(nf2.format(m.parAbonneMois)) + '<small> €</small>', 'économisés par abonné et par mois', 'au prix public, soit ' + eur0(m.parAbonneAn) + ' sur un an', false, true)
@@ -614,6 +619,7 @@
       '<dt>Utilisateurs inscrits (membres Superprof)</dt><dd>Salariés ayant activé leur compte Superprof dans l\'espace du CSE' + (m.adressables > 0 ? ', rapportés aux ' + int(m.adressables) + ' salariés adressables prévus par l\'offre' : '') + '.</dd>' +
       '<dt>Mises en relation</dt><dd>Demandes de cours envoyées par les salariés à un professeur Superprof depuis le début du partenariat.</dd>' +
       '<dt>Bénéficiaires</dt><dd>Salariés ayant activé leur cagnotte sur Spliiit.</dd>' +
+      (m.usagePct > 0 ? '<dt>Cagnotte utilisée</dt><dd>Part de la cagnotte versée aux bénéficiaires déjà dépensée sur Spliiit, et montant moyen dépensé par bénéficiaire.</dd>' : '') +
       '<dt>Abonnés en cours</dt><dd>Bénéficiaires ayant au moins un abonnement actif à la date des données.</dd>' +
       '<dt>Abonnements en cours</dt><dd>Abonnements actifs des bénéficiaires à la date des données. Un abonné peut en avoir plusieurs.</dd>' +
       '<dt>Économies des salariés</dt><dd>Pour chaque service : prix public mensuel de l\'offre individuelle équivalente (en France, TTC) × abonnements en cours, soit ce que les salariés paieraient en s\'abonnant directement' + (m.contrat > 0 ? ' ; leurs abonnements sont financés par la cagnotte du CSE' + (m.cagnCitee ? ' (' + montant(m.contrat) + ' par abonné et par an)' : '') + ' utilisée sur Spliiit' : '') + '. Total corrigé des abonnements comptés deux fois par Spliiit' + (m.prixReleve ? '. Prix relevés le ' + esc(jourTxt(m.prixReleve)) : '') + '. Sur un an = mensuel × 12, à abonnements constants.</dd>' +
