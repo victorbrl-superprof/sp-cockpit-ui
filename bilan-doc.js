@@ -116,7 +116,7 @@
 
   // Valeurs enregistrées pour ce CSE depuis la modale (bilan_cse_valeurs) : prioritaires sur les
   // mesures pour pré-remplir. Clé enregistrée -> champ du modèle.
-  var CLES = { inscrits_superprof: 'membres', mises_en_relation: 'mer', thematiques: 'thematiques', acces_fin: 'accesFin', contrat: 'contrat', debut: 'debut', usage_pct: 'usagePct', cagnotte_moyenne: 'cagnotteMoyenne' };
+  var CLES = { inscrits_superprof: 'membres', mises_en_relation: 'mer', thematiques: 'thematiques', acces_fin: 'accesFin', contrat: 'contrat', debut: 'debut', usage_pct: 'usagePct', cagnotte_moyenne: 'cagnotteMoyenne', base_adressable: 'adressables' };
   function enregistrees(r) {
     var v = r.valeurs || {}, o = {};
     Object.keys(CLES).forEach(function (k) { if (v[k] != null) o[CLES[k]] = v[k]; }); // '' = masqué
