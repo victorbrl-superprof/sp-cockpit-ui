@@ -8,7 +8,7 @@
 (function () {
   'use strict';
   var API = 'https://yhtxrjegdeuwkcjvkfkt.supabase.co/functions/v1/cse-spliit-report';
-  var VERSION = '12';
+  var VERSION = '14';
   var LIBS = {
     jspdf: { src: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', sri: 'sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk' },
     html2canvas: { src: 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', sri: 'sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H' }
@@ -17,6 +17,7 @@
   var ICONE = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" aria-hidden="true"><path d="M6 21H18M12 3V17M7 12L12 17L17 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   var ICO_SP = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M12 3L2 8.5L12 14L22 8.5L12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M6 11V16C6 16 8.5 18.5 12 18.5C15.5 18.5 18 16 18 16V11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
   var ICO_SL = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" stroke-width="2"/><path d="M3 10H21" stroke="currentColor" stroke-width="2"/><path d="M7 15H11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  var ICO_MAIL = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M4 7L12 13L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   var ICO_OK = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" aria-hidden="true"><path d="M5 12.5L10 17.5L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
   var CSS = [
@@ -93,6 +94,10 @@
     '.bsx-pret-a{display:flex;flex-wrap:wrap;gap:8px;align-items:center}',
     '.bsx-pret-a a{text-decoration:none}',
     '.bsx-lienpdf{width:100%;font-family:inherit;font-size:11px;color:var(--slate-600,#475569);background:#fff;border:1px solid var(--slate-200,#e2e8f0);border-radius:8px;padding:6px 8px}',
+    '.bsx-envoi{display:flex;flex-wrap:wrap;gap:8px;align-items:center}',
+    '.bsx-envoi input{flex:1 1 220px;min-width:0;font-family:inherit;font-size:12.5px;color:var(--slate-800,#1e293b);background:#fff;border:1px solid var(--slate-200,#e2e8f0);border-radius:10px;padding:8px 10px}',
+    '.bsx-envoi input:focus{outline:2px solid var(--indigo,#6366f1);outline-offset:1px}',
+    'body.dark .bsx-envoi input{background:#0f172a;border-color:#334155;color:#e2e8f0}',
     'body.dark .bsx-pret{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.35)}',
     'body.dark .bsx-pret-t{color:#6ee7b7}',
     'body.dark .bsx-lienpdf{background:#0f172a;border-color:#334155;color:#cbd5e1}',
@@ -136,12 +141,14 @@
   // Champs numériques modifiables : clé du modèle, onglet, libellé, explication, où, enregistré ?
   var CHAMPS = [
     { k: 'membres', t: 'sp', l: 'Utilisateurs inscrits', d: 'Salariés qui ont <b>activé leur compte Superprof</b> dans l\'espace du CSE.', o: 'Pages 1 à 4 (base des pourcentages).', saved: true, src: 'base du cockpit' },
-    { k: 'mer', t: 'sp', l: 'Mises en relation', d: 'Demandes de cours envoyées par les salariés à un professeur, <b>depuis le début</b> du partenariat.', o: 'Pages 1 et 2 (Superprof).', saved: true, src: 'base du cockpit' },
+    { k: 'mer', t: 'sp', l: 'Mises en relation', d: 'Demandes de cours envoyées par les salariés à un professeur, <b>depuis le début</b> du partenariat. La mesure compte chaque demande ; saisissez le chiffre du back-office Superprof (<b>une par salarié et par thématique</b>) : le document en donne alors la définition.', o: 'Pages 1 et 2 (Superprof).', saved: true, src: 'base du cockpit' },
     { k: 'adressables', t: 'sl', l: 'Salariés adressables (capacité max)', d: 'Salariés <b>couverts par l\'offre</b> : capacité maximale du contrat.', o: 'Pages 2 et 3 : part des salariés inscrits.', saved: true, src: 'quota de la fiche CSE' },
     { k: 'beneficiaires', t: 'sl', l: 'Bénéficiaires Spliiit', d: 'Salariés qui ont <b>activé leur cagnotte</b> Spliiit.', o: 'Pages 1, 3 et 4.', src: 'Spliiit' },
     { k: 'abonnes', t: 'sl', l: 'Abonnés en cours', d: 'Bénéficiaires avec <b>au moins un abonnement actif</b> (« utilisateurs actifs » chez Spliiit).', o: 'Pages 1 et 3 à 5 (moyennes par abonné).', src: 'Spliiit' },
-    { k: 'usagePct', t: 'sl', l: 'Cagnotte utilisée (%)', d: 'Part de la cagnotte versée <b>déjà dépensée</b> par les bénéficiaires. Spliiit ne voit pas toujours le dernier réassort : corrigez si besoin (ex. 120 € à 75 % + 40 € à 1/6).', o: 'Page 3 (carte et point à retenir). 0 = non affiché.', saved: true, src: 'Spliiit' },
-    { k: 'cagnotteMoyenne', t: 'sl', l: 'Cagnotte utilisée en moyenne (€ par bénéficiaire)', d: 'Montant moyen <b>déjà dépensé</b> par bénéficiaire, réassorts compris.', o: 'Page 3.', saved: true, src: 'Spliiit' }
+    { k: 'usagePct', t: 'sl', l: 'Cagnotte utilisée, tous bénéficiaires (%)', d: 'Part de la cagnotte versée <b>déjà dépensée</b>. <b>Ignoré</b> dès qu\'un montant actifs ou inactifs est saisi ci-dessous.', o: 'Page 3. 0 = non affiché.', saved: true, src: 'Spliiit' },
+    { k: 'cagnotteMoyenne', t: 'sl', l: 'Cagnotte utilisée en moyenne, tous bénéficiaires (€)', d: 'Montant moyen <b>déjà dépensé</b> par bénéficiaire. <b>Ignoré</b> dès qu\'un montant actifs ou inactifs est saisi.', o: 'Page 3.', saved: true, src: 'Spliiit' },
+    { k: 'cagnotteActifs', t: 'sl', l: 'Cagnotte utilisée en moyenne : utilisateurs actifs (€)', d: 'Montant moyen <b>déjà dépensé</b> sur Spliiit par les utilisateurs <b>avec un abonnement en cours</b>, réassorts compris. Le % est calculé sur la cagnotte du CSE (onglet Document).', o: 'Page 3 (carte et point à retenir). 0 = non affiché.', saved: true, src: 'à saisir' },
+    { k: 'cagnotteInactifs', t: 'sl', l: 'Cagnotte utilisée en moyenne : utilisateurs inactifs (€)', d: 'Montant moyen <b>déjà dépensé</b> par les utilisateurs <b>ayant arrêté leur abonnement</b>.', o: 'Page 3 (point à retenir). 0 = non affiché.', saved: true, src: 'à saisir' }
   ];
   var ONGLETS = [{ id: 'sp', l: 'Superprof' }, { id: 'sl', l: 'Spliiit' }, { id: 'px', l: 'Prix' }, { id: 'dc', l: 'Document' }];
 
@@ -207,12 +214,13 @@
       if (a === 'fermer') fermer();
       if (a === 'generer') generer();
       if (a === 'local' && dernierPdf) telecharger(dernierPdf);
-      if (a === 'copier' && dernierPdf && dernierPdf.lien) copier(dernierPdf.lien);
+      if (a === 'envoyer' && dernierPdf) envoyer();
       if (a === 'prix-reset') reinitPrix();
     });
     // Les contrôles croisés (inscrits ≥ bénéficiaires ≥ abonnés…) dépendent de plusieurs champs :
     // toute saisie efface les messages, revérifiés à la génération.
-    el.addEventListener('input', function () {
+    el.addEventListener('input', function (e) {
+      if (e.target && e.target.id === 'bsx-email') { e.target.setAttribute('aria-invalid', 'false'); return; }
       [].forEach.call(el.querySelectorAll('.bsx-f.err'), function (f) { erreur(f.getAttribute('data-k'), ''); });
       if (!enCours) statut('');
       maj();
@@ -221,6 +229,7 @@
     document.addEventListener('keydown', function (e) {
       if (!el || el.hidden) return;
       if (e.key === 'Escape') { e.preventDefault(); fermer(); return; }
+      if (e.key === 'Enter' && e.target && e.target.id === 'bsx-email') { e.preventDefault(); envoyer(); return; }
       if (e.key === 'Enter' && e.target && e.target.tagName === 'INPUT' && el.contains(e.target)) { e.preventDefault(); generer(); return; }
       if (e.key !== 'Tab') return;
       var f = [].slice.call(el.querySelectorAll('button:not([disabled]),input:not([readonly]),a[href]')).filter(function (x) { return x.offsetParent !== null; });
@@ -255,7 +264,7 @@
     return '<div class="bsx-f" data-k="' + c.k + '"><label for="bsx-' + c.k + '">' + c.l + '</label>' +
       '<input id="bsx-' + c.k + '" name="' + c.k + '" type="number" min="0" step="1" inputmode="numeric" value="' + esc(val) + '">' +
       '<div class="bsx-d">' + c.d + ' <b>Où :</b> ' + c.o + '</div>' +
-      meta(c.k, 'Mesuré : ' + int(mesure[c.k]) + ' (' + c.src + ')', c.saved && enregistre(c.k)) +
+      meta(c.k, c.src === 'à saisir' ? 'Non transmis par Spliiit : à saisir' : 'Mesuré : ' + int(mesure[c.k]) + ' (' + c.src + ')', c.saved && enregistre(c.k)) +
       '<div class="bsx-e" role="alert"></div></div>';
   }
 
@@ -276,7 +285,7 @@
         '<td>' + (/^https:\/\//.test(i.source || '') ? '<a href="' + esc(i.source) + '" target="_blank" rel="noopener noreferrer">source</a>' : '') + '</td></tr>';
     }).join('');
     var th = [0, 1, 2].map(function (i) {
-      return '<div><span>' + (i + 1) + '</span><input id="bsx-th' + i + '" name="th' + i + '" type="text" maxlength="120" autocomplete="off" value="' + esc((v.thematiques || [])[i] || '') + '" placeholder="Ex. Musique - Piano, Batterie" aria-label="Thématique ' + (i + 1) + '"></div>';
+      return '<div><span>' + (i + 1) + '</span><input id="bsx-th' + i + '" name="th' + i + '" type="text" maxlength="160" autocomplete="off" value="' + esc((v.thematiques || [])[i] || '') + '" placeholder="Ex. Académique - Maths, Français | Principalement lycée" aria-label="Thématique ' + (i + 1) + '"></div>';
     }).join('');
     var parOnglet = function (t) { return CHAMPS.filter(function (c) { return c.t === t; }).map(function (c) { return champ(c, v[c.k]); }).join(''); };
     $('.bsx-scroll').innerHTML =
@@ -292,7 +301,7 @@
         '<div class="bsx-intro">Chiffres de la page Superprof (page 2). Ils sont <b>enregistrés pour ce CSE</b> et repris au prochain export.</div>' +
         '<div class="bsx-grp">' + parOnglet('sp') +
           '<div class="bsx-f" data-k="accesFin"><label for="bsx-accesFin">Accès Superprof + Spliiit jusqu\'au</label><input id="bsx-accesFin" name="accesFin" type="date" value="' + esc(v.accesFin) + '"><div class="bsx-d"><b>Où :</b> page 2. Laissez vide pour ne pas l\'afficher.</div>' + meta('accesFin', 'Fiche CSE : ' + (mesure.accesFin ? esc(window.BilanDoc.jourTxt(mesure.accesFin)) : 'non renseignée'), enregistre('accesFin')) + '<div class="bsx-e" role="alert"></div></div>' +
-          '<div class="bsx-f full" data-k="thematiques"><label>Top 3 des thématiques demandées</label><div class="bsx-th">' + th + '</div><div class="bsx-d">Une thématique par ligne, au format « Catégorie - détail » (la catégorie s\'affiche en gras). <b>Où :</b> page 2.</div>' +
+          '<div class="bsx-f full" data-k="thematiques"><label>Top 3 des thématiques demandées</label><div class="bsx-th">' + th + '</div><div class="bsx-d">Une thématique par ligne, au format « Catégorie - détail, détail » (la catégorie s\'affiche en gras). Ajoutez « | précision » pour une ligne sous les étiquettes (ex. « | Principalement lycée et études supérieures »). <b>Où :</b> page 2.</div>' +
             meta('thematiques', 'Mesuré : ' + esc((mesure.thematiques || []).join(', ') || 'aucun sujet'), enregistre('thematiques')) + '<div class="bsx-e" role="alert"></div></div>' +
         '</div></div>' +
       '<div class="bsx-panel" data-panel="sl" role="tabpanel" hidden>' +
@@ -342,6 +351,7 @@
       if (!isFinite(n) || n < 0 || Math.floor(n) !== n || n > 1000000) { err[c.k] = 'Saisissez un nombre entier positif.'; ref[c.k] = init[c.k]; return; }
       ref[c.k] = n;
     });
+    ref.merSaisie = ref.mer !== mesure.mer;
     if (!err.membres && ref.membres <= 0) err.membres = 'Il faut au moins un inscrit.';
     if (!err.adressables && !err.membres && ref.adressables > 0 && ref.membres > ref.adressables) err.adressables = 'Doit être au moins égal aux inscrits (' + int(ref.membres) + ').';
     if (!err.beneficiaires && !err.membres && ref.beneficiaires > ref.membres) err.beneficiaires = 'Ne peut pas dépasser les inscrits Superprof (' + int(ref.membres) + ').';
@@ -352,11 +362,14 @@
     var fin = String((($('#bsx-accesFin') || {}).value) || '');
     if (fin && !dateOk(fin)) err.accesFin = 'Choisissez une date valide.';
     ref.accesFin = err.accesFin ? init.accesFin : fin;
-    ref.thematiques = [0, 1, 2].map(function (i) { var x = $('#bsx-th' + i); return x ? String(x.value || '').replace(/\s+/g, ' ').trim().slice(0, 120) : ''; }).filter(Boolean);
+    ref.thematiques = [0, 1, 2].map(function (i) { var x = $('#bsx-th' + i); return x ? String(x.value || '').replace(/\s+/g, ' ').trim().slice(0, 160) : ''; }).filter(Boolean);
     var ci = $('#bsx-contrat'), c = String((ci && ci.value) || '').trim().replace(',', '.');
     ref.contrat = null;
     if (ci && ci.validity && ci.validity.badInput) err.contrat = 'Saisissez un montant en chiffres (ex. 160), ou laissez vide.';
     else if (c !== '') { var n = Number(c); if (!isFinite(n) || n <= 0 || n > 100000) err.contrat = 'Saisissez un montant positif, ou laissez vide.'; else ref.contrat = Math.round(n * 100) / 100; }
+    ['cagnotteActifs', 'cagnotteInactifs'].forEach(function (k) {
+      if (!err[k] && ref.contrat > 0 && ref[k] > ref.contrat) err[k] = 'Ne peut pas dépasser la cagnotte du CSE (' + eur(ref.contrat, ref.contrat % 1 ? 2 : 0) + ').';
+    });
     var d = String((($('#bsx-debut') || {}).value) || '');
     if (d && !MOIS_OK.test(d)) err.debut = 'Choisissez un mois valide.';
     else if (d && mesure.moisDonnees && d > mesure.moisDonnees) err.debut = 'Doit précéder le mois des données (' + window.BilanDoc.moisTxt(mesure.moisDonnees) + ').';
@@ -397,8 +410,15 @@
     var kv = function (l) { return l.map(function (x) { return '<div' + (x[2] ? ' class="hl"' : '') + '><b>' + x[0] + '</b><span>' + x[1] + '</span></div>'; }).join(''); };
     $('#bsx-kv-sp').innerHTML = kv([[int(m.membres), 'utilisateurs inscrits'], [int(m.mer), 'mises en relation']]);
     $('#bsx-acces').textContent = m.accesFin ? 'jusqu\'au ' + window.BilanDoc.jourTxt(m.accesFin) : '';
-    $('#bsx-kv-sl').innerHTML = kv([[int(m.beneficiaires), 'bénéficiaires'], [int(m.abonnes), 'abonnés en cours'], [m.usagePct + ' %', 'cagnotte utilisée' + (m.cagnotteMoyenne > 0 ? ' (' + eur(m.cagnotteMoyenne) + ' en moy.)' : '')], [eur(m.ecoMois), 'économisés par mois', true], [eur(m.parAbonneMois, 2), 'par abonné et par mois', true]]);
+    $('#bsx-kv-sl').innerHTML = kv([[int(m.beneficiaires), 'bénéficiaires'], [int(m.abonnes), 'abonnés en cours'], kvCagnotte(m), [eur(m.ecoMois), 'économisés par mois', true], [eur(m.parAbonneMois, 2), 'par abonné et par mois', true]]);
     $('#bsx-titre').textContent = 'Bilan du partenariat · ' + m.nom;
+  }
+
+  function kvCagnotte(m) {
+    var part = function (v, p) { return m.contrat > 0 ? p + ' %' : eur(v); };
+    if (m.cagnotteActifs > 0) return [part(m.cagnotteActifs, m.pctActifs), 'cagnotte utilisée (actifs)' + (m.cagnotteInactifs > 0 ? ' · inactifs ' + part(m.cagnotteInactifs, m.pctInactifs) : '')];
+    if (m.cagnotteInactifs > 0) return [part(m.cagnotteInactifs, m.pctInactifs), 'cagnotte utilisée (inactifs)'];
+    return [m.usagePct + ' %', 'cagnotte utilisée' + (m.cagnotteMoyenne > 0 ? ' (' + eur(m.cagnotteMoyenne) + ' en moy.)' : '')];
   }
 
   function valider() {
@@ -416,7 +436,7 @@
 
   // Valeurs à garder pour ce CSE : null = revenir à la mesure (efface la valeur enregistrée).
   function aEnregistrer(ref) {
-    var cles = window.BilanDoc.CLES, out = {}, n = 0;
+    var cles = window.BilanDoc.CLES_TOUTES || window.BilanDoc.CLES, out = {}, n = 0;
     Object.keys(cles).forEach(function (k) {
       var champ = cles[k], v = ref[champ], m = mesure[champ];
       if (champ === 'thematiques') m = (m || []).filter(Boolean);
@@ -492,42 +512,59 @@
     var nom = String(m.nom || 'CSE').replace(/[\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80);
     return 'Bilan partenariat Superprof Spliiit - ' + nom + ' - ' + m.arrete.slice(0, 7) + '.pdf';
   }
-  // Copie du lien : presse-papiers si la page hôte l'autorise, sinon champ sélectionné à copier.
-  function copier(lien) {
-    var champ = $('.bsx-lienpdf');
-    var montrer = function () { if (champ) { champ.hidden = false; champ.focus(); champ.select(); } };
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(lien).then(function () {
-          var b = $('[data-bsx="copier"]'); if (b) b.textContent = 'Lien copié';
-        }, montrer);
-        return;
-      }
-    } catch (_) { /* refusé par la page hôte */ }
-    montrer();
-  }
-  // Le PDF est rangé côté serveur : lien signé d'une heure (téléchargement / affichage).
+  // Le PDF est rangé côté serveur (dernier exemplaire par CSE) : c'est lui qui part par email.
   function deposer(blob, nom) {
     var qs = ctx.cseId ? 'cse_id=' + encodeURIComponent(ctx.cseId) : 'hubspot_company_id=' + encodeURIComponent(ctx.hubspotId);
     return avecDelai(fetch(API + '?' + qs + '&pdf=1&nom=' + encodeURIComponent(nom), {
       method: 'POST', headers: { Authorization: 'Bearer ' + ctx.token, 'Content-Type': 'application/pdf' }, body: blob
     }).then(function (r) { return r.json().then(function (j) { if (!r.ok || !j.ok) throw new Error('depot'); return j; }); }), 60000);
   }
+  // Adresse d'envoi retenue d'un export à l'autre (navigateur seulement ; jamais bloquant).
+  var CLE_EMAIL = 'bilan-export-email';
+  function emailRetenu() { try { return window.localStorage.getItem(CLE_EMAIL) || ''; } catch (_) { return ''; } }
+  function retenirEmail(v) { try { window.localStorage.setItem(CLE_EMAIL, v); } catch (_) { /* stockage indisponible */ } }
+  var EMAIL_OK = /^[a-z0-9._%+-]+@superprof\.com$/i;
   function panneauPret(pdf) {
     var ko = Math.max(1, Math.round(pdf.taille / 1024));
     var taille = ko >= 1024 ? (Math.round(ko / 102.4) / 10).toString().replace('.', ',') + ' Mo' : ko + ' Ko';
+    // UN seul bouton. Dans la modale HubSpot, téléchargement, nouvel onglet et presse-papiers sont
+    // bloqués : le PDF part en pièce jointe dans la boîte de l'utilisateur, prêt à transférer au CSE.
     statut('<div class="bsx-pret"><div class="bsx-pret-t">' + ICO_OK + 'PDF prêt</div>' +
-      '<div class="bsx-pret-n">' + esc(pdf.nom) + ' · ' + taille + (pdf.lien ? ' · lien valable 1 heure' : '') + '</div>' +
-      '<div class="bsx-pret-a">' +
-        (pdf.lien
-          ? '<a class="bsx-btn bsx-primary" href="' + esc(pdf.lien) + '" target="_blank" rel="noopener noreferrer">' + ICONE + 'Télécharger le PDF</a>' +
-            '<a class="bsx-btn bsx-light" href="' + esc(pdf.voir) + '" target="_blank" rel="noopener noreferrer">Ouvrir</a>' +
-            '<button type="button" class="bsx-btn bsx-light" data-bsx="copier">Copier le lien</button>'
-          : '<button type="button" class="bsx-btn bsx-primary" data-bsx="local">' + ICONE + 'Télécharger le PDF</button>') +
-      '</div>' +
-      (pdf.lien ? '<input class="bsx-lienpdf" type="text" readonly hidden value="' + esc(pdf.lien) + '" aria-label="Lien du PDF">' : '<div class="bsx-pret-n">Le PDF n\'a pas pu être enregistré sur le serveur ; téléchargement direct seulement.</div>') +
+      '<div class="bsx-pret-n">' + esc(pdf.nom) + ' · ' + taille + '</div>' +
+      (pdf.enregistre
+        ? '<div class="bsx-envoi"><input id="bsx-email" type="email" autocomplete="email" inputmode="email" placeholder="prenom.nom@superprof.com" value="' + esc(emailRetenu()) + '" aria-label="Votre adresse email Superprof">' +
+            '<button type="button" class="bsx-btn bsx-primary" data-bsx="envoyer">' + ICO_MAIL + 'M\'envoyer le PDF par email</button></div>' +
+          '<div class="bsx-pret-n" id="bsx-envoi-msg">Le PDF arrive en pièce jointe : il suffit de le transférer au CSE.</div>'
+        : '<div class="bsx-pret-a"><button type="button" class="bsx-btn bsx-primary" data-bsx="local">' + ICONE + 'Télécharger le PDF</button></div>' +
+          '<div class="bsx-pret-n">Le PDF n\'a pas pu être enregistré sur le serveur : téléchargement direct seulement (hors HubSpot).</div>') +
       (pdf.nonSauve ? '<div class="bsx-pret-n">Les chiffres saisis n\'ont pas pu être enregistrés pour ce CSE.</div>' : '') +
       '</div>');
+  }
+  function envoyer() {
+    var champ = $('#bsx-email'), msg = $('#bsx-envoi-msg'), bouton = $('[data-bsx="envoyer"]');
+    if (!champ || !bouton || bouton.disabled || !dernierPdf) return;
+    var email = String(champ.value || '').trim().toLowerCase();
+    if (!EMAIL_OK.test(email)) {
+      msg.textContent = 'Saisissez votre adresse @superprof.com.';
+      champ.setAttribute('aria-invalid', 'true'); champ.focus();
+      return;
+    }
+    champ.setAttribute('aria-invalid', 'false');
+    retenirEmail(email);
+    bouton.disabled = true;
+    msg.textContent = 'Envoi en cours…';
+    var qs = ctx.cseId ? 'cse_id=' + encodeURIComponent(ctx.cseId) : 'hubspot_company_id=' + encodeURIComponent(ctx.hubspotId);
+    avecDelai(fetch(API + '?' + qs + '&envoyer=1&nom=' + encodeURIComponent(dernierPdf.nom), {
+      method: 'POST', headers: { Authorization: 'Bearer ' + ctx.token, 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email })
+    }).then(function (r) { return r.json().then(function (j) { if (!r.ok || !j.ok) throw new Error(r.status === 429 ? (j && j.limite === 'email' ? 'limite-jour' : 'limite') : 'envoi'); return j; }); }), 45000)
+      .then(function () {
+        msg.innerHTML = ICO_OK + ' Envoyé à <b>' + esc(email) + '</b> : vérifiez votre boîte (et les indésirables).';
+        bouton.lastChild.textContent = 'Renvoyer';
+      }, function (e) {
+        msg.textContent = e && e.message === 'limite-jour' ? 'Trop d\'envois vers cette adresse aujourd\'hui : réessayez demain.'
+          : e && e.message === 'limite' ? 'Trop d\'envois pour ce bilan : réessayez dans une heure.' : 'L\'envoi a échoué. Réessayez dans un instant.';
+      })
+      .then(function () { bouton.disabled = false; });
   }
   function telecharger(pdf) {
     var a = document.createElement('a');
@@ -615,12 +652,14 @@
             dernierPdf = { url: URL.createObjectURL(blob), nom: nomFichier(o.m), taille: blob.size, nonSauve: !sauve };
             if (annule) return;
             statut('Envoi du PDF…', 0.97);
-            return deposer(blob, dernierPdf.nom).then(function (j) {
-              dernierPdf.lien = j.telecharger; dernierPdf.voir = j.ouvrir;
-            }, function () { /* lien serveur indisponible : téléchargement direct proposé */ }).then(function () {
+            return deposer(blob, dernierPdf.nom).then(function () {
+              dernierPdf.enregistre = true;
+            }, function () { /* PDF non enregistré côté serveur : téléchargement direct proposé */ }).then(function () {
               if (annule) return;
               panneauPret(dernierPdf);
-              var b = el.querySelector('.bsx-pret-a .bsx-primary'); if (b) b.focus();
+              var champ = $('#bsx-email');
+              var b = champ && !champ.value ? champ : el.querySelector('.bsx-pret .bsx-primary');
+              if (b) b.focus();
             });
           });
         });
