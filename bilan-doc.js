@@ -108,6 +108,9 @@
       mer: +(r.superprof && r.superprof.mises_en_relation) || 0,
       usagePct: +u.montant_credite > 0 ? Math.round(100 * (+u.cagnotte_utilisee || 0) / +u.montant_credite) : 0,
       cagnotteMoyenne: +u.beneficiaires > 0 ? Math.round((+u.cagnotte_utilisee || 0) / +u.beneficiaires) : 0,
+      // Montant moyen déjà dépensé par utilisateur actif / inactif : saisi (Spliiit ne le transmet pas).
+      cagnotteActifs: 0,
+      cagnotteInactifs: 0,
       thematiques: r.superprof && Array.isArray(r.superprof.top_sujets) ? r.superprof.top_sujets.slice(0, 3) : [],
       accesFin: (r.superprof && r.superprof.acces_fin) || '',
       moisDonnees: veille(last.snapshot_date).slice(0, 7)
@@ -117,9 +120,11 @@
   // Valeurs enregistrées pour ce CSE depuis la modale (bilan_cse_valeurs) : prioritaires sur les
   // mesures pour pré-remplir. Clé enregistrée -> champ du modèle.
   var CLES = { inscrits_superprof: 'membres', mises_en_relation: 'mer', thematiques: 'thematiques', acces_fin: 'accesFin', contrat: 'contrat', debut: 'debut', usage_pct: 'usagePct', cagnotte_moyenne: 'cagnotteMoyenne', base_adressable: 'adressables' };
+  var CLES_TOUTES = { cagnotte_actifs: 'cagnotteActifs', cagnotte_inactifs: 'cagnotteInactifs' };
+  Object.keys(CLES).forEach(function (k) { CLES_TOUTES[k] = CLES[k]; });
   function enregistrees(r) {
     var v = r.valeurs || {}, o = {};
-    Object.keys(CLES).forEach(function (k) { if (v[k] != null) o[CLES[k]] = v[k]; }); // '' = masqué
+    Object.keys(CLES_TOUTES).forEach(function (k) { if (v[k] != null) o[CLES_TOUTES[k]] = v[k]; }); // '' = masqué
     return o;
   }
   function initiales(r) {
@@ -162,7 +167,14 @@
     return {
       nom: ref.nom, debut: ref.debut, contrat: ref.contrat,
       mer: +ref.mer || 0, accesFin: ref.accesFin || '',
+      // Chiffre de mises en relation saisi (back-office Superprof, dédoublonné) ou mesuré (brut).
+      merSaisie: ref.merSaisie != null ? Boolean(ref.merSaisie) : (+ref.mer || 0) !== (+(r.superprof && r.superprof.mises_en_relation) || 0),
       usagePct: Math.max(0, Math.min(100, +ref.usagePct || 0)), cagnotteMoyenne: Math.max(0, +ref.cagnotteMoyenne || 0),
+      // Cagnotte utilisée par les utilisateurs actifs / inactifs : montant moyen et part de la
+      // cagnotte du CSE (contrat). Quand l'un est saisi, il remplace le taux global ci-dessus.
+      cagnotteActifs: Math.max(0, +ref.cagnotteActifs || 0), cagnotteInactifs: Math.max(0, +ref.cagnotteInactifs || 0),
+      pctActifs: ref.contrat > 0 ? Math.max(0, Math.min(100, Math.round(100 * (+ref.cagnotteActifs || 0) / ref.contrat))) : 0,
+      pctInactifs: ref.contrat > 0 ? Math.max(0, Math.min(100, Math.round(100 * (+ref.cagnotteInactifs || 0) / ref.contrat))) : 0,
       thematiques: (ref.thematiques || []).filter(function (x) { return String(x || '').trim(); }).slice(0, 3),
       arrete: veille(last.snapshot_date), edition: aujourdhui(),
       prixReleve: dates.length ? dates[dates.length - 1] : '',
@@ -374,6 +386,7 @@
       '.th-nom{position:relative;font:800 17pt/1.15 var(--display);letter-spacing:-.015em;margin-top:20mm}',
       '.th-tags{position:relative;display:flex;flex-wrap:wrap;gap:1.6mm;margin-top:4mm}',
       '.tag{display:inline-block;font-size:8.6pt;font-weight:600;background:#fff;border:1px solid var(--line);border-radius:999px;padding:1.2mm 2.8mm}',
+      '.th-prec{position:relative;margin-top:3.5mm;font-size:9.4pt;font-weight:600;line-height:1.35;color:var(--ink-soft)}',
       '.offre{margin-top:7mm;border-radius:18px;border:1.5px solid var(--line);padding:6mm;background:var(--cream)}',
       '.offre.sp{border-color:var(--coral);background:#fff}',
       '.offre-h{display:flex;align-items:center;gap:3mm;margin-bottom:5mm}',
@@ -468,10 +481,14 @@
   function pSuperprof(m, a, n) {
     var part = m.adressables > 0 ? Math.min(100, 100 * m.membres / m.adressables) : 0;
     var themes = m.thematiques.map(function (x, i) {
-      var p = String(x).split(/\s+-\s+/);
+      // « Catégorie - détail, détail | précision » : la précision (niveau, public…) s'affiche sous les étiquettes.
+      var morceaux = String(x).split(/\s*\|\s*/);
+      var precision = morceaux.slice(1).join(' · ').trim();
+      var p = morceaux[0].split(/\s+-\s+/);
       var tete = p.shift(), suite = p.join(' - ');
       var tags = suite ? suite.split(/\s*,\s*/).filter(Boolean).map(function (s) { return '<span class="tag">' + esc(s) + '</span>'; }).join('') : '';
-      return '<div class="th-card"><span class="th-rang">' + (i + 1) + '</span><div class="th-nom">' + esc(tete) + '</div>' + (tags ? '<div class="th-tags">' + tags + '</div>' : '') + '</div>';
+      return '<div class="th-card"><span class="th-rang">' + (i + 1) + '</span><div class="th-nom">' + esc(tete) + '</div>' + (tags ? '<div class="th-tags">' + tags + '</div>' : '') +
+        (precision ? '<div class="th-prec">' + esc(precision.charAt(0).toUpperCase() + precision.slice(1)) + '</div>' : '') + '</div>';
     }).join('');
     return '<section class="page">' + sourcil('Superprof · Cours particuliers') +
       '<h2 class="h-page">Superprof pour vos <em>salariés</em></h2>' +
@@ -482,7 +499,7 @@
         '</div>' +
         (m.mer > 0 ? '<div class="sp-sep"></div>' +
         '<div class="sp-chiffre"><div class="sp-v num ink">' + int(m.mer) + '</div><div class="sp-l">' + acc(m.mer, 'mise en relation', 'mises en relation') + ' avec un professeur</div>' +
-          '<div class="sp-s">Demandes de cours envoyées par vos salariés à un professeur Superprof depuis le début du partenariat.</div>' +
+          '<div class="sp-s">Demandes de cours envoyées par vos salariés à un professeur Superprof depuis le début du partenariat.' + (m.merSaisie ? ' Plusieurs demandes d\'un même salarié sur une même thématique comptent pour une seule mise en relation.' : '') + '</div>' +
         '</div>' : '') +
       '</div>' +
       (themes ? '<div class="section-title" style="margin-top:22mm">Top ' + m.thematiques.length + ' des thématiques <em class="acc">demandées</em></div><div class="th-grid" style="grid-template-columns:repeat(' + m.thematiques.length + ',1fr)">' + themes + '</div>' : '') +
@@ -492,21 +509,47 @@
   function kpi(v, l, s, accent, eco) {
     return '<div class="kpi' + (accent ? ' accent' : '') + (eco ? ' eco' : '') + '"><div class="kv num">' + v + '</div><div class="kl">' + l + '</div><div class="ks">' + s + '</div></div>';
   }
+  // Cagnotte utilisée : par utilisateur actif / inactif quand c'est saisi, sinon le taux global.
+  function cagnotteSaisie(m) { return m.cagnotteActifs > 0 || m.cagnotteInactifs > 0; }
+  function surCagnotte(v, p, m) {
+    return '<b>' + eur0(v) + '</b>' + (m.contrat > 0 ? ' sur ' + montant(m.contrat) + ' déjà ' + acc(v, 'utilisé', 'utilisés') + ' en moyenne, soit <b>' + p + '\u00a0%</b> de la cagnotte' : ' déjà ' + acc(v, 'utilisé', 'utilisés') + ' en moyenne');
+  }
+  function pointCagnotte(m) {
+    if (cagnotteSaisie(m)) {
+      return [
+        m.cagnotteActifs > 0 ? 'Utilisateurs Spliiit actifs : ' + surCagnotte(m.cagnotteActifs, m.pctActifs, m) + '.' : '',
+        m.cagnotteInactifs > 0 ? 'Utilisateurs inactifs (abonnement arrêté) : ' + surCagnotte(m.cagnotteInactifs, m.pctInactifs, m) + '.' : ''
+      ].filter(Boolean).join(' ');
+    }
+    return m.usagePct > 0 ? '<b>' + m.usagePct + ' %</b> de la cagnotte déjà utilisée' + (m.cagnotteMoyenne > 0 ? ', soit <b>' + eur0(m.cagnotteMoyenne) + '</b> en moyenne par bénéficiaire' : '') + '.' : null;
+  }
+  function kpiCagnotte(m) {
+    if (cagnotteSaisie(m)) {
+      var actif = m.cagnotteActifs > 0;
+      var v = actif ? m.cagnotteActifs : m.cagnotteInactifs, p = actif ? m.pctActifs : m.pctInactifs;
+      var qui = actif ? 'utilisateurs actifs' : 'utilisateurs inactifs';
+      return m.contrat > 0
+        ? kpi(p + '<small> %</small>', 'de la cagnotte utilisée par les ' + qui, eur0(v) + ' sur ' + montant(m.contrat) + ' en moyenne')
+        : kpi(int(v) + '<small> €</small>', 'de cagnotte ' + acc(v, 'utilisé', 'utilisés') + ' en moyenne', 'par les ' + qui);
+    }
+    return m.usagePct > 0 ? kpi(m.usagePct + '<small> %</small>', 'de la cagnotte utilisée', m.cagnotteMoyenne > 0 ? 'soit ' + eur0(m.cagnotteMoyenne) + ' en moyenne par bénéficiaire' : 'par les bénéficiaires') : '';
+  }
   function pEssentiel(m, a, n) {
     var top = m.top.length >= 3 ? m.top[0] + ', ' + m.top[1] + ' et ' + m.top[2] : m.top.join(' et ');
+    var kCagnotte = kpiCagnotte(m);
     var items = [
       '<b>' + int(m.beneficiaires) + ' ' + acc(m.beneficiaires, 'membre', 'membres') + '</b> ' + acc(m.beneficiaires, 'a activé sa', 'ont activé leur') + ' cagnotte Spliiit, soit <b>' + pct(m.beneficiaires, m.membres) + '</b> des membres' +
         (m.adressables > 0 ? ' (' + int(m.membres) + ' ' + acc(m.membres, 'salarié', 'salariés') + ' sur ' + int(m.adressables) + ' adressables ' + acc(m.membres, 'est membre', 'sont membres') + ' Superprof, soit ' + pct(m.membres, m.adressables) + ')' : '') + ', et <b>' + int(m.abonnes) + '</b> ' + acc(m.abonnes, 'a', 'ont') + ' un abonnement en cours.',
-      m.usagePct > 0 ? '<b>' + m.usagePct + ' %</b> de la cagnotte déjà utilisée' + (m.cagnotteMoyenne > 0 ? ', soit <b>' + eur0(m.cagnotteMoyenne) + '</b> en moyenne par bénéficiaire' : '') + '.' : null,
+      pointCagnotte(m),
       m.ecoMois > 0 ? (m.contrat > 0 ? 'Grâce à la cagnotte du CSE' + (m.cagnCitee ? ' (' + montant(m.contrat) + ' par abonné et par an)' : '') + ', vos' : 'Vos') + ' salariés économisent <b>' + eur0(m.ecoMois) + ' par mois</b> au prix public, soit <b>' + eur0(m.ecoAn) + ' sur un an</b> et <b>' + eur2(m.parAbonneMois) + '</b> par abonné et par mois.' : null,
       m.abonnes > 0 ? '<b>' + dec1(m.abosParAbonne) + ' ' + acc1(m.abosParAbonne, 'abonnement en cours', 'abonnements en cours') + '</b> en moyenne par abonné' + (top ? ', ' + esc(top) + ' en tête' : '') + '.' : null
     ].filter(Boolean);
     return '<section class="page">' + sourcil("Spliiit · L'essentiel") +
       '<h2 class="h-page">Une cagnotte <em>adoptée</em> par vos salariés</h2>' +
       '<p class="lead">Chiffres clés du partenariat Spliiit ' + esc(duNom(m.nom)) + ". Spliiit permet aux salariés de s'abonner à leurs services préférés (streaming, musique, sport, langues) en utilisant la cagnotte offerte par le CSE.</p>" +
-      '<div class="kpis' + (m.usagePct > 0 ? '' : ' k5') + '">' +
+      '<div class="kpis' + (kCagnotte ? '' : ' k5') + '">' +
         kpi(int(m.beneficiaires), acc(m.beneficiaires, 'bénéficiaire', 'bénéficiaires') + ' Spliiit', pct(m.beneficiaires, m.membres) + ' des membres ont activé leur cagnotte', true) +
-        (m.usagePct > 0 ? kpi(m.usagePct + '<small> %</small>', 'de la cagnotte utilisée', m.cagnotteMoyenne > 0 ? 'soit ' + eur0(m.cagnotteMoyenne) + ' en moyenne par bénéficiaire' : 'par les bénéficiaires') : '') +
+        kCagnotte +
         kpi(int(m.abonnements), acc(m.abonnements, 'abonnement en cours', 'abonnements en cours'), 'chez ' + int(m.abonnes) + ' ' + acc(m.abonnes, 'abonné', 'abonnés')) +
         kpi(dec1(m.abosParAbonne), acc1(m.abosParAbonne, 'abonnement en cours', 'abonnements en cours') + ' par abonné', 'en moyenne') +
         (m.lignes.length ? kpi(fx(nf2.format(m.parAbonneMois)) + '<small> €</small>', 'économisés par abonné et par mois', 'au prix public, soit ' + eur0(m.parAbonneAn) + ' sur un an', false, true)
@@ -617,9 +660,11 @@
       '<h2 class="h-page">Comment lire ce <em>bilan</em></h2><dl class="method">' +
       '<dt>Sources des données</dt><dd>Relevés quotidiens transmis par Spliiit à Superprof, pris chaque matin : un relevé décrit l\'état de la veille au soir. Données Spliiit arrêtées au ' + esc(jourTxt(m.arrete)) + '. Chiffres Superprof à la date d\'édition.</dd>' +
       '<dt>Utilisateurs inscrits (membres Superprof)</dt><dd>Salariés ayant activé leur compte Superprof dans l\'espace du CSE' + (m.adressables > 0 ? ', rapportés aux ' + int(m.adressables) + ' salariés adressables prévus par l\'offre' : '') + '.</dd>' +
-      '<dt>Mises en relation</dt><dd>Demandes de cours envoyées par les salariés à un professeur Superprof depuis le début du partenariat.</dd>' +
+      '<dt>Mises en relation</dt><dd>Demandes de cours envoyées par les salariés à un professeur Superprof depuis le début du partenariat.' + (m.merSaisie ? ' Plusieurs demandes d\'un même salarié sur une même thématique comptent pour une seule mise en relation.' : '') + '</dd>' +
       '<dt>Bénéficiaires</dt><dd>Salariés ayant activé leur cagnotte sur Spliiit.</dd>' +
-      (m.usagePct > 0 ? '<dt>Cagnotte utilisée</dt><dd>Part de la cagnotte versée aux bénéficiaires déjà dépensée sur Spliiit, et montant moyen dépensé par bénéficiaire.</dd>' : '') +
+      (cagnotteSaisie(m)
+        ? '<dt>Cagnotte utilisée</dt><dd>Montant moyen déjà dépensé sur Spliiit par utilisateur' + (m.contrat > 0 ? ', rapporté à la cagnotte de ' + montant(m.contrat) + ' par an' : '') + '. Utilisateurs actifs : abonnement en cours ; utilisateurs inactifs : ont arrêté leur abonnement.</dd>'
+        : (m.usagePct > 0 ? '<dt>Cagnotte utilisée</dt><dd>Part de la cagnotte versée aux bénéficiaires déjà dépensée sur Spliiit, et montant moyen dépensé par bénéficiaire.</dd>' : '')) +
       '<dt>Abonnés en cours</dt><dd>Bénéficiaires ayant au moins un abonnement actif à la date des données.</dd>' +
       '<dt>Abonnements en cours</dt><dd>Abonnements actifs des bénéficiaires à la date des données. Un abonné peut en avoir plusieurs.</dd>' +
       '<dt>Économies des salariés</dt><dd>Pour chaque service : prix public mensuel de l\'offre individuelle équivalente (en France, TTC) × abonnements en cours, soit ce que les salariés paieraient en s\'abonnant directement' + (m.contrat > 0 ? ' ; leurs abonnements sont financés par la cagnotte du CSE' + (m.cagnCitee ? ' (' + montant(m.contrat) + ' par abonné et par an)' : '') + ' utilisée sur Spliiit' : '') + '. Total corrigé des abonnements comptés deux fois par Spliiit' + (m.prixReleve ? '. Prix relevés le ' + esc(jourTxt(m.prixReleve)) : '') + '. Sur un an = mensuel × 12, à abonnements constants.</dd>' +
@@ -635,5 +680,5 @@
       pages.join('').replace(/__TOTAL__/g, String(pages.length)) + '</body></html>';
   }
 
-  window.BilanDoc = { mesures: mesures, initiales: initiales, CLES: CLES, calculer: calculer, html: html, sourceLogo: sourceLogo, spLogo: spLogo, veille: veille, moisTxt: moisTxt, jourTxt: jourTxt };
+  window.BilanDoc = { mesures: mesures, initiales: initiales, CLES: CLES, CLES_TOUTES: CLES_TOUTES, cagnotteSaisie: cagnotteSaisie, calculer: calculer, html: html, sourceLogo: sourceLogo, spLogo: spLogo, veille: veille, moisTxt: moisTxt, jourTxt: jourTxt };
 })();
