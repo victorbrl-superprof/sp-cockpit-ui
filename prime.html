@@ -959,6 +959,16 @@
     .r1-status.err { background:var(--rose-light); color:#9f1239; }
     #r1-results { margin-top:10px; }
     .pill.r1-manual { background:var(--indigo-light); color:var(--indigo-dark); margin-left:6px; }
+    .r1-manual { margin-top:12px; border:1px dashed var(--slate-300); border-radius:12px; padding:10px 12px; background:rgba(248,250,252,0.8); }
+    .r1-manual summary { cursor:pointer; font-size:12.5px; font-weight:700; color:var(--slate-700); }
+    .r1-manual-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-top:10px; }
+    .r1-manual-grid label { display:grid; gap:4px; font-size:11px; font-weight:700; color:var(--slate-500); text-transform:uppercase; letter-spacing:.04em; }
+    .r1-manual-grid input, .r1-manual-grid select {
+      font:inherit; font-size:13px; text-transform:none; letter-spacing:0; padding:8px 10px; min-width:0;
+      border:1px solid var(--slate-200); border-radius:10px; background:white; color:var(--slate-900);
+    }
+    .r1-manual-act { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:10px; }
+    .r1-manual-act .muted { font-size:11px; color:var(--slate-400); }
     .st-acc-empty { padding:18px; text-align:center; color:var(--slate-500); font-size:13px; }
     .st-link-plain { text-decoration:none; }
     /* Pastilles devenues <button> : contenu en <span> (pas de <div> dans un bouton). */
@@ -4496,6 +4506,7 @@
     let R1_REOPEN = null;     // { msg, err } : rouvrir la fenêtre après le rechargement du tableau
     let R1_LAST_Q = "";
     let R1_RESULTS = [];
+    let R1_COMPANIES = [];    // sociétés trouvées par la dernière recherche (R1 supprimé de HubSpot)
     let R1_SEARCH_ERR = false;
     let R1_SEARCH_SEQ = 0;    // seule la dernière recherche lancée s'affiche
     let R1_BUSY = false;      // une correction part : tout est figé jusqu'au rechargement
@@ -4545,10 +4556,10 @@
               <div class="r1-status" id="r1-status" role="status" aria-live="polite"></div>
               <section class="st-acc-group">
                 <h4>Ajouter un R1 qui manque</h4>
-                <form class="r1-search" id="r1-search-form">
-                  <input id="r1-q" type="search" placeholder="Nom de la société, ou lien HubSpot de la réunion" autocomplete="off" aria-label="Nom de la société ou lien de la réunion">
-                  <button class="r1-btn primary" id="r1-search-btn" type="submit">Rechercher</button>
-                </form>
+                <div class="r1-search" role="search">
+                  <input id="r1-q" type="search" placeholder="Nom de la société, ou lien HubSpot de la réunion" autocomplete="off" aria-label="Nom de la société ou lien de la réunion" enterkeyhint="search">
+                  <button class="r1-btn primary" id="r1-search-btn" type="button">Rechercher</button>
+                </div>
                 <input id="r1-note" class="r1-note" type="text" maxlength="300" placeholder="Pourquoi ? (facultatif, ex. posé dans l'agenda de Camille)" aria-label="Raison de la correction">
                 <div id="r1-results"></div>
               </section>
@@ -4583,12 +4594,37 @@
         : label;
     }
 
+    const R1_OUTCOMES = [
+      ["COMPLETED", "Effectué"], ["SCHEDULED", "À venir"], ["NO_SHOW", "No-show"], ["CANCELED", "Annulé"], ["RESCHEDULED", "Décalé"],
+    ];
+
+    // R1 dont la réunion a été supprimée de HubSpot : saisi à la main sur une société trouvée.
+    function renderR1ManualForm(open) {
+      if (!R1_COMPANIES.length) return "";
+      const first = R1_EDIT?.firstName || "";
+      const today = TODAY_ISO;
+      const closers = [["", "closer inconnu"], ["78105232", "Camille Lecorno"], ["33386465", "Hugo Rodrigues"]];
+      return `<details class="r1-manual"${open ? " open" : ""}>
+        <summary>La réunion a été supprimée de HubSpot ? Saisir le R1 à la main</summary>
+        <div class="r1-manual-grid">
+          <label>Société<select id="r1-m-company">${R1_COMPANIES.map(c => `<option value="${esc(c.id)}">${esc(c.name || c.id)}</option>`).join("")}</select></label>
+          <label>RDV pris le<input id="r1-m-taken" type="date" value="${esc(today)}" max="${esc(today)}"></label>
+          <label>Réunion le<input id="r1-m-meeting" type="datetime-local"></label>
+          <label>Closer<select id="r1-m-closer">${closers.map(([id, n]) => `<option value="${esc(id)}">${esc(n)}</option>`).join("")}</select></label>
+          <label>Résultat<select id="r1-m-outcome">${R1_OUTCOMES.map(([v, l]) => `<option value="${esc(v)}">${esc(l)}</option>`).join("")}</select></label>
+        </div>
+        <div class="r1-manual-act">${r1Button("ajouter", "", `Ajouter ce R1 à ${first}`, true)}<span class="muted">La raison saisie plus haut est gardée avec le R1.</span></div>
+      </details>`;
+    }
+
     function renderR1Results() {
       const box = document.getElementById("r1-results");
       if (!box) return;
       if (!R1_LAST_Q || R1_SEARCH_ERR) { box.innerHTML = ""; return; }
       if (!R1_RESULTS.length) {
-        box.innerHTML = `<div class="st-acc-empty">Aucune réunion trouvée pour « ${esc(R1_LAST_Q)} » sur 2026. Essayez un autre mot du nom de la société, ou collez le lien de la réunion.</div>`;
+        box.innerHTML = R1_COMPANIES.length
+          ? `<div class="st-acc-empty">Aucune réunion HubSpot pour « ${esc(R1_LAST_Q)} » en 2026. Si le R1 a été supprimé de HubSpot, saisissez-le ci-dessous.</div>${renderR1ManualForm(true)}`
+          : `<div class="st-acc-empty">Aucune société ni réunion trouvée pour « ${esc(R1_LAST_Q)} ». Essayez un autre mot du nom de la société, ou collez le lien de la réunion.</div>`;
         return;
       }
       const first = R1_EDIT?.firstName || "";
@@ -4605,7 +4641,7 @@
           <td>${action}</td>
         </tr>`;
       }).join("");
-      box.innerHTML = r1Table(["Compte", "Réunion", "Compte pour", ""], rows);
+      box.innerHTML = r1Table(["Compte", "Réunion", "Compte pour", ""], rows) + renderR1ManualForm(false);
     }
 
     function renderR1Lists() {
@@ -4621,7 +4657,7 @@
         const corrRows = [
           ...manual.map(m => `<tr>
             <td class="acc">${r1Account(m)}<span class="muted">réunion ${esc(fmtParisSlot(m.startTime))}</span></td>
-            <td><span class="pill r1-manual">ajouté à la main</span>${m.attributionNote ? `<span class="muted">${esc(m.attributionNote)}</span>` : ""}</td>
+            <td><span class="pill r1-manual">${m.deletedInHubspot ? "saisi à la main (réunion supprimée)" : "ajouté à la main"}</span>${m.attributionNote ? `<span class="muted">${esc(m.attributionNote)}</span>` : ""}</td>
             <td>${r1Button("annuler", m.id, "Annuler", true)}</td>
           </tr>`),
           ...removed.map(m => `<tr>
@@ -4643,7 +4679,7 @@
       document.getElementById("r1-n-list").textContent = String(counted.length);
       document.getElementById("r1-counted").innerHTML = counted.length
         ? r1Table(["Compte", "Résultat", "Réunion", ""], counted.map(m => `<tr>
-            <td class="acc">${r1Account(m)}${m.attribution === "manuel" ? `<span class="pill r1-manual">ajouté à la main</span>` : ""}</td>
+            <td class="acc">${r1Account(m)}${m.attribution === "manuel" ? `<span class="pill r1-manual">${m.deletedInHubspot ? "saisi à la main" : "ajouté à la main"}</span>` : ""}</td>
             <td><span class="st-status ${esc(m.status)}">${esc(SETTER_STATUS_ONE[m.status] || m.status)}</span></td>
             <td>${esc(fmtParisSlot(m.startTime))}<span class="muted">pris le ${esc(fmtParisDate(m.createdAt))}</span></td>
             <td>${r1Button("retirer", m.id, "Retirer", true)}</td>
@@ -4660,7 +4696,7 @@
 
     function r1SetBusy(busy) {
       R1_BUSY = busy;
-      document.querySelectorAll("#r1-backdrop [data-r1-action], #r1-q, #r1-note, #r1-search-btn").forEach(el => { el.disabled = busy; });
+      document.querySelectorAll("#r1-backdrop [data-r1-action], #r1-backdrop input, #r1-backdrop select, #r1-search-btn").forEach(el => { el.disabled = busy; });
     }
 
     async function r1Request(url, init = {}) {
@@ -4684,10 +4720,12 @@
         const json = await r1Request(`${API}?action=r1_recherche&owner_id=${encodeURIComponent(OWNER)}&q=${encodeURIComponent(R1_LAST_Q)}`);
         if (seq !== R1_SEARCH_SEQ) return false;
         R1_RESULTS = Array.isArray(json.results) ? json.results : [];
+        R1_COMPANIES = Array.isArray(json.companies) ? json.companies : [];
         r1Status("");
       } catch (e) {
         if (seq !== R1_SEARCH_SEQ) return false;
         R1_RESULTS = [];
+        R1_COMPANIES = [];
         R1_SEARCH_ERR = true;
         ok = false;
         r1Status(`Recherche impossible : ${e.message || String(e)}`, true);
@@ -4700,6 +4738,7 @@
       const first = R1_EDIT?.firstName || "";
       if (json.unchanged) return `Ce R1 compte déjà pour ${first}.`;
       if (action === "attribuer") return `R1 attribué à ${first}.`;
+      if (action === "ajouter") return `R1 ajouté à ${first} (saisi à la main, réunion supprimée de HubSpot).`;
       if (action === "retirer") {
         const back = json.credit?.setter && json.credit.setter !== OWNER ? ` Il revient à ${r1SetterName(json.credit.setter)} (règle automatique).` : "";
         return `R1 retiré ${r1De(first)}.${back}`;
@@ -4728,10 +4767,24 @@
       let json;
       try {
         const note = (document.getElementById("r1-note")?.value || "").trim();
+        let payload = { owner_id: OWNER, action, meeting, note };
+        if (action === "ajouter") {
+          const val = (id) => (document.getElementById(id)?.value || "").trim();
+          const taken = val("r1-m-taken"), at = val("r1-m-meeting");
+          if (!taken || !at) throw new Error("Indiquez la date de prise et la date de la réunion.");
+          payload = {
+            owner_id: OWNER, action, note,
+            company_id: val("r1-m-company"),
+            taken_at: new Date(`${taken}T12:00`).toISOString(),
+            meeting_at: new Date(at).toISOString(),
+            closer_owner_id: val("r1-m-closer") || null,
+            outcome: val("r1-m-outcome"),
+          };
+        }
         json = await r1Request(API, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ owner_id: OWNER, action, meeting, note }),
+          body: JSON.stringify(payload),
         });
       } catch (e) {
         r1SetBusy(false);
@@ -4800,9 +4853,11 @@
         if (btn && !btn.disabled) r1Act(btn);
       };
       document.getElementById("r1-close").onclick = () => closeR1Modal();
-      document.getElementById("r1-search-form").onsubmit = (event) => {
-        event.preventDefault();
-        r1Search(document.getElementById("r1-q").value);
+      // Pas de <form> : la page est souvent ouverte dans un cadre HubSpot qui bloque les formulaires.
+      const q = document.getElementById("r1-q");
+      document.getElementById("r1-search-btn").onclick = () => r1Search(q.value);
+      q.onkeydown = (event) => {
+        if (event.key === "Enter") { event.preventDefault(); r1Search(q.value); }
       };
       if (window.__primeR1KeydownBound) return;
       document.addEventListener("keydown", (event) => {
