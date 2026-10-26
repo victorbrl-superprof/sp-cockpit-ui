@@ -955,12 +955,13 @@
     .r1-btn.armed { background:var(--rose); border-color:var(--rose); color:white; }
     .r1-btn[disabled] { opacity:.55; cursor:wait; }
     .r1-status:empty { display:none; }
-    .r1-status { padding:10px 12px; border-radius:12px; font-size:12.5px; font-weight:600; background:var(--emerald-light); color:#047857; }
+    .r1-status { margin-top:8px; padding:8px 12px; border-radius:12px; font-size:12.5px; font-weight:600; background:var(--emerald-light); color:#047857; }
     .r1-status.err { background:var(--rose-light); color:#9f1239; }
     #r1-results { margin-top:10px; }
     .pill.r1-manual { background:var(--indigo-light); color:var(--indigo-dark); margin-left:6px; }
-    .r1-manual { margin-top:12px; border:1px dashed var(--slate-300); border-radius:12px; padding:10px 12px; background:rgba(248,250,252,0.8); }
-    .r1-manual summary { cursor:pointer; font-size:12.5px; font-weight:700; color:var(--slate-700); }
+    .r1-manual-box { margin-top:12px; border:1px dashed var(--slate-300); border-radius:12px; padding:10px 12px; background:rgba(248,250,252,0.8); }
+    .r1-manual-box summary { cursor:pointer; font-size:12.5px; font-weight:700; color:var(--slate-700); }
+    .r1-manual-act a { font-size:12px; font-weight:700; color:var(--indigo-dark); }
     .r1-manual-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-top:10px; }
     .r1-manual-grid label { display:grid; gap:4px; font-size:11px; font-weight:700; color:var(--slate-500); text-transform:uppercase; letter-spacing:.04em; }
     .r1-manual-grid input, .r1-manual-grid select {
@@ -4507,6 +4508,7 @@
     let R1_LAST_Q = "";
     let R1_RESULTS = [];
     let R1_COMPANIES = [];    // sociétés trouvées par la dernière recherche (R1 supprimé de HubSpot)
+    let R1_META = {};         // { truncated, meetingMissing } de la dernière recherche
     let R1_SEARCH_ERR = false;
     let R1_SEARCH_SEQ = 0;    // seule la dernière recherche lancée s'affiche
     let R1_BUSY = false;      // une correction part : tout est figé jusqu'au rechargement
@@ -4549,11 +4551,11 @@
               <div>
                 <h3 id="r1-title">Corriger les R1 ${esc(r1De(firstName))}</h3>
                 <p>Une correction passe avant la règle automatique (R1 « Présentation » créé par ${esc(firstName)}). Elle s'annule à tout moment.</p>
+                <div class="r1-status" id="r1-status" role="status" aria-live="polite"></div>
               </div>
               <button id="r1-close" class="modal-close" type="button" aria-label="Fermer">×</button>
             </div>
             <div class="modal-body">
-              <div class="r1-status" id="r1-status" role="status" aria-live="polite"></div>
               <section class="st-acc-group">
                 <h4>Ajouter un R1 qui manque</h4>
                 <div class="r1-search" role="search">
@@ -4602,18 +4604,18 @@
     function renderR1ManualForm(open) {
       if (!R1_COMPANIES.length) return "";
       const first = R1_EDIT?.firstName || "";
-      const today = TODAY_ISO;
+      const today = parisDayKey(Date.now()) || TODAY_ISO;
       const closers = [["", "closer inconnu"], ["78105232", "Camille Lecorno"], ["33386465", "Hugo Rodrigues"]];
-      return `<details class="r1-manual"${open ? " open" : ""}>
+      return `<details class="r1-manual-box"${open ? " open" : ""}>
         <summary>La réunion a été supprimée de HubSpot ? Saisir le R1 à la main</summary>
         <div class="r1-manual-grid">
-          <label>Société<select id="r1-m-company">${R1_COMPANIES.map(c => `<option value="${esc(c.id)}">${esc(c.name || c.id)}</option>`).join("")}</select></label>
+          <label>Société<select id="r1-m-company">${R1_COMPANIES.map(c => `<option value="${esc(c.id)}">${esc([c.name || c.id, c.domain || c.city || "", c.deals ? `${c.deals} deal${c.deals > 1 ? "s" : ""}` : ""].filter(Boolean).join(" · "))}</option>`).join("")}</select></label>
           <label>RDV pris le<input id="r1-m-taken" type="date" value="${esc(today)}" max="${esc(today)}"></label>
           <label>Réunion le<input id="r1-m-meeting" type="datetime-local"></label>
           <label>Closer<select id="r1-m-closer">${closers.map(([id, n]) => `<option value="${esc(id)}">${esc(n)}</option>`).join("")}</select></label>
           <label>Résultat<select id="r1-m-outcome">${R1_OUTCOMES.map(([v, l]) => `<option value="${esc(v)}">${esc(l)}</option>`).join("")}</select></label>
         </div>
-        <div class="r1-manual-act">${r1Button("ajouter", "", `Ajouter ce R1 à ${first}`, true)}<span class="muted">La raison saisie plus haut est gardée avec le R1.</span></div>
+        <div class="r1-manual-act">${r1Button("ajouter", "", `Ajouter ce R1 à ${first}`, true)}<a id="r1-m-link" href="${HS_COMPANY_URL}${encodeURIComponent(R1_COMPANIES[0].id)}" target="_blank" rel="noopener noreferrer">Voir la fiche</a><span class="muted">La raison saisie plus haut est gardée avec le R1.</span></div>
       </details>`;
     }
 
@@ -4621,6 +4623,10 @@
       const box = document.getElementById("r1-results");
       if (!box) return;
       if (!R1_LAST_Q || R1_SEARCH_ERR) { box.innerHTML = ""; return; }
+      if (!R1_RESULTS.length && R1_META.meetingMissing) {
+        box.innerHTML = `<div class="st-acc-empty">Cette réunion n'existe plus dans HubSpot (supprimée). Cherchez la société par son nom pour saisir le R1 à la main.</div>`;
+        return;
+      }
       if (!R1_RESULTS.length) {
         box.innerHTML = R1_COMPANIES.length
           ? `<div class="st-acc-empty">Aucune réunion HubSpot pour « ${esc(R1_LAST_Q)} » en 2026. Si le R1 a été supprimé de HubSpot, saisissez-le ci-dessous.</div>${renderR1ManualForm(true)}`
@@ -4637,11 +4643,14 @@
         return `<tr>
           <td class="acc">${r1Account(m)}<span class="muted">${esc(m.title || "")}</span></td>
           <td>${esc(fmtParisSlot(m.startTime))}<span class="muted">pris le ${esc(fmtParisDate(m.createdAt))} · closer ${esc(m.closerName || closerName(m.closerOwnerId))}</span></td>
-          <td>${esc(r1CreditLabel(m.credit))}${m.note ? `<span class="muted">${esc(m.note)}</span>` : ""}</td>
+          <td>${esc(r1CreditLabel(m.credit))}${m.deletedInHubspot ? `<span class="muted">saisi à la main (réunion supprimée)</span>` : ""}${m.note ? `<span class="muted">${esc(m.note)}</span>` : ""}</td>
           <td>${action}</td>
         </tr>`;
       }).join("");
-      box.innerHTML = r1Table(["Compte", "Réunion", "Compte pour", ""], rows) + renderR1ManualForm(false);
+      box.innerHTML = r1Table(["Compte", "Réunion", "Compte pour", ""], rows)
+        + (R1_META.truncated ? `<div class="st-acc-empty">Beaucoup de réunions pour cette recherche : seules les plus récentes sont listées. Précisez le nom ou collez le lien de la réunion.</div>` : "")
+        // Un R1 déjà saisi à la main apparaît : le bloc de saisie reste replié (pas de doublon).
+        + renderR1ManualForm(false);
     }
 
     function renderR1Lists() {
@@ -4721,11 +4730,13 @@
         if (seq !== R1_SEARCH_SEQ) return false;
         R1_RESULTS = Array.isArray(json.results) ? json.results : [];
         R1_COMPANIES = Array.isArray(json.companies) ? json.companies : [];
+        R1_META = { truncated: Boolean(json.truncated), meetingMissing: Boolean(json.meetingMissing) };
         r1Status("");
       } catch (e) {
         if (seq !== R1_SEARCH_SEQ) return false;
         R1_RESULTS = [];
         R1_COMPANIES = [];
+        R1_META = {};
         R1_SEARCH_ERR = true;
         ok = false;
         r1Status(`Recherche impossible : ${e.message || String(e)}`, true);
@@ -4746,7 +4757,7 @@
       return "Correction annulée : la règle automatique s'applique de nouveau.";
     }
 
-    async function r1Act(btn) {
+    async function r1Act(btn, event) {
       if (R1_BUSY) return;
       const action = btn.getAttribute("data-r1-action");
       const meeting = btn.getAttribute("data-r1-meeting");
@@ -4757,10 +4768,13 @@
           b.dataset.armed = ""; b.classList.remove("armed"); b.textContent = b.getAttribute("data-r1-label");
         });
         btn.dataset.armed = "1";
+        btn.dataset.armedAt = String(Date.now());
         btn.classList.add("armed");
         btn.textContent = "Confirmer ?";
         return;
       }
+      // Un double-clic ne vaut pas confirmation : le 2e clic doit venir après une vraie pause.
+      if (needsConfirm && ((event && event.detail > 1) || Date.now() - Number(btn.dataset.armedAt || 0) < 500)) return;
       R1_DISMISSED = false;
       r1SetBusy(true);
       r1Status("Enregistrement…");
@@ -4793,20 +4807,27 @@
       }
       // Enregistré : on recharge tout le tableau (la fenêtre se rouvrira, sauf si elle a été fermée).
       R1_REOPEN = { msg: r1DoneMessage(action, json) };
-      // Les boutons restent désactivés jusqu'au nouveau rendu ; la recherche rejouée doit passer.
-      R1_BUSY = false;
+      // R1_BUSY reste vrai pendant le rechargement : rien n'est cliquable tant que le tableau n'est
+      // pas recalculé (r1AfterRender le libère).
       await loadPrime();
     }
 
     function openR1Modal(trigger) {
       const backdrop = document.getElementById("r1-backdrop");
       if (!backdrop) return;
+      R1_DISMISSED = false;
       LAST_FOCUS_BEFORE_MODAL = trigger || r1HeroButton() || document.activeElement;
       renderR1Lists();
       renderR1Results();
       backdrop.hidden = false;
       backdrop.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
+      if (R1_BUSY) {
+        // Rouverte pendant un enregistrement : tout reste figé jusqu'au nouveau rendu.
+        r1SetBusy(true);
+        r1Status("Rechargement…");
+        return;
+      }
       document.getElementById("r1-q")?.focus();
     }
 
@@ -4826,6 +4847,7 @@
       if (!R1_REOPEN) return;
       const reopen = R1_REOPEN;
       R1_REOPEN = null;
+      R1_BUSY = false;
       if (R1_DISMISSED) return;
       openR1Modal(r1HeroButton());
       r1Status(reopen.msg, reopen.err);
@@ -4850,12 +4872,18 @@
       backdrop.onclick = (event) => {
         if (event.target === backdrop) { closeR1Modal(); return; }
         const btn = event.target.closest?.("[data-r1-action]");
-        if (btn && !btn.disabled) r1Act(btn);
+        if (btn && !btn.disabled) r1Act(btn, event);
       };
       document.getElementById("r1-close").onclick = () => closeR1Modal();
       // Pas de <form> : la page est souvent ouverte dans un cadre HubSpot qui bloque les formulaires.
       const q = document.getElementById("r1-q");
       document.getElementById("r1-search-btn").onclick = () => r1Search(q.value);
+      backdrop.addEventListener("change", (event) => {
+        if (event.target && event.target.id === "r1-m-company") {
+          const link = document.getElementById("r1-m-link");
+          if (link) link.href = HS_COMPANY_URL + encodeURIComponent(event.target.value);
+        }
+      });
       q.onkeydown = (event) => {
         if (event.key === "Enter") { event.preventDefault(); r1Search(q.value); }
       };
@@ -4918,7 +4946,11 @@
         </div>
 
         <div class="grid">
-          ${setter.corrections_unavailable ? `<div class="error">Les corrections manuelles des R1 sont momentanément illisibles : les chiffres ci-dessous suivent la règle automatique seule.</div>` : ""}
+          ${setter.corrections_unavailable ? `<div class="error">${
+            setter.attributions_unavailable && setter.manual_unavailable ? "Les corrections manuelles des R1 sont momentanément illisibles : les chiffres ci-dessous suivent la règle automatique seule."
+            : setter.attributions_unavailable ? "Les R1 attribués ou retirés à la main sont momentanément illisibles : ces corrections ne sont pas appliquées ci-dessous (les R1 saisis à la main, eux, le sont)."
+            : "Les R1 saisis à la main (réunions supprimées de HubSpot) sont momentanément illisibles : ils ne sont pas comptés ci-dessous."
+          }</div>` : ""}
           ${renderSetterKpis(config, stats)}
 
           ${renderSetterMonthCard(config, r, stats)}
@@ -4965,6 +4997,7 @@
         r1AfterRender();
       } else if (R1_REOPEN) {
         R1_REOPEN = null;
+        R1_BUSY = false;
       }
 
       const formatters = { num: fmtNum, prime: fmtPrime, pct: fmtPct };
